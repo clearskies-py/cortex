@@ -7,6 +7,7 @@ from clearskies.columns import (
     CategoryTree,
     CategoryTreeAncestors,
     CategoryTreeChildren,
+    CategoryTreeDescendants,
     Json,
     String,
 )
@@ -39,6 +40,7 @@ class CortexTeam(Model):
     parent = BelongsToModel("parent_team_tag")
     children = CategoryTreeChildren("parent_team_tag")
     ancestors = CategoryTreeAncestors("parent_team_tag")
+    descendants = CategoryTreeDescendants("parent_team_tag")
     links = Json()
     metadata = Json()
     slack_channels = Json()
@@ -50,18 +52,18 @@ class CortexTeam(Model):
         """Retrieve name from metadata."""
         return str(self.metadata.get("name", "")) if self.metadata else ""
 
-    def is_domain(self) -> bool:
-        """Check if team has parents. If not it's a domain."""
-        return not len(self.ancestors)
+    def has_parents(self) -> bool:
+        """Check if team has parents. If not it's a top-level team."""
+        return len(self.ancestors) > 0
 
-    def is_squad(self) -> bool:
-        """Check if team has child. If not it's a squad."""
-        return not len(self.children)
+    def has_childeren(self) -> bool:
+        """Check if team has child. If not it's a bottom-level team."""
+        return len(self.children) > 0
 
-    def find_domain(self: Self) -> "CortexTeam":
+    def find_top_level_team(self: Self) -> Self:
         """
-        Find the domain of the team.
+        Find the top-level team of the team.
 
-        If team is the domain, return itself.
+        If team not has parents, return itself.
         """
-        return self if self.is_domain() else cast(Self, self.ancestors.first())
+        return self if not self.has_parents() else self.ancestors[0]  # type: ignore[index]
