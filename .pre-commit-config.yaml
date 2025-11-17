@@ -55,7 +55,7 @@ repos:
     rev: v1.16.1
     hooks:
       - id: mypy
-        additional_dependencies: [types-requests]
+        additional_dependencies: [types-requests, clear-skies]
         files: \.py$
 
   - repo: https://github.com/adrienverge/yamllint

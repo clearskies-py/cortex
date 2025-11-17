@@ -6,7 +6,10 @@ license = "MIT"
 readme = "./README.md"
 authors = [{name = "Tom Nijboer", email = "tom.nijboer@cimpress.com"}]
 requires-python = ">=3.11,<4.0"
-dependencies = ["clear-skies>=2.0.0,<3.0.0"]
+dependencies = [
+    "clear-skies>=2.0.0,<3.0.0",
+    "dacite>=1.9.2",
+]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
@@ -68,7 +71,9 @@ pythonpath = [
 # This is the dedicated section for uv"s configuration
 [dependency-groups]
 dev = [
+    "akeyless>=5.0.8",
     "black>=25.1.0",
+    "mypy>=1.18.2",
     "pre-commit>=4.3.0",
     "pytest>=8.4.1",
     "pytest-cov>=6.2.1",
