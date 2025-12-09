@@ -25,7 +25,7 @@ class CortexCatalogEntityService(cortex_catalog_entity.CortexCatalogEntity):
     teams = inject.ByClass(cortex_team.CortexTeam)
     entity_domains = inject.ByClass(cortex_catalog_entity_domain.CortexCatalogEntityDomain)
 
-    def get_predefined_query(self) -> Query:
+    def get_final_query(self) -> Query:
         return (
             self.get_query()
             .add_where(Condition("types=service"))

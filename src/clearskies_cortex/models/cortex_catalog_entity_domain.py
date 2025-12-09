@@ -9,7 +9,7 @@ from clearskies_cortex.models import cortex_catalog_entity
 class CortexCatalogEntityDomain(cortex_catalog_entity.CortexCatalogEntity):
     """Model for domain entities."""
 
-    def get_predefined_query(self) -> Query:
+    def get_final_query(self) -> Query:
         return (
             self.get_query()
             .add_where(Condition("types=domain"))

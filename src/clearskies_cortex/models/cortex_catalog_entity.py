@@ -74,17 +74,3 @@ class CortexCatalogEntity(Model):
                 if len(splitted) > 1:
                     parsed[splitted[0]] = splitted[1]
         return parsed
-
-    def __iter__(self: Self) -> Iterator[Self]:
-        """Return iterable models."""
-        self.set_query(self.get_predefined_query())
-        return super().__iter__()
-
-    def __len__(self: Self) -> int:
-        self.no_single_model()
-        if self._count is None:
-            self._count = self.backend.count(self.get_predefined_query())
-        return self._count
-
-    def get_predefined_query(self) -> Query:
-        return self.get_query()
