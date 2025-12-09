@@ -1,8 +1,9 @@
 import logging
-from typing import Any, Self, cast
+from typing import Any, Iterator, Self, cast
 
 from clearskies import Column
 from clearskies.di import inject
+from clearskies.query import Condition, Query
 from dacite import from_dict
 
 from clearskies_cortex import dataclasses
@@ -24,21 +25,14 @@ class CortexCatalogEntityService(cortex_catalog_entity.CortexCatalogEntity):
     teams = inject.ByClass(cortex_team.CortexTeam)
     entity_domains = inject.ByClass(cortex_catalog_entity_domain.CortexCatalogEntityDomain)
 
-    def where_for_request(
-        self: Self,
-        model: Self,
-        input_output: Any,
-        routing_data: dict[str, str],
-        authorization_data: dict[str, Any],
-        overrides: dict[str, Column] = {},
-    ) -> Self:
-        """Return iterable models."""
+    def get_predefined_query(self) -> Query:
         return (
-            model.where("types=service")
-            .where("include_nested_fields=team:members")
-            .where("include_owners=true")
-            .where("include_metadata=true")
-            .where("include_hierarchy_fields=groups")
+            self.get_query()
+            .add_where(Condition("types=service"))
+            .add_where(Condition("include_nested_fields=team:members"))
+            .add_where(Condition("include_owners=true"))
+            .add_where(Condition("include_metadata=true"))
+            .add_where(Condition("include_hierarchy_fields=groups"))
         )
 
     def get_software_domain(self: Self) -> cortex_catalog_entity_domain.CortexCatalogEntityDomain:

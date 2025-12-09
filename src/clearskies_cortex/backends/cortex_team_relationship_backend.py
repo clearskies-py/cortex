@@ -61,20 +61,6 @@ class CortexTeamRelationshipBackend(MemoryBackend, Configurable):
             def destination_name(cls) -> str:
                 return "teams/relationships"
 
-        try:
-            relationship_data = self._get_cortex_backend().records(
-                Query(
-                    model_class=RelationshipModel,
-                ),
-                {},
-            )[0]
-
-        except IndexError:
-            relationship_data = {"edges": []}
-
-        # this should match up to exactly what backend.records() will return
-        # relationship_data = example_data["edges"]
-
         # we need to map this to the kind of row structure expected by the category_tree column
         # (see https://github.com/clearskies-py/clearskies/blob/main/src/clearskies/columns/category_tree.py)
         # This takes slightly more time up front but makes for quick lookups in both directions (and we'll
@@ -89,9 +75,14 @@ class CortexTeamRelationshipBackend(MemoryBackend, Configurable):
         root_categories: dict[str, str] = {}
         known_children: dict[str, str] = {}
         relationships: dict[str, set[str]] = {}
-        for relationship in relationship_data["edges"]:
-            child_category = relationship["childTeamTag"]
-            parent_category = relationship["parentTeamTag"]
+        for relationship in self._get_cortex_backend().records(
+            Query(
+                model_class=RelationshipModel,
+            ),
+            {},
+        ):
+            child_category = relationship["child_team_tag"]
+            parent_category = relationship["parent_team_tag"]
             # Skip if either parent or child is archived
             if parent_category not in relationships:
                 relationships[parent_category] = set()
@@ -115,8 +106,8 @@ class CortexTeamRelationshipBackend(MemoryBackend, Configurable):
             for idx, ancestor in enumerate(ancestors):
                 if (
                     not self.all_teams().get(node_name)
-                    or self.all_teams().get(node_name, {}).get("isArchived")
-                    or self.all_teams().get(ancestor, {}).get("isArchived")
+                    or self.all_teams().get(node_name, {}).get("is_archived")
+                    or self.all_teams().get(ancestor, {}).get("is_archived")
                 ):
                     continue
                 mapped.append(
@@ -162,13 +153,12 @@ class CortexTeamRelationshipBackend(MemoryBackend, Configurable):
         from clearskies_cortex.models.cortex_team import CortexTeam
 
         teams: dict[str, dict[str, Any]] = {}
-        team_result = self._get_cortex_backend().records(
+        for team in self._get_cortex_backend().records(
             Query(
                 model_class=CortexTeam,
             ),
             {},
-        )[0]
-        for team in team_result["teams"]:
-            teams[team["teamTag"]] = team
+        ):
+            teams[team["team_tag"]] = team
         self._cached_teams = teams
         return teams

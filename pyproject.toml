@@ -65,7 +65,7 @@ testpaths = [
     "integration",
 ]
 pythonpath = [
-  "app"
+  "src"
 ]
 
 # This is the dedicated section for uv"s configuration

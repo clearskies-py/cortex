@@ -1,6 +1,7 @@
 from typing import Any, Self
 
 from clearskies import Column
+from clearskies.query import Condition, Query
 
 from clearskies_cortex.models import cortex_catalog_entity
 
@@ -8,18 +9,12 @@ from clearskies_cortex.models import cortex_catalog_entity
 class CortexCatalogEntityDomain(cortex_catalog_entity.CortexCatalogEntity):
     """Model for domain entities."""
 
-    def where_for_request(
-        self: Self,
-        model: Self,
-        input_output: Any,
-        routing_data: dict[str, str],
-        authorization_data: dict[str, Any],
-        overrides: dict[str, Column] = {},
-    ) -> Self:
+    def get_predefined_query(self) -> Query:
         return (
-            model.where("types=domain")
-            .where("include_nested_fields=team:members")
-            .where("include_owners=true")
-            .where("include_metadata=true")
-            .where("include_hierarchy_fields=groups")
+            self.get_query()
+            .add_where(Condition("types=domain"))
+            .add_where(Condition("include_nested_fields=team:members"))
+            .add_where(Condition("include_owners=true"))
+            .add_where(Condition("include_metadata=true"))
+            .add_where(Condition("include_hierarchy_fields=groups"))
         )

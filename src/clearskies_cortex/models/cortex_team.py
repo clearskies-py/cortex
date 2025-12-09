@@ -8,6 +8,7 @@ from clearskies.columns import (
     CategoryTreeAncestors,
     CategoryTreeChildren,
     CategoryTreeDescendants,
+    Datetime,
     Json,
     String,
 )
@@ -21,7 +22,11 @@ class CortexTeam(Model):
 
     id_column_name: str = "team_tag"
 
-    backend = CortexBackend()
+    backend = CortexBackend(
+        api_to_model_map={
+            "cortexTeam.members": "members",
+        }
+    )
 
     @classmethod
     def destination_name(cls: type[Self]) -> str:
@@ -45,8 +50,9 @@ class CortexTeam(Model):
     metadata = Json()
     slack_channels = Json()
     type = String()
-    cortex_team = Json()
+    members = Json()
     id = String()
+    last_updated = Datetime()
 
     def get_name(self) -> str:
         """Retrieve name from metadata."""

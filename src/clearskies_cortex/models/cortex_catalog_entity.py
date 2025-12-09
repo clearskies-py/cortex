@@ -1,7 +1,9 @@
+from collections.abc import Iterator
 from typing import Self
 
 from clearskies import Model
 from clearskies.columns import Boolean, Datetime, HasMany, Json, String
+from clearskies.query import Query
 
 from clearskies_cortex.backends import CortexBackend
 from clearskies_cortex.columns import StringList
@@ -46,6 +48,18 @@ class CortexCatalogEntity(Model):
         foreign_column_name="entity_tag",
     )
 
+    # search columns
+    hierarchy_depth = String(is_searchable=True, is_temporary=True)
+    git_repositories = StringList(is_searchable=True, is_temporary=True)
+    types = StringList(is_searchable=True, is_temporary=True)
+    query = String(is_searchable=True, is_temporary=True)
+    include_archived = Boolean(is_searchable=True, is_temporary=True)
+    include_metadata = Boolean(is_searchable=True, is_temporary=True)
+    include_links = Boolean(is_searchable=True, is_temporary=True)
+    include_owners = Boolean(is_searchable=True, is_temporary=True)
+    include_nested_fields = StringList(is_searchable=True, is_temporary=True)
+    include_hierarchy_fields = StringList(is_searchable=True, is_temporary=True)
+
     def parse_groups(self) -> dict[str, str]:
         """
         Parse the strings of groups.
@@ -60,3 +74,17 @@ class CortexCatalogEntity(Model):
                 if len(splitted) > 1:
                     parsed[splitted[0]] = splitted[1]
         return parsed
+
+    def __iter__(self: Self) -> Iterator[Self]:
+        """Return iterable models."""
+        self.set_query(self.get_predefined_query())
+        return super().__iter__()
+
+    def __len__(self: Self) -> int:
+        self.no_single_model()
+        if self._count is None:
+            self._count = self.backend.count(self.get_predefined_query())
+        return self._count
+
+    def get_predefined_query(self) -> Query:
+        return self.get_query()
