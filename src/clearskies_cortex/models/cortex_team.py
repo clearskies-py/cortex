@@ -1,4 +1,4 @@
-from typing import Self, cast
+from typing import Self
 
 from clearskies import Model
 from clearskies.columns import (
@@ -53,6 +53,7 @@ class CortexTeam(Model):
     members = Json()
     id = String()
     last_updated = Datetime()
+    include_teams_without_members = Boolean(is_searchable=True, is_temporary=True)
 
     def get_name(self) -> str:
         """Retrieve name from metadata."""

@@ -20,7 +20,7 @@ class ServiceEntityHierarchyParent:
     description: str | None
     definition: None | dict[str, Any]
     parents: list["ServiceEntityHierarchyParent"]
-    groups: list[str]
+    groups: list[str] | None
 
 
 @dataclass
@@ -33,7 +33,7 @@ class ServiceEntityHierarchyChild:
     description: str | None
     definition: None | dict[str, Any]
     children: list["ServiceEntityHierarchyChild"]
-    groups: list[str]
+    groups: list[str] | None
 
 
 @dataclass

@@ -3,6 +3,7 @@ from clearskies_cortex.models.cortex_catalog_entity_domain import CortexCatalogE
 from clearskies_cortex.models.cortex_catalog_entity_group import CortexCatalogEntityGroup
 from clearskies_cortex.models.cortex_catalog_entity_scorecard import CortexCatalogEntityScorecard
 from clearskies_cortex.models.cortex_catalog_entity_service import CortexCatalogEntityService
+from clearskies_cortex.models.cortex_catalog_entity_team import CortexCatalogEntityTeam
 from clearskies_cortex.models.cortex_scorecard import CortexScorecard
 from clearskies_cortex.models.cortex_team import CortexTeam
 from clearskies_cortex.models.cortex_team_category_tree import CortexTeamCategoryTree
@@ -14,6 +15,7 @@ __all__ = [
     "CortexCatalogEntityGroup",
     "CortexCatalogEntityScorecard",
     "CortexCatalogEntityService",
+    "CortexCatalogEntityTeam",
     "CortexScorecard",
     "CortexTeam",
     "CortexTeamCategoryTree",

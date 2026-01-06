@@ -14,8 +14,6 @@ from clearskies_cortex.models import (
     cortex_team,
 )
 
-logger = logging.getLogger(__name__)
-
 
 class CortexCatalogEntityService(cortex_catalog_entity.CortexCatalogEntity):
     """Model for domain entities."""
@@ -35,34 +33,9 @@ class CortexCatalogEntityService(cortex_catalog_entity.CortexCatalogEntity):
             .add_where(Condition("include_hierarchy_fields=groups"))
         )
 
-    def get_software_domain(self: Self) -> cortex_catalog_entity_domain.CortexCatalogEntityDomain:
-        """Get the upper domain of this service if set."""
-        hierarchy = from_dict(dataclasses.ServiceEntityHierarchy, data=self.hierarchy)
-        if hierarchy.parents:
-            parent = hierarchy.parents[0]
-            while parent.parents:
-                parent = parent.parents[0]
-            return cast(
-                cortex_catalog_entity_domain.CortexCatalogEntityDomain,
-                self.entity_domains.find(f"tag={parent.tag}"),
-            )
-        return cast(cortex_catalog_entity_domain.CortexCatalogEntityDomain, self.entity_domains.empty())
-
-    def get_software_container(self: Self) -> cortex_catalog_entity_domain.CortexCatalogEntityDomain:
-        """Get the first domain of this service if set."""
-        hierarchy = from_dict(dataclasses.ServiceEntityHierarchy, data=self.hierarchy)
-        if hierarchy.parents:
-            container = hierarchy.parents[0]
-            return cast(
-                cortex_catalog_entity_domain.CortexCatalogEntityDomain,
-                self.entity_domains.find(f"tag={container.tag}"),
-            )
-        return cast(cortex_catalog_entity_domain.CortexCatalogEntityDomain, self.entity_domains.empty())
-
     def get_top_level_team(self: Self) -> cortex_team.CortexTeam:
         """Find the top level team based on the team ownership."""
         team = self.get_team()
-
         if team:
             return team.find_top_level_team()
 
@@ -70,17 +43,34 @@ class CortexCatalogEntityService(cortex_catalog_entity.CortexCatalogEntity):
 
     def get_team(self: Self) -> cortex_team.CortexTeam:
         """Find the team based on the team ownership."""
-        team = cast(cortex_team.CortexTeam, self.teams.empty())
-        if not self.ownersV2:
+        team = self.teams.empty()
+        self.logger.debug(f"EntityService: owners {self.owners}")
+        if not self.owners:
             return team
-
-        logger.debug(f"EntityService: ownersV2 {self.ownersV2}")
-        owners = from_dict(dataclasses.EntityTeamOwner, data=self.ownersV2)
-
+        owners = self.parse_owners()
+        self.logger.debug(f"Parsed owners: {owners}")
         if not owners.teams:
             return team
 
         entity_team = owners.teams[0]
-        logger.debug(f"Found entity team: {entity_team}")
+        self.logger.debug(f"Found entity team: {entity_team}")
 
         return self.teams.find(f"team_tag={entity_team.tag}")
+
+    def get_top_level_domain(self: Self) -> cortex_catalog_entity_domain.CortexCatalogEntityDomain:
+        """Get the upper domain of this service if set."""
+        hierarchy = self.parse_hierarchy()
+        if hierarchy.parents:
+            parent = hierarchy.parents[0]
+            while parent.parents:
+                parent = parent.parents[0]
+            return self.entity_domains.find(f"tag={parent.tag}")
+        return self.entity_domains.empty()
+
+    def get_parent_domain(self: Self) -> cortex_catalog_entity_domain.CortexCatalogEntityDomain:
+        """Get the first domain of this service if set."""
+        hierarchy = self.parse_hierarchy()
+        if hierarchy.parents:
+            container = hierarchy.parents[0]
+            return self.entity_domains.find(f"tag={container.tag}")
+        return self.entity_domains.empty()

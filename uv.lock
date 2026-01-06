@@ -4,7 +4,7 @@ requires-python = ">=3.11, <4.0"
 
 [[package]]
 name = "akeyless"
-version = "5.0.16"
+version = "5.0.17"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
@@ -13,9 +13,9 @@ dependencies = [
     { name = "six" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ff/ce/4ece6506efe08611c2d701701ff30305d5e92c170b9848e734b5c7f27603/akeyless-5.0.16.tar.gz", hash = "sha256:7b13e1befd69a22f3ae8163e44d145555a196e0ec17b3141f8525b283c99a54c", size = 1489417, upload-time = "2025-12-03T10:35:37.811Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/07/29/109e7a8343e9273ac9254a22113161fa1307ed17d1db917cf2ee1b3beaaa/akeyless-5.0.17.tar.gz", hash = "sha256:e30be304b5ab16d7147fd5e2d090b8f816163803b52525fd1b2aefc702b9afdf", size = 1493654, upload-time = "2025-12-09T15:50:47.888Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/dc/e6ca0c30e099525add8770b5bb19c071b656758dbe4d973c389b3be57c25/akeyless-5.0.16-py3-none-any.whl", hash = "sha256:0f6f01120652328bc3589f9405bad1ef58c51fa17e11c99e652d6075c41dd4b5", size = 2818547, upload-time = "2025-12-03T10:35:36.122Z" },
+    { url = "https://files.pythonhosted.org/packages/f4/af/f004094476c8a4e21a64a1c8fc9abdfa539aeb42f63d71830c725fc1dd27/akeyless-5.0.17-py3-none-any.whl", hash = "sha256:4da19a393391f68ea81b4b8af4aee27cca8a9191bfecdd4e368e06632d4a9535", size = 2822240, upload-time = "2025-12-09T15:50:46.079Z" },
 ]
 
 [[package]]
@@ -148,16 +148,16 @@ wheels = [
 
 [[package]]
 name = "clear-skies"
-version = "2.0.23"
+version = "2.0.24"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "dateparser" },
     { name = "requests" },
     { name = "wrapt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/cb/16/11d1f4b98cf532476e9c07035aee9e99fa4e3b2aae7eb085836005ff6a85/clear_skies-2.0.23.tar.gz", hash = "sha256:78ed59d9bb4b5608dc38533c5788dd73ae03b6afd98bc7c835d1c195fea19414", size = 289193, upload-time = "2025-12-09T14:44:49.917Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/63/60/7fe26fa8d038b632627cb7b43b33b9811886bfd2dbe4af2aa18bb4b8bed2/clear_skies-2.0.24.tar.gz", hash = "sha256:c8fb8acb83d686e69e90ee8e18d8594bf3d894022c24021f41d793600f5bee66", size = 289712, upload-time = "2025-12-09T14:59:11.065Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/60/60/ec884bced9d327ebe89781dfe5e5f350e6ed49885a56b40cb40b7d057381/clear_skies-2.0.23-py3-none-any.whl", hash = "sha256:bfc9d22a345ca86cdb8c3de97ee5afa62352daec02402b2b831ca0e562d38899", size = 331693, upload-time = "2025-12-09T14:44:48.564Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/e2/de23a98bc4cab753044ad98df721fce9d76282906314fa9bd5a52b29feea/clear_skies-2.0.24-py3-none-any.whl", hash = "sha256:3deeda3f2ff1d8e9ed947f514d11b1930dc82907c6bb0b703814926d5db468e8", size = 332738, upload-time = "2025-12-09T14:59:12.104Z" },
 ]
 
 [[package]]

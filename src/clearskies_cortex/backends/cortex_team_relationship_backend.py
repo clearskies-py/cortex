@@ -8,7 +8,7 @@ from clearskies import Configurable, Model, configs
 from clearskies.backends.memory_backend import MemoryBackend, MemoryTable
 from clearskies.columns import String, Uuid
 from clearskies.di import inject
-from clearskies.query.query import Query
+from clearskies.query import Condition, Query
 
 from clearskies_cortex.backends import cortex_backend as rest_backend
 
@@ -106,8 +106,8 @@ class CortexTeamRelationshipBackend(MemoryBackend, Configurable):
             for idx, ancestor in enumerate(ancestors):
                 if (
                     not self.all_teams().get(node_name)
-                    or self.all_teams().get(node_name, {}).get("is_archived")
-                    or self.all_teams().get(ancestor, {}).get("is_archived")
+                    # or self.all_teams().get(node_name, {}).get("is_archived")
+                    # or self.all_teams().get(ancestor, {}).get("is_archived")
                 ):
                     continue
                 mapped.append(
@@ -156,6 +156,7 @@ class CortexTeamRelationshipBackend(MemoryBackend, Configurable):
         for team in self._get_cortex_backend().records(
             Query(
                 model_class=CortexTeam,
+                conditions=[Condition("include_teams_without_members=true")],
             ),
             {},
         ):

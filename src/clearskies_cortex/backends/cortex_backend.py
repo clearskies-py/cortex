@@ -1,6 +1,7 @@
 from typing import Any
 
 import clearskies
+import requests
 from clearskies import Column, configs
 from clearskies.authentication import Authentication
 from clearskies.decorators import parameters_to_properties
@@ -20,6 +21,7 @@ class CortexBackend(clearskies.backends.ApiBackend):
 
     api_to_model_map = configs.AnyDict(default={})
     pagination_parameter_name = configs.String(default="page")
+    limit_parameter_name = configs.String(default="pageSize")
 
     can_count = True
 
@@ -64,3 +66,35 @@ class CortexBackend(clearskies.backends.ApiBackend):
             ):
                 return super().map_records_response(response_data[first_item], query, query_data)
         return super().map_records_response(response_data, query, query_data)
+
+    def set_next_page_data_from_response(
+        self,
+        next_page_data: dict[str, Any],
+        query: Query,
+        response: "requests.Response",  # type: ignore
+    ) -> None:
+        """
+        Update the next_page_data dictionary with the appropriate data needed to fetch the next page of records.
+
+        This method has a very important job, which is to inform clearskies about how to make another API call to fetch the next
+        page of records.  The way this happens is by updating the `next_page_data` dictionary in place with whatever pagination
+        information is necessary.  Note that this relies on next_page_data being passed by reference, hence the need to update
+        it in place.  That means that you can do this:
+
+        ```python
+        next_page_data["some_key"] = "some_value"
+        ```
+
+        but if you do this:
+
+        ```python
+        next_page_data = {"some_key": "some_value"}
+        ```
+
+        Then things simply won't work.
+        """
+        if isinstance(response.json(), dict):
+            page = response.json().get("page", None)
+            total_pages = response.json().get("totalPages", None)
+            if page is not None and total_pages is not None and page < total_pages:
+                next_page_data[self.pagination_parameter_name] = page + 1
