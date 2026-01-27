@@ -9,6 +9,7 @@ from clearskies.backends.memory_backend import MemoryBackend, MemoryTable
 from clearskies.columns import String, Uuid
 from clearskies.di import inject
 from clearskies.query import Condition, Query
+from clearskies.query.result import RecordsQueryResult
 
 from clearskies_cortex.backends import cortex_backend as rest_backend
 
@@ -34,7 +35,7 @@ class CortexTeamRelationshipBackend(MemoryBackend, Configurable):
         # or we need to let the di system build the CortexBackend.  This change does both:
         self.cortex_backend = cortex_backend
 
-    def records(self, query: Query, next_page_data: dict[str, str | int] | None = None) -> list[dict[str, Any]]:
+    def records(self, query: Query) -> RecordsQueryResult:
         """Accept either a model or a model class and creates a "table" for it."""
         table_name = query.model_class.destination_name()
         if table_name not in self._tables:
@@ -45,7 +46,7 @@ class CortexTeamRelationshipBackend(MemoryBackend, Configurable):
             # we don't need since we built the data ourselves.  In short, it will be a lot slower, so I cheat.
             self._tables[table_name]._rows = records  # type: ignore[assignment]
             self._tables[table_name]._id_index = id_index  # type: ignore[assignment]
-        return super().records(query, next_page_data)
+        return super().records(query)
 
     def _fetch_and_map_relationship_data(self, table_name: str) -> tuple[list[dict[str, str | int]], dict[str, int]]:
         class RelationshipModel(Model):
@@ -75,11 +76,14 @@ class CortexTeamRelationshipBackend(MemoryBackend, Configurable):
         root_categories: dict[str, str] = {}
         known_children: dict[str, str] = {}
         relationships: dict[str, set[str]] = {}
-        for relationship in self._get_cortex_backend().records(
-            Query(
-                model_class=RelationshipModel,
-            ),
-            {},
+        for relationship in (
+            self._get_cortex_backend()
+            .records(
+                Query(
+                    model_class=RelationshipModel,
+                ),
+            )
+            .records
         ):
             child_category = relationship["child_team_tag"]
             parent_category = relationship["parent_team_tag"]
@@ -153,12 +157,15 @@ class CortexTeamRelationshipBackend(MemoryBackend, Configurable):
         from clearskies_cortex.models.cortex_team import CortexTeam
 
         teams: dict[str, dict[str, Any]] = {}
-        for team in self._get_cortex_backend().records(
-            Query(
-                model_class=CortexTeam,
-                conditions=[Condition("include_teams_without_members=true")],
-            ),
-            {},
+        for team in (
+            self._get_cortex_backend()
+            .records(
+                Query(
+                    model_class=CortexTeam,
+                    conditions=[Condition("include_teams_without_members=true")],
+                ),
+            )
+            .records
         ):
             teams[team["team_tag"]] = team
         self._cached_teams = teams

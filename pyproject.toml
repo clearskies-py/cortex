@@ -7,7 +7,7 @@ readme = "./README.md"
 authors = [{name = "Tom Nijboer", email = "tom.nijboer@cimpress.com"}]
 requires-python = ">=3.11,<4.0"
 dependencies = [
-    "clear-skies>=2.0.0,<3.0.0",
+    "clear-skies>=2.0.37,<3.0.0",
     "dacite>=1.9.2",
 ]
 classifiers = [
@@ -44,19 +44,6 @@ exclude = [
     "tests/**"
 ]
 
-[tool.black]
-line-length = 120
-skip-magic-trailing-comma = false
-preview = false
-
-[tool.mypy]
-python_version = "3.11"
-
-exclude = [
-    ".*_test\\.py$",
-    "docs/.*"
-]
-
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra -q"
@@ -72,7 +59,6 @@ pythonpath = [
 [dependency-groups]
 dev = [
     "akeyless>=5.0.8",
-    "black>=25.1.0",
     "mypy>=1.18.2",
     "pre-commit>=4.3.0",
     "pytest>=8.4.1",

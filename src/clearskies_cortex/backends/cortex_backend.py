@@ -7,6 +7,7 @@ from clearskies.authentication import Authentication
 from clearskies.decorators import parameters_to_properties
 from clearskies.di import inject
 from clearskies.query import Query
+from clearskies.query.result import CountQueryResult
 
 
 class CortexBackend(clearskies.backends.ApiBackend):
@@ -39,7 +40,7 @@ class CortexBackend(clearskies.backends.ApiBackend):
     ):
         self.finalize_and_validate_configuration()
 
-    def count(self, query: Query) -> int:
+    def count(self, query: Query) -> CountQueryResult:
         """Return count of records matching query."""
         self.check_query(query)
         (url, method, body, headers) = self.build_records_request(query)
@@ -47,9 +48,9 @@ class CortexBackend(clearskies.backends.ApiBackend):
         response.raise_for_status()
         data = response.json()
         if "total" in data:
-            return data["total"]
+            return CountQueryResult(count=data["total"])
         data = self.map_records_response(data, query)
-        return len(data)
+        return CountQueryResult(count=len(data))
 
     def map_records_response(
         self, response_data: Any, query: Query, query_data: dict[str, Any] | None = None
