@@ -1,7 +1,7 @@
 [project]
 name = "clear-skies-cortex"
 description = "Cortex module for Clearskies"
-version = "2.0.2"
+version = "2.0.3"
 license = "MIT"
 readme = "./README.md"
 authors = [{name = "Tom Nijboer", email = "tom.nijboer@cimpress.com"}]
