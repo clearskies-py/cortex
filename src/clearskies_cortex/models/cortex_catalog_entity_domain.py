@@ -7,7 +7,35 @@ from clearskies_cortex.models import cortex_catalog_entity
 
 
 class CortexCatalogEntityDomain(cortex_catalog_entity.CortexCatalogEntity):
-    """Model for domain entities."""
+    """
+    Model for Cortex domain entities.
+
+    This model extends CortexCatalogEntity to specifically handle domain-type entities
+    in the Cortex catalog. Domains represent logical groupings of services and can be
+    organized hierarchically.
+
+    The model automatically filters for domain entities and includes nested fields for
+    team members, owners, metadata, and hierarchy groups.
+
+    ```python
+    from clearskies_cortex.models import CortexCatalogEntityDomain
+
+    # Fetch all domains
+    domains = CortexCatalogEntityDomain()
+    for domain in domains.get_final_query():
+        print(f"Domain: {domain.name}")
+
+    # Get the top-level domain for a given domain
+    domain = domains.find("tag=my-domain")
+    top_level = domain.get_top_level_domain()
+    print(f"Top-level domain: {top_level.name}")
+
+    # Get the immediate parent domain
+    parent = domain.get_parent()
+    if parent.exists():
+        print(f"Parent domain: {parent.name}")
+    ```
+    """
 
     def get_final_query(self) -> Query:
         return (

@@ -16,7 +16,41 @@ from clearskies_cortex.models import (
 
 
 class CortexCatalogEntityService(cortex_catalog_entity.CortexCatalogEntity):
-    """Model for domain entities."""
+    """
+    Model for Cortex service entities.
+
+    This model extends CortexCatalogEntity to specifically handle service-type entities
+    in the Cortex catalog. Services represent individual applications, microservices, or
+    other software components tracked in Cortex.
+
+    The model automatically filters for service entities and includes nested fields for
+    team members, owners, metadata, and hierarchy groups. It also provides methods to
+    navigate team and domain relationships.
+
+    ```python
+    from clearskies_cortex.models import CortexCatalogEntityService
+
+    # Fetch all services
+    services = CortexCatalogEntityService()
+    for service in services.get_final_query():
+        print(f"Service: {service.name}")
+
+    # Get the owning team for a service
+    service = services.find("tag=my-service")
+    team = service.get_team()
+    if team.exists():
+        print(f"Owned by team: {team.get_name()}")
+
+    # Get the top-level team in the hierarchy
+    top_team = service.get_top_level_team()
+    print(f"Top-level team: {top_team.get_name()}")
+
+    # Get the parent domain for a service
+    parent_domain = service.get_parent_domain()
+    if parent_domain.exists():
+        print(f"Parent domain: {parent_domain.name}")
+    ```
+    """
 
     backend = CortexBackend()
 

@@ -7,7 +7,36 @@ from clearskies_cortex.models import cortex_catalog_entity
 
 
 class CortexCatalogEntityTeam(cortex_catalog_entity.CortexCatalogEntity):
-    """Model for team entities."""
+    """
+    Model for Cortex team entities.
+
+    This model extends CortexCatalogEntity to specifically handle team-type entities
+    in the Cortex catalog. Teams represent organizational units that own and manage
+    services and other entities.
+
+    The model automatically filters for team entities and includes nested fields for
+    team members, owners, metadata, and hierarchy groups. It provides methods to
+    navigate the team hierarchy.
+
+    ```python
+    from clearskies_cortex.models import CortexCatalogEntityTeam
+
+    # Fetch all team entities
+    teams = CortexCatalogEntityTeam()
+    for team in teams.get_final_query():
+        print(f"Team: {team.name}")
+
+    # Get the top-level team in the hierarchy
+    team = teams.find("tag=my-team")
+    top_team = team.get_top_level_team()
+    print(f"Top-level team: {top_team.name}")
+
+    # Get the immediate parent team
+    parent = team.get_parent()
+    if parent.exists():
+        print(f"Parent team: {parent.name}")
+    ```
+    """
 
     def get_final_query(self) -> Query:
         return (

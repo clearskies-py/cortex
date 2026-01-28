@@ -1,3 +1,72 @@
 {
-  "tree": []
+    "tree": [
+        {
+            "title": "Backends",
+            "source": "clearskies.backends.ApiBackend",
+            "builder": "clearskies_doc_builder.builders.Module",
+            "classes": [
+                "clearskies_cortex.backends.cortex_backend.CortexBackend",
+                "clearskies_cortex.backends.cortex_team_relationship_backend.CortexTeamRelationshipBackend"
+            ]
+        },
+        {
+            "title": "Models",
+            "source": "clearskies.Model",
+            "builder": "clearskies_doc_builder.builders.Module",
+            "classes": [
+                "clearskies_cortex.models.cortex_catalog_entity.CortexCatalogEntity",
+                "clearskies_cortex.models.cortex_catalog_entity_domain.CortexCatalogEntityDomain",
+                "clearskies_cortex.models.cortex_catalog_entity_group.CortexCatalogEntityGroup",
+                "clearskies_cortex.models.cortex_catalog_entity_scorecard.CortexCatalogEntityScorecard",
+                "clearskies_cortex.models.cortex_catalog_entity_service.CortexCatalogEntityService",
+                "clearskies_cortex.models.cortex_catalog_entity_team.CortexCatalogEntityTeam",
+                "clearskies_cortex.models.cortex_catalog_entity_types.CortexCatalogEntityType",
+                "clearskies_cortex.models.cortex_entity_relationships.CortexCatalogEntityRelationship",
+                "clearskies_cortex.models.cortex_scorecard.CortexScorecard",
+                "clearskies_cortex.models.cortex_team.CortexTeam",
+                "clearskies_cortex.models.cortex_team_category_tree.CortexTeamCategoryTree",
+                "clearskies_cortex.models.cortex_team_department.CortexTeamDepartment"
+            ]
+        },
+        {
+            "title": "Base Models",
+            "source": "clearskies.Model",
+            "builder": "clearskies_doc_builder.builders.Module",
+            "classes": [
+                "clearskies_cortex.models.cortex_model.CortexModel"
+            ],
+            "parent": "Models"
+        },
+        {
+            "title": "Columns",
+            "source": "clearskies.columns.String",
+            "builder": "clearskies_doc_builder.builders.Module",
+            "classes": [
+                "clearskies_cortex.columns.string_list.StringList"
+            ]
+        },
+        {
+            "title": "Dataclasses",
+            "source": "dataclasses.dataclass",
+            "builder": "clearskies_doc_builder.builders.Module",
+            "classes": [
+                "clearskies_cortex.dataclasses.ServiceEntityHierarchy",
+                "clearskies_cortex.dataclasses.ServiceEntityHierarchyParent",
+                "clearskies_cortex.dataclasses.ServiceEntityHierarchyChild",
+                "clearskies_cortex.dataclasses.TeamCategory",
+                "clearskies_cortex.dataclasses.EntityTeam",
+                "clearskies_cortex.dataclasses.EntityIndividual",
+                "clearskies_cortex.dataclasses.EntityTeamOwner"
+            ]
+        },
+        {
+            "title": "Defaults",
+            "source": "clearskies.di.AdditionalConfigAutoImport",
+            "builder": "clearskies_doc_builder.builders.Module",
+            "classes": [
+                "clearskies_cortex.defaults.default_cortex_auth.DefaultCortexAuth",
+                "clearskies_cortex.defaults.default_cortex_url.DefaultCortexUrl"
+            ]
+        }
+    ]
 }
