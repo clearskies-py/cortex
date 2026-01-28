@@ -84,9 +84,9 @@ class TestCortexTeamRelationshipBackend(unittest.TestCase):
                 pass
 
         def fetch_cortex_team(cortex_teams: CortexTeam):
-            root_1 = list(cortex_teams.where("team_tag='Root 1'"))[0]
-            root_2 = list(cortex_teams.where("team_tag='Root 2'"))[0]
-            sub_sub = list(cortex_teams.where("team_tag='Sub Sub'"))[0]
+            root_1 = cortex_teams.find("team_tag='Root 1'")
+            root_2 = cortex_teams.find("team_tag='Root 2'")
+            sub_sub = cortex_teams.find("team_tag='Sub Sub'")
             return {
                 "descendants_of_root_1": [t.team_tag for t in root_1.descendants],  # type: ignore[attr-defined]
                 "children_of_root_1": [t.team_tag for t in root_1.children],  # type: ignore[attr-defined]

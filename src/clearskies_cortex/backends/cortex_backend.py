@@ -2,29 +2,113 @@ from typing import Any
 
 import clearskies
 import requests
-from clearskies import Column, configs
+from clearskies import configs
 from clearskies.authentication import Authentication
 from clearskies.decorators import parameters_to_properties
 from clearskies.di import inject
 from clearskies.query import Query
-from clearskies.query.result import CountQueryResult
 
 
 class CortexBackend(clearskies.backends.ApiBackend):
-    """Backend for Cortex.io."""
+    """
+    Backend for interacting with the Cortex.io API.
 
+    This backend extends the ApiBackend to provide seamless integration with the Cortex.io platform.
+    It handles the specific pagination and response format used by Cortex APIs, where pagination
+    information (`page`, `totalPages`, `total`) is returned in the response body rather than headers.
+
+    ## Usage
+
+    The CortexBackend is typically used with models that represent Cortex entities:
+
+    ```python
+    import clearskies
+    from clearskies_cortex.backends import CortexBackend
+
+
+    class CortexService(clearskies.Model):
+        backend = CortexBackend()
+
+        @classmethod
+        def destination_name(cls) -> str:
+            return "catalog/services"
+
+        tag = clearskies.columns.String()
+        name = clearskies.columns.String()
+        description = clearskies.columns.String()
+    ```
+
+    ## Authentication
+
+    By default, the backend uses the `cortex_auth` binding for authentication, which should be
+    configured in your application's dependency injection container. You can also provide a custom
+    authentication instance:
+
+    ```python
+    backend = CortexBackend(
+        authentication=clearskies.authentication.SecretBearer(
+            environment_key="CORTEX_API_KEY",
+        )
+    )
+    ```
+
+    ## Pagination
+
+    The Cortex API uses page-based pagination with the following response format:
+
+    ```json
+    {
+        "entities": [...],
+        "page": 1,
+        "totalPages": 5,
+        "total": 100
+    }
+    ```
+
+    The backend automatically handles extracting pagination data and provides the next page
+    information to clearskies for seamless iteration through results.
+    """
+
+    """
+    The base URL for the Cortex API.
+    """
     base_url = configs.String(default="https://api.getcortexapp.com/api/v1/")
+
+    """
+    The authentication instance to use for API requests.
+
+    By default, this uses the `cortex_auth` binding from the dependency injection container.
+    """
     authentication = inject.ByName("cortex_auth")  # type: ignore[assignment]
+
+    """
+    The requests instance for making HTTP calls.
+    """
     requests = inject.Requests()
+
+    """
+    The casing style used by the Cortex API (camelCase by default).
+    """
     api_casing = configs.Select(["snake_case", "camelCase", "TitleCase"], default="camelCase")
 
     _auth_headers: dict[str, str] = {}
 
+    """
+    A mapping from API response keys to model column names.
+    """
     api_to_model_map = configs.AnyDict(default={})
+
+    """
+    The name of the pagination parameter used in requests.
+    """
     pagination_parameter_name = configs.String(default="page")
+
+    """
+    The name of the limit parameter used in requests.
+    """
     limit_parameter_name = configs.String(default="pageSize")
 
-    can_count = True
+    can_count = False
 
     @parameters_to_properties
     def __init__(
@@ -40,22 +124,29 @@ class CortexBackend(clearskies.backends.ApiBackend):
     ):
         self.finalize_and_validate_configuration()
 
-    def count(self, query: Query) -> CountQueryResult:
-        """Return count of records matching query."""
-        self.check_query(query)
-        (url, method, body, headers) = self.build_records_request(query)
-        response = self.execute_request(url, method, json=body, headers=headers)
-        response.raise_for_status()
-        data = response.json()
-        if "total" in data:
-            return CountQueryResult(count=data["total"])
-        data = self.map_records_response(data, query)
-        return CountQueryResult(count=len(data))
-
     def map_records_response(
         self, response_data: Any, query: Query, query_data: dict[str, Any] | None = None
     ) -> list[dict[str, Any]]:
-        """Map api response to model fields."""
+        """
+        Map the Cortex API response to model fields.
+
+        The Cortex API returns responses in a specific format where the actual records are nested
+        within a dictionary alongside pagination metadata. This method extracts the records and
+        removes the pagination fields before passing to the parent implementation.
+
+        Example Cortex API response:
+
+        ```json
+        {
+            "entities": [{"tag": "service-1", "name": "My Service"}, ...],
+            "page": 1,
+            "totalPages": 5,
+            "total": 100
+        }
+        ```
+
+        This method will extract the `entities` list and pass it to the parent for further processing.
+        """
         if isinstance(response_data, dict):
             if "page" in response_data:
                 del response_data["page"]
@@ -68,34 +159,78 @@ class CortexBackend(clearskies.backends.ApiBackend):
                 return super().map_records_response(response_data[first_item], query, query_data)
         return super().map_records_response(response_data, query, query_data)
 
-    def set_next_page_data_from_response(
+    def get_next_page_data_from_response(
         self,
-        next_page_data: dict[str, Any],
         query: Query,
         response: "requests.Response",  # type: ignore
-    ) -> None:
+    ) -> dict[str, Any]:
         """
-        Update the next_page_data dictionary with the appropriate data needed to fetch the next page of records.
+        Extract pagination data from the Cortex API response.
 
-        This method has a very important job, which is to inform clearskies about how to make another API call to fetch the next
-        page of records.  The way this happens is by updating the `next_page_data` dictionary in place with whatever pagination
-        information is necessary.  Note that this relies on next_page_data being passed by reference, hence the need to update
-        it in place.  That means that you can do this:
+        The Cortex API includes pagination information in the response body:
 
-        ```python
-        next_page_data["some_key"] = "some_value"
-        ```
+        - `page`: The current page number
+        - `totalPages`: The total number of pages available
+        - `total`: The total number of records
 
-        but if you do this:
+        This method checks if there are more pages available and returns the next page number
+        if so. It also extracts total count information for use in RecordsQueryResult.
+        The returned dictionary is used by clearskies to fetch subsequent pages and
+        populate count metadata.
 
-        ```python
-        next_page_data = {"some_key": "some_value"}
-        ```
-
-        Then things simply won't work.
+        Returns:
+            A dictionary containing:
+            - The next page number if more pages exist
+            - total_count: The total number of records (if available)
+            - total_pages: The total number of pages (if available)
         """
-        if isinstance(response.json(), dict):
-            page = response.json().get("page", None)
-            total_pages = response.json().get("totalPages", None)
-            if page is not None and total_pages is not None and page < total_pages:
+        next_page_data: dict[str, Any] = {}
+
+        response_data = response.json() if response.content else {}
+
+        if isinstance(response_data, dict):
+            # Extract count information from response body
+            count_info = self.extract_count_from_response(None, response_data)
+            if count_info:
+                total_count, total_pages = count_info
+                if total_count is not None:
+                    next_page_data["total_count"] = total_count
+                if total_pages is not None:
+                    next_page_data["total_pages"] = total_pages
+
+            # Check if there are more pages
+            page = response_data.get("page", None)
+            total_pages_from_response = response_data.get("totalPages", None)
+            if page is not None and total_pages_from_response is not None and page < total_pages_from_response:
                 next_page_data[self.pagination_parameter_name] = page + 1
+
+        return next_page_data
+
+    def extract_count_from_response(
+        self,
+        response_headers: dict[str, str] | None = None,
+        response_data: Any = None,
+    ) -> tuple[int | None, int | None]:
+        """
+        Extract count information from the Cortex API response body.
+
+        Unlike many APIs that return count information in headers, the Cortex API includes
+        this data in the response body:
+
+        - `total`: The total number of records matching the query
+        - `totalPages`: The total number of pages available
+
+        This method extracts these values and returns them as a tuple for use in
+        `RecordsQueryResult`.
+
+        Returns:
+            A tuple of (total_count, total_pages) where either value may be None
+            if not present in the response.
+        """
+        if not isinstance(response_data, dict):
+            return (None, None)
+
+        total_count = response_data.get("total", None)
+        total_pages = response_data.get("totalPages", None)
+
+        return (total_count, total_pages)
