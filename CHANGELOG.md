@@ -5,9 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.4] - 2026-01-28
+
+### Changed
+- Update to v0.0.46
+- Document all the files
+
+### Fixed
+- Set the count data correctly
+
 ## [2.0.3] - 2026-01-27
 
 ### Changed
+- Bump version to v2.0.3 by @github-actions[bot]
 - Udpate to QueryResult
 - Update to latest copier version
 
@@ -41,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * @tnijboer made their first contribution in [#1](https://github.com/clearskies-py/cortex/pull/1)
 * @cmancone made their first contribution
 * @ made their first contribution
+[2.0.4]: https://github.com/clearskies-py/cortex/compare/v2.0.3..v2.0.4
 [2.0.3]: https://github.com/clearskies-py/cortex/compare/v2.0.2..v2.0.3
 [2.0.2]: https://github.com/clearskies-py/cortex/compare/v2.0.1..v2.0.2
 
