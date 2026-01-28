@@ -146,6 +146,9 @@ dev = [
     { name = "pytest-cov" },
     { name = "ruff" },
 ]
+doc = [
+    { name = "clear-skies-doc-builder" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -163,6 +166,19 @@ dev = [
     { name = "pytest", specifier = ">=8.4.1" },
     { name = "pytest-cov", specifier = ">=6.2.1" },
     { name = "ruff", specifier = ">=0.12.10" },
+]
+doc = [{ name = "clear-skies-doc-builder", specifier = ">=2.0.11" }]
+
+[[package]]
+name = "clear-skies-doc-builder"
+version = "2.0.11"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "clear-skies" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9d/ff/a05249aee93dc5b0daf0305b24c058d002129de29e4645e2fa0bc2ddc619/clear_skies_doc_builder-2.0.11.tar.gz", hash = "sha256:af47799deff3313e3939c008b35bddfe0a6fca11bf21e422dd200c7ca85d1cd2", size = 78454, upload-time = "2026-01-28T13:12:51.026Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/af/a1/01ec0e05ac3149c9b0ecaec13eb1a20f9f7f98ab0a7c057a99d985fa256a/clear_skies_doc_builder-2.0.11-py3-none-any.whl", hash = "sha256:37be3610f6f33c373681dd6af8c59d07cc7298b09f3200e7d16fe0b30761cafa", size = 29115, upload-time = "2026-01-28T13:12:50.234Z" },
 ]
 
 [[package]]

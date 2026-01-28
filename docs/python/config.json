@@ -46,20 +46,6 @@
             ]
         },
         {
-            "title": "Dataclasses",
-            "source": "dataclasses.dataclass",
-            "builder": "clearskies_doc_builder.builders.Module",
-            "classes": [
-                "clearskies_cortex.dataclasses.ServiceEntityHierarchy",
-                "clearskies_cortex.dataclasses.ServiceEntityHierarchyParent",
-                "clearskies_cortex.dataclasses.ServiceEntityHierarchyChild",
-                "clearskies_cortex.dataclasses.TeamCategory",
-                "clearskies_cortex.dataclasses.EntityTeam",
-                "clearskies_cortex.dataclasses.EntityIndividual",
-                "clearskies_cortex.dataclasses.EntityTeamOwner"
-            ]
-        },
-        {
             "title": "Defaults",
             "source": "clearskies.di.AdditionalConfigAutoImport",
             "builder": "clearskies_doc_builder.builders.Module",

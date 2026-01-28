@@ -65,3 +65,6 @@ dev = [
     "pytest-cov>=6.2.1",
     "ruff>=0.12.10",
 ]
+doc = [
+    "clear-skies-doc-builder>=2.0.11",
+]
