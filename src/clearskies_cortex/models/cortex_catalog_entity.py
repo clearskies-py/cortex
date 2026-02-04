@@ -245,3 +245,162 @@ class CortexCatalogEntity(Model):
     def parse_owners(self) -> dataclasses.EntityTeamOwner:
         """Parse the owners column into a dictionary."""
         return from_dict(dataclasses.EntityTeamOwner, data=self.owners)
+
+    def get_group_tags(self) -> list[str]:
+        """Get groups as simple tags.
+
+        Returns groups that don't have a key:value format.
+
+        Returns:
+            List of group names that are simple tags without key:value format.
+
+        Example:
+            >>> entity.groups = ["my-tag", "team:platform", "production"]
+            >>> entity.get_group_tags()
+            ["my-tag", "production"]
+        """
+        tags: list[str] = []
+        if self.groups:
+            for group in self.groups:
+                if ":" not in group:
+                    tags.append(group)
+        return tags
+
+    def get_group_value(self, key: str) -> str | None:
+        """Get the value for a specific group key.
+
+        Groups can be formatted as "key:value" pairs. This method extracts
+        the value for a given key.
+
+        Args:
+            key: The group key to look up.
+
+        Returns:
+            The value associated with the key, or None if not found.
+
+        Example:
+            >>> entity.groups = ["team:platform", "env:production"]
+            >>> entity.get_group_value("team")
+            "platform"
+        """
+        if self.groups:
+            for group in self.groups:
+                if group.startswith(f"{key}:"):
+                    return group.split(":", 1)[1]
+        return None
+
+    def get_git_repository_url(self) -> str | None:
+        """Get the Git repository URL.
+
+        Returns:
+            The repository URL, or None if not configured.
+
+        Example:
+            >>> entity.git = {"repository": "https://github.com/org/repo"}
+            >>> entity.get_git_repository_url()
+            "https://github.com/org/repo"
+        """
+        if not self.git:
+            return None
+        return self.git.get("repository") or self.git.get("repositoryUrl")
+
+    def get_git_provider(self) -> str | None:
+        """Get the Git provider name.
+
+        Returns:
+            The provider name (e.g., "github", "gitlab", "bitbucket", "azure-devops"),
+            or None if not configured.
+
+        Example:
+            >>> entity.git = {"provider": "github", "repository": "..."}
+            >>> entity.get_git_provider()
+            "github"
+        """
+        if not self.git:
+            return None
+        return self.git.get("provider")
+
+    def get_git_project_id(self) -> str | None:
+        """Extract the project/repository identifier from the Git configuration.
+
+        Cortex supports multiple SCM providers (GitHub, GitLab, Bitbucket, Azure DevOps).
+        This method extracts the project identifier in a provider-agnostic way.
+
+        For GitLab, this returns the numeric project ID if available in the URL.
+        For GitHub/Bitbucket, this returns the "owner/repo" format.
+        For Azure DevOps, this returns the project/repo path.
+
+        Returns:
+            The project identifier as a string, or None if not found.
+
+        Example:
+            >>> entity.git = {"repository": "https://github.com/org/repo"}
+            >>> entity.get_git_project_id()
+            "org/repo"
+
+            >>> entity.git = {"repository": "https://gitlab.com/projects/12345"}
+            >>> entity.get_git_project_id()
+            "12345"
+        """
+        if not self.git:
+            return None
+
+        repo_url = self.git.get("repository") or self.git.get("repositoryUrl") or ""
+
+        # GitLab numeric project ID format: https://gitlab.com/projects/12345
+        if "/projects/" in repo_url:
+            try:
+                project_id = repo_url.split("/projects/")[1].split("/")[0]
+                return project_id
+            except IndexError:
+                pass
+
+        # Standard URL format: https://provider.com/owner/repo or https://provider.com/owner/repo.git
+        # Works for GitHub, GitLab (path format), Bitbucket
+        for prefix in ["github.com/", "gitlab.com/", "bitbucket.org/"]:
+            if prefix in repo_url:
+                try:
+                    path = repo_url.split(prefix)[1]
+                    # Remove .git suffix if present
+                    if path.endswith(".git"):
+                        path = path[:-4]
+                    # Remove trailing slashes
+                    path = path.rstrip("/")
+                    # Return owner/repo format
+                    parts = path.split("/")
+                    if len(parts) >= 2:
+                        return f"{parts[0]}/{parts[1]}"
+                except IndexError:
+                    pass
+
+        # Azure DevOps format: https://dev.azure.com/org/project/_git/repo
+        if "dev.azure.com/" in repo_url:
+            try:
+                path = repo_url.split("dev.azure.com/")[1]
+                parts = path.split("/")
+                if len(parts) >= 4 and parts[2] == "_git":
+                    return f"{parts[0]}/{parts[1]}/{parts[3]}"
+            except IndexError:
+                pass
+
+        return None
+
+    @property
+    def is_cloud_resource(self) -> bool:
+        """Check if entity represents a cloud resource.
+
+        Cortex supports pulling in resources from AWS, Azure, and Google Cloud.
+        This property checks if the entity type indicates a cloud resource.
+
+        Returns:
+            True if the entity type indicates a cloud resource.
+
+        Example:
+            >>> entity.type = "AWS::Lambda::Function"
+            >>> entity.is_cloud_resource
+            True
+        """
+        if not self.type:
+            return False
+        cloud_prefixes = ("AWS::", "Azure::", "Google::")
+        return self.type.startswith(cloud_prefixes)
