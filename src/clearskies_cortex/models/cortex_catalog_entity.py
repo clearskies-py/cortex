@@ -225,6 +225,8 @@ class CortexCatalogEntity(Model):
 
     def parse_hierarchy(self) -> dataclasses.ServiceEntityHierarchy:
         """Parse the hierarchy column into a dictionary."""
+        if self.hierarchy is None:
+            return dataclasses.ServiceEntityHierarchy(parents=[], children=[])
         return from_dict(dataclasses.ServiceEntityHierarchy, data=self.hierarchy)
 
     def parse_groups(self) -> dict[str, str]:
@@ -243,7 +245,12 @@ class CortexCatalogEntity(Model):
         return parsed
 
     def parse_owners(self) -> dataclasses.EntityTeamOwner:
-        """Parse the owners column into a dictionary."""
+        """Parse the owners column into a dictionary.
+
+        Returns an empty EntityTeamOwner if owners is None.
+        """
+        if self.owners is None:
+            return dataclasses.EntityTeamOwner(teams=[], individuals=[])
         return from_dict(dataclasses.EntityTeamOwner, data=self.owners)
 
     def get_group_tags(self) -> list[str]:
