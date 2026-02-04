@@ -121,6 +121,10 @@ class CortexBackend(clearskies.backends.ApiBackend):
         pagination_parameter_name: str = "page",
         pagination_parameter_type: str = "int",
         limit_parameter_name: str = "pageSize",
+        can_create: bool | None = True,
+        can_update: bool | None = True,
+        can_delete: bool | None = True,
+        can_query: bool | None = True,
     ):
         self.finalize_and_validate_configuration()
 

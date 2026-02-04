@@ -27,8 +27,23 @@ class CortexTeamRelationshipBackend(MemoryBackend, Configurable):
         self,
         cortex_backend,
         silent_on_missing_tables=True,
+        can_create: bool | None = None,
+        can_update: bool | None = None,
+        can_delete: bool | None = None,
+        can_query: bool | None = None,
     ):
-        super().__init__(silent_on_missing_tables)
+        # Only pass permission flags to parent if they are explicitly set (not None)
+        # This allows the parent's default values (True) to be used when not specified
+        parent_kwargs = {"silent_on_missing_tables": silent_on_missing_tables}
+        if can_create is not None:
+            parent_kwargs["can_create"] = can_create
+        if can_update is not None:
+            parent_kwargs["can_update"] = can_update
+        if can_delete is not None:
+            parent_kwargs["can_delete"] = can_delete
+        if can_query is not None:
+            parent_kwargs["can_query"] = can_query
+        super().__init__(**parent_kwargs)
         # This backend has its dependencies injected automatically because it is attachd to the model,
         # but when you directly instantiate the CortexBackend and pass it in, the di system never has a chance
         # to provide IT with the necessary deendencies.  Therefore, we just have to explicitly do it,
