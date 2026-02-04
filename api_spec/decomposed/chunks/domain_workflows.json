@@ -1,0 +1,2666 @@
+{
+  "tag": "Workflows",
+  "endpoint_count": 6,
+  "schema_count": 55,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/workflows",
+      "operation_id": "listWorkflows",
+      "summary": "List workflows"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/workflows",
+      "operation_id": "createOrUpdateWorkflow",
+      "summary": "Create or update workflow"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/workflows/validate",
+      "operation_id": "validateWorkflowDescriptor",
+      "summary": "Validates YAML descriptor"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/workflows/{tagOrId}",
+      "operation_id": "deleteWorkflow",
+      "summary": "Delete workflow"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/workflows/{tagOrId}",
+      "operation_id": "getWorkflow",
+      "summary": "Retrieve workflow"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/workflows/{tagOrId}/callback/{callbackId}",
+      "operation_id": "workflowsAsyncHttpCallback",
+      "summary": "Update asynchronous HTTP request Workflow block"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/workflows",
+      "method": "GET",
+      "operation_id": "listWorkflows",
+      "summary": "List workflows",
+      "details": {
+        "description": "List workflows.\n\nAPI key must have the `View workflows` permission.",
+        "operationId": "listWorkflows",
+        "parameters": [
+          {
+            "description": "When true, returns the list of actions for each workflow. Defaults to false.",
+            "in": "query",
+            "name": "includeActions",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "When set, only returns workflows with the given substring in the name or description.",
+            "in": "query",
+            "name": "searchQuery",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowListResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowListResponse"
+                }
+              }
+            },
+            "description": "Successfully found workflows"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List workflows",
+        "tags": [
+          "Workflows"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/workflows",
+      "method": "POST",
+      "operation_id": "createOrUpdateWorkflow",
+      "summary": "Create or update workflow",
+      "details": {
+        "description": "Create or update new workflow.\n\nAPI key must have the `Edit workflows` permission.\n\n**Note:** If a workflow with the same tag already exists, it will be updated.",
+        "operationId": "createOrUpdateWorkflow",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowDefinition"
+              }
+            },
+            "application/yaml": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowDefinition"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowDefinition"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowDefinition"
+                }
+              }
+            },
+            "description": "Workflow created successfully"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create or update workflow",
+        "tags": [
+          "Workflows"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/workflows/validate",
+      "method": "POST",
+      "operation_id": "validateWorkflowDescriptor",
+      "summary": "Validates YAML descriptor",
+      "details": {
+        "description": "Validates YAML descriptor.",
+        "operationId": "validateWorkflowDescriptor",
+        "requestBody": {
+          "content": {
+            "application/json": {},
+            "application/yaml": {}
+          },
+          "description": "Raw text of the YAML"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiResponse"
+                }
+              }
+            },
+            "description": "Validation result"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validates YAML descriptor",
+        "tags": [
+          "Workflows"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/workflows/{tagOrId}",
+      "method": "DELETE",
+      "operation_id": "deleteWorkflow",
+      "summary": "Delete workflow",
+      "details": {
+        "description": "Delete workflow by tag or ID.\n\nAPI key must have the `Edit workflows` permission.",
+        "operationId": "deleteWorkflow",
+        "parameters": [
+          {
+            "description": "The tag or unique, auto-generated identifier for the workflow.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workflow deleted successfully"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Workflow not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete workflow",
+        "tags": [
+          "Workflows"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/workflows/{tagOrId}",
+      "method": "GET",
+      "operation_id": "getWorkflow",
+      "summary": "Retrieve workflow",
+      "details": {
+        "description": "Retrieve workflow by tag or ID.\n\nAPI key must have the `View workflows` permission.",
+        "operationId": "getWorkflow",
+        "parameters": [
+          {
+            "description": "The tag or unique, auto-generated identifier for the workflow.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowDefinition"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowDefinition"
+                }
+              }
+            },
+            "description": "Successfully found workflow"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Workflow not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve workflow",
+        "tags": [
+          "Workflows"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/workflows/{tagOrId}/callback/{callbackId}",
+      "method": "POST",
+      "operation_id": "workflowsAsyncHttpCallback",
+      "summary": "Update asynchronous HTTP request Workflow block",
+      "details": {
+        "description": "Updates an asynchronous HTTP request Workflow block.\n\nAPI key must have the `Edit workflow runs` permission.",
+        "operationId": "workflowsAsyncHttpCallback",
+        "parameters": [
+          {
+            "description": "The tag or unique, auto-generated identifier for the workflow.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "description": "Callback ID; Provided by the Workflow block when it runs",
+            "in": "path",
+            "name": "callbackId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Callback ID; Provided by the Workflow block when it runs"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CallbackRequest"
+              }
+            },
+            "application/yaml": {
+              "schema": {
+                "$ref": "#/components/schemas/CallbackRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully received Workflow callback"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Workflow run or block not found"
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Workflow block is not waiting for callback"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update asynchronous HTTP request Workflow block",
+        "tags": [
+          "Workflows"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "Reference": {
+      "required": [
+        "path",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/VariableSource"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowActionSchema.SCAFFOLDER": {
+      "title": "SCAFFOLDER",
+      "required": [
+        "inputOverrides",
+        "scaffolderTemplateId",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "createNewRepository": {
+              "type": "boolean",
+              "description": "Whether the scaffolder should create a new repository. Defaults to `true`"
+            },
+            "createService": {
+              "type": "boolean",
+              "description": "Whether the cortex service should be created."
+            },
+            "inputOverrides": {
+              "type": "array",
+              "description": "The input overrides for the scaffolder",
+              "items": {
+                "$ref": "#/components/schemas/InputOverride"
+              }
+            },
+            "scaffolderTemplateId": {
+              "type": "string",
+              "description": "The ID of the scaffolder template"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "OpenApiResponse": {
+      "required": [
+        "ok",
+        "violations"
+      ],
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "violations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ViolationDTO"
+          }
+        }
+      }
+    },
+    "JavaScript": {
+      "required": [
+        "script",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/VariableSource"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "script": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowInput.NUMBER_FIELD": {
+      "title": "NUMBER_FIELD",
+      "required": [
+        "disabled",
+        "format",
+        "key",
+        "name",
+        "required",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowInput"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "defaultValue": {
+              "type": "number",
+              "description": "The default value for the input"
+            },
+            "description": {
+              "type": "string",
+              "description": "The description of the input"
+            },
+            "disabled": {
+              "type": "boolean",
+              "description": "Whether the input should be disabled"
+            },
+            "format": {
+              "type": "string",
+              "description": "The number format of the input",
+              "enum": [
+                "INTEGER",
+                "DECIMAL"
+              ]
+            },
+            "key": {
+              "type": "string",
+              "description": "The key of the input"
+            },
+            "max": {
+              "type": "number",
+              "description": "The maximum value of the input"
+            },
+            "min": {
+              "type": "number",
+              "description": "The minimum value of the input"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the input"
+            },
+            "placeholder": {
+              "type": "string",
+              "description": "The placeholder for the input"
+            },
+            "required": {
+              "type": "boolean",
+              "description": "Whether the input is required"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowActionSchema.HTTP_REQUEST": {
+      "title": "HTTP_REQUEST",
+      "required": [
+        "headers",
+        "httpMethod",
+        "type",
+        "url"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "headers": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "description": "The headers for the HTTP request"
+              },
+              "description": "The headers for the HTTP request"
+            },
+            "httpMethod": {
+              "type": "string",
+              "description": "The HTTP method for the request",
+              "enum": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+              ]
+            },
+            "payload": {
+              "type": "string",
+              "description": "The payload for the request"
+            },
+            "type": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string",
+              "description": "The URL for the request"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowActionSchema.ADVANCED_HTTP_REQUEST": {
+      "title": "ADVANCED_HTTP_REQUEST",
+      "required": [
+        "actionIdentifier",
+        "inputs",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "actionIdentifier": {
+              "type": "string"
+            },
+            "inputs": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/JsonNode"
+              }
+            },
+            "integrationAlias": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowActionSchema.CONDITIONAL_BRANCH": {
+      "title": "CONDITIONAL_BRANCH",
+      "required": [
+        "branches",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "branches": {
+              "type": "array",
+              "description": "The list of conditional branches that will be evaluated in order",
+              "items": {
+                "$ref": "#/components/schemas/Conditional"
+              }
+            },
+            "fallbackBranch": {
+              "$ref": "#/components/schemas/Fallback"
+            },
+            "joiningAction": {
+              "type": "string",
+              "description": "The joining action that will run after all branches"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowListResponse": {
+      "required": [
+        "page",
+        "total",
+        "totalPages",
+        "workflows"
+      ],
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        },
+        "workflows": {
+          "type": "array",
+          "description": "List of workflows",
+          "items": {
+            "$ref": "#/components/schemas/WorkflowDefinition"
+          }
+        }
+      }
+    },
+    "WorkflowInput.CORTEX_ENTITY_FIELD": {
+      "title": "CORTEX_ENTITY_FIELD",
+      "required": [
+        "allowMultiple",
+        "entityFilter",
+        "key",
+        "name",
+        "required",
+        "shouldDisplayOptionsAsHierarchy",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowInput"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "allowMultiple": {
+              "type": "boolean",
+              "description": "Whether the input allows multiple values. Defaults to `false`"
+            },
+            "defaultValue": {
+              "type": "array",
+              "description": "The default value for the input",
+              "items": {
+                "type": "string",
+                "description": "The default value for the input"
+              }
+            },
+            "description": {
+              "type": "string",
+              "description": "The description of the input"
+            },
+            "entityFilter": {
+              "$ref": "#/components/schemas/WorkflowInputEntityFilter"
+            },
+            "key": {
+              "type": "string",
+              "description": "The key of the input"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the input"
+            },
+            "placeholder": {
+              "type": "string",
+              "description": "The placeholder for the input"
+            },
+            "required": {
+              "type": "boolean",
+              "description": "Whether the input is required"
+            },
+            "shouldDisplayOptionsAsHierarchy": {
+              "type": "boolean",
+              "description": "Whether the options should be displayed as a hierarchy. Defaults to `false`"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowAction": {
+      "required": [
+        "isRootAction",
+        "name",
+        "outgoingActions",
+        "schema",
+        "slug"
+      ],
+      "type": "object",
+      "properties": {
+        "isRootAction": {
+          "type": "boolean",
+          "description": "Whether the action is the root action of the workflow. There can be only one root action per workflow"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the action"
+        },
+        "outgoingActions": {
+          "type": "array",
+          "description": "The actions that will be executed after this action",
+          "items": {
+            "type": "string",
+            "description": "The actions that will be executed after this action"
+          }
+        },
+        "schema": {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        "slug": {
+          "type": "string",
+          "description": "The slug of the action"
+        }
+      },
+      "description": "List of actions in the workflow"
+    },
+    "WorkflowActionSchema.JQ": {
+      "title": "JQ",
+      "required": [
+        "expression",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expression": {
+              "type": "string",
+              "description": "The JQ expression for the action"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowActionSchema.GITHUB_CREATE_OR_UPDATE_FILE": {
+      "title": "GITHUB_CREATE_OR_UPDATE_FILE",
+      "required": [
+        "alias",
+        "commitMessage",
+        "content",
+        "path",
+        "repositoryName",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "alias": {
+              "type": "string",
+              "description": "The alias for the github configuration to be used"
+            },
+            "author": {
+              "$ref": "#/components/schemas/GithubAuthor"
+            },
+            "branch": {
+              "type": "string",
+              "description": "The branch in the repository where the changes will be applied (optional; defaults to the main branch if not specified)"
+            },
+            "commitMessage": {
+              "type": "string",
+              "description": "A message describing the purpose of the commit"
+            },
+            "committer": {
+              "$ref": "#/components/schemas/GithubCommitter"
+            },
+            "content": {
+              "type": "string",
+              "description": "The content of the file to be created or updated (not base64-encoded)"
+            },
+            "path": {
+              "type": "string",
+              "description": "The full path to the file within the repository"
+            },
+            "repositoryName": {
+              "type": "string",
+              "description": "The name of the repository where the file is being created or updated"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowFilter.ENTITY": {
+      "title": "ENTITY",
+      "required": [
+        "ownershipScope",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityFilter": {
+              "$ref": "#/components/schemas/CompoundFilter"
+            },
+            "ownershipScope": {
+              "type": "string",
+              "description": "The ownership scope for the workflow",
+              "enum": [
+                "ALL",
+                "OWNER",
+                "EDITOR"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "EntityTypeFilter1": {
+      "required": [
+        "types"
+      ],
+      "type": "object",
+      "properties": {
+        "types": {
+          "uniqueItems": true,
+          "type": "array",
+          "description": "The entity types to include. Can be found on https://app.getcortexapp.com/admin/entities",
+          "items": {
+            "type": "string",
+            "description": "The entity types to include. Can be found on https://app.getcortexapp.com/admin/entities"
+          }
+        }
+      }
+    },
+    "WorkflowActionSchema.HTTP_REQUEST_ASYNC": {
+      "title": "HTTP_REQUEST_ASYNC",
+      "required": [
+        "headers",
+        "httpMethod",
+        "type",
+        "url"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "headers": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "description": "The headers for the HTTP request"
+              },
+              "description": "The headers for the HTTP request"
+            },
+            "httpMethod": {
+              "type": "string",
+              "description": "The HTTP method for the request",
+              "enum": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+              ]
+            },
+            "payload": {
+              "type": "string",
+              "description": "The payload for the request"
+            },
+            "timeoutInSeconds": {
+              "type": "integer",
+              "description": "The timeout for the request in seconds",
+              "format": "int32"
+            },
+            "type": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string",
+              "description": "The URL for the request"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowActionSchema.JIRA_CREATE_ISSUE": {
+      "title": "JIRA_CREATE_ISSUE",
+      "required": [
+        "alias",
+        "components",
+        "description",
+        "fields",
+        "issueSummary",
+        "issueType",
+        "labels",
+        "projectKey",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "alias": {
+              "type": "string",
+              "description": "The alias for the Jira configuration that will be used."
+            },
+            "assignee": {
+              "type": "string",
+              "description": "The identifier of the assignee for the Jira issue. This field is optional."
+            },
+            "components": {
+              "type": "array",
+              "description": "A list of components within the Jira project to which the issue belongs. This field is optional.",
+              "items": {
+                "type": "string",
+                "description": "A list of components within the Jira project to which the issue belongs. This field is optional."
+              }
+            },
+            "description": {
+              "type": "string",
+              "description": "A detailed description of the issue, providing more context about what needs to be addressed."
+            },
+            "fields": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "description": "A map containing additional fields that are to be provided for the Jira issue, such as custom fields or extra attributes. This field is optional."
+              },
+              "description": "A map containing additional fields that are to be provided for the Jira issue, such as custom fields or extra attributes. This field is optional."
+            },
+            "issueSummary": {
+              "type": "string",
+              "description": "A brief summary of the issue being created, typically representing the title of the issue."
+            },
+            "issueType": {
+              "type": "string",
+              "description": "The type of the issue being created, such as 'Bug', 'Task', or 'Story'."
+            },
+            "labels": {
+              "type": "array",
+              "description": "A list of labels or tags to categorize or highlight the Jira issue. This field is optional.",
+              "items": {
+                "type": "string",
+                "description": "A list of labels or tags to categorize or highlight the Jira issue. This field is optional."
+              }
+            },
+            "priority": {
+              "type": "string",
+              "description": "The priority of the issue, such as 'High', 'Medium', or 'Low'. This field is optional."
+            },
+            "projectKey": {
+              "type": "string",
+              "description": "The key of the Jira project where the issue will be created. Typically a short code like 'PROJ'."
+            },
+            "reporter": {
+              "type": "string",
+              "description": "The identifier of the reporter who is raising the Jira issue. This field is optional."
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "Value": {
+      "required": [
+        "editable",
+        "inputKey",
+        "outputVariable",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/InputOverride"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "editable": {
+              "type": "boolean",
+              "description": "Whether the override is editable by the user. Defaults to `false`. If set to `true` it'll pause the execution of the workflow and wait for the user to provide the value"
+            },
+            "inputKey": {
+              "type": "string",
+              "description": "The input key to override"
+            },
+            "outputVariable": {
+              "type": "string",
+              "description": "The path to the override value in the workflow context"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowInput": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of the input",
+          "enum": [
+            "INPUT_FIELD",
+            "TEXTAREA_FIELD",
+            "SELECT_FIELD",
+            "MULTISELECT_FIELD",
+            "TOGGLE_FIELD",
+            "CORTEX_ENTITY_FIELD",
+            "CORTEX_USER_FIELD",
+            "SLACK_FIELD",
+            "SECRET_FIELD",
+            "NUMBER_FIELD",
+            "DATE_FIELD",
+            "NESTED_FORM_FIELD"
+          ]
+        }
+      },
+      "description": "The list of inputs required for the action",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowInput.INPUT_FIELD"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowInput.TEXTAREA_FIELD"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowInput.SELECT_FIELD"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowInput.MULTISELECT_FIELD"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowInput.TOGGLE_FIELD"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowInput.CORTEX_ENTITY_FIELD"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowInput.CORTEX_USER_FIELD"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowInput.SLACK_FIELD"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowInput.SECRET_FIELD"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowInput.NUMBER_FIELD"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowInput.DATE_FIELD"
+        }
+      ]
+    },
+    "WorkflowInput.SLACK_FIELD": {
+      "title": "SLACK_FIELD",
+      "required": [
+        "allowMultiple",
+        "filter",
+        "key",
+        "name",
+        "required",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowInput"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "allowMultiple": {
+              "type": "boolean",
+              "description": "Whether the input allows multiple values. Defaults to `false`"
+            },
+            "defaultValue": {
+              "type": "array",
+              "description": "The default value for the input",
+              "items": {
+                "type": "string",
+                "description": "The default value for the input"
+              }
+            },
+            "description": {
+              "type": "string",
+              "description": "The description of the input"
+            },
+            "filter": {
+              "$ref": "#/components/schemas/WorkflowInputSlackFilter"
+            },
+            "key": {
+              "type": "string",
+              "description": "The key of the input"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the input"
+            },
+            "placeholder": {
+              "type": "string",
+              "description": "The placeholder for the input"
+            },
+            "required": {
+              "type": "boolean",
+              "description": "Whether the input is required"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowActionSchema.SLACK": {
+      "title": "SLACK",
+      "required": [
+        "channel",
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "channel": {
+              "type": "string",
+              "description": "The channel name to send the message to, without the `#`. For example for `#general` use `general`"
+            },
+            "message": {
+              "type": "string",
+              "description": "The message to send"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowInput.SELECT_FIELD": {
+      "title": "SELECT_FIELD",
+      "required": [
+        "allowAdditionalOptions",
+        "key",
+        "name",
+        "options",
+        "required",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowInput"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "allowAdditionalOptions": {
+              "type": "boolean",
+              "description": "Whether additional options are allowed. Defaults to `false`"
+            },
+            "defaultValue": {
+              "type": "string",
+              "description": "The default value for the input"
+            },
+            "description": {
+              "type": "string",
+              "description": "The description of the input"
+            },
+            "key": {
+              "type": "string",
+              "description": "The key of the input"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the input"
+            },
+            "options": {
+              "type": "array",
+              "description": "The list of options for the input",
+              "items": {
+                "type": "string",
+                "description": "The list of options for the input"
+              }
+            },
+            "optionsLabels": {
+              "type": "array",
+              "description": "The list of labels for the options. If not provided, the options will be used as labels",
+              "items": {
+                "type": "string",
+                "description": "The list of labels for the options. If not provided, the options will be used as labels"
+              }
+            },
+            "placeholder": {
+              "type": "string",
+              "description": "The placeholder value for the input"
+            },
+            "required": {
+              "type": "boolean",
+              "description": "Whether the input is required"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "CallbackRequest": {
+      "required": [
+        "message",
+        "status"
+      ],
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "Human readable message to be shown to the user"
+        },
+        "response": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "description": "Response from the callback request. If set, must be a JSON object"
+          },
+          "description": "Response from the callback request. If set, must be a JSON object"
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the callback request. `UPDATE` keeps the workflow paused",
+          "enum": [
+            "SUCCESS",
+            "FAILURE",
+            "UPDATE"
+          ]
+        }
+      }
+    },
+    "WorkflowActionSchema.MANUAL_APPROVAL": {
+      "title": "MANUAL_APPROVAL",
+      "required": [
+        "approvingTeamIds",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "approverDescription": {
+              "type": "string",
+              "description": "A description that will be shown to approvers"
+            },
+            "approvingTeamIds": {
+              "type": "array",
+              "description": "The IDs of the teams whose members can approve the action",
+              "items": {
+                "type": "string",
+                "description": "The IDs of the teams whose members can approve the action"
+              }
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "Fallback": {
+      "required": [
+        "name",
+        "slug"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the branch"
+        },
+        "outgoingAction": {
+          "type": "string",
+          "description": "The first action to execute in this branch path"
+        },
+        "slug": {
+          "type": "string",
+          "description": "The slug of the branch"
+        }
+      },
+      "description": "The fallback branch that will be taken if no other branches evaluate to `true`"
+    },
+    "WorkflowFilter": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of the workflow filter",
+          "enum": [
+            "GLOBAL",
+            "ENTITY"
+          ]
+        }
+      },
+      "description": "Filter to determine in what entity contexts the workflow can run",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowFilter.GLOBAL"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowFilter.ENTITY"
+        }
+      ]
+    },
+    "WorkflowActionSchema.MS_TEAMS_SEND_MESSAGE": {
+      "title": "MS_TEAMS_SEND_MESSAGE",
+      "required": [
+        "channelId",
+        "message",
+        "teamId",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "channelId": {
+              "type": "string",
+              "description": "The channel id to send the message to"
+            },
+            "message": {
+              "type": "string",
+              "description": "The message to send"
+            },
+            "teamId": {
+              "type": "string",
+              "description": "The team id to send the message to"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowFilter.GLOBAL": {
+      "title": "GLOBAL",
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowFilter"
+        }
+      ]
+    },
+    "Option": {
+      "required": [
+        "inputKey",
+        "outputVariable",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/InputOverride"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "inputKey": {
+              "type": "string",
+              "description": "The input key to override"
+            },
+            "outputVariable": {
+              "type": "string",
+              "description": "The path to the override value in the workflow context"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowInput.CORTEX_USER_FIELD": {
+      "title": "CORTEX_USER_FIELD",
+      "required": [
+        "allowMultiple",
+        "filter",
+        "key",
+        "name",
+        "required",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowInput"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "allowMultiple": {
+              "type": "boolean",
+              "description": "Whether the input allows multiple values. Defaults to `false`"
+            },
+            "defaultValue": {
+              "type": "array",
+              "description": "The default value for the input",
+              "items": {
+                "$ref": "#/components/schemas/CortexUserIdentity"
+              }
+            },
+            "description": {
+              "type": "string",
+              "description": "The description of the input"
+            },
+            "filter": {
+              "$ref": "#/components/schemas/WorkflowInputUserFilter"
+            },
+            "key": {
+              "type": "string",
+              "description": "The key of the input"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the input"
+            },
+            "placeholder": {
+              "type": "string",
+              "description": "The placeholder for the input"
+            },
+            "required": {
+              "type": "boolean",
+              "description": "Whether the input is required"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowActionSchema.JAVASCRIPT": {
+      "title": "JAVASCRIPT",
+      "required": [
+        "script",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "script": {
+              "type": "string",
+              "description": "The JavaScript script for the action"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "JsonNode": {
+      "type": "object"
+    },
+    "WorkflowActionSchema.PAGERDUTY_CREATE_INCIDENT": {
+      "title": "PAGERDUTY_CREATE_INCIDENT",
+      "required": [
+        "body",
+        "fromEmail",
+        "serviceId",
+        "title",
+        "type",
+        "urgency"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "body": {
+              "type": "string",
+              "description": "The body of the incident"
+            },
+            "fromEmail": {
+              "type": "string",
+              "description": "The email address of a valid user associated with the account making the request"
+            },
+            "incidentTypeName": {
+              "type": "string",
+              "description": "The incident type name"
+            },
+            "serviceId": {
+              "type": "string",
+              "description": "The ID of the service to create the incident for"
+            },
+            "title": {
+              "type": "string",
+              "description": "The title of the incident"
+            },
+            "type": {
+              "type": "string"
+            },
+            "urgency": {
+              "type": "string",
+              "description": "The urgency of the incident",
+              "enum": [
+                "HIGH",
+                "LOW"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "InputOverride": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of the input override",
+          "enum": [
+            "OPTION",
+            "VALUE"
+          ]
+        }
+      },
+      "description": "The list of overrides for the action inputs",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/Option"
+        },
+        {
+          "$ref": "#/components/schemas/Value"
+        }
+      ]
+    },
+    "WorkflowActionSchema.AWS": {
+      "title": "AWS",
+      "required": [
+        "accountId",
+        "actionIdentifier",
+        "inputs",
+        "region",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "accountId": {
+              "type": "string"
+            },
+            "actionIdentifier": {
+              "type": "string"
+            },
+            "inputs": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/JsonNode"
+              }
+            },
+            "region": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowActionSchema.SET_VARIABLES": {
+      "title": "SET_VARIABLES",
+      "required": [
+        "type",
+        "variables"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "variables": {
+              "type": "array",
+              "description": "The variables to set for the action",
+              "items": {
+                "$ref": "#/components/schemas/VariableAssignment"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowInput.SECRET_FIELD": {
+      "title": "SECRET_FIELD",
+      "required": [
+        "disabled",
+        "key",
+        "name",
+        "required",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowInput"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "The description of the input"
+            },
+            "disabled": {
+              "type": "boolean",
+              "description": "Whether the input should be disabled"
+            },
+            "key": {
+              "type": "string",
+              "description": "The key of the input"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the input"
+            },
+            "placeholder": {
+              "type": "string",
+              "description": "The placeholder for the input"
+            },
+            "required": {
+              "type": "boolean",
+              "description": "Whether the input is required"
+            },
+            "type": {
+              "type": "string"
+            },
+            "validationRegex": {
+              "type": "string",
+              "description": "The validation regex for the input"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowActionSchema": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of the action"
+        }
+      },
+      "description": "The definition of the action",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.HTTP_REQUEST"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.ADVANCED_HTTP_REQUEST"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.HTTP_REQUEST_ASYNC"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.SCAFFOLDER"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.USER_INPUT"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.JQ"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.SLACK"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.MANUAL_APPROVAL"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.CONDITIONAL_BRANCH"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.GITHUB_CREATE_OR_UPDATE_FILE"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.MS_TEAMS_SEND_MESSAGE"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.JAVASCRIPT"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.SET_VARIABLES"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.AWS"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.PAGERDUTY_CREATE_INCIDENT"
+        },
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema.JIRA_CREATE_ISSUE"
+        }
+      ]
+    },
+    "WorkflowInput.TEXTAREA_FIELD": {
+      "title": "TEXTAREA_FIELD",
+      "required": [
+        "key",
+        "name",
+        "required",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowInput"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "defaultValue": {
+              "type": "string",
+              "description": "The default value for the input"
+            },
+            "description": {
+              "type": "string",
+              "description": "The description of the input"
+            },
+            "key": {
+              "type": "string",
+              "description": "The key of the input"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the input"
+            },
+            "placeholder": {
+              "type": "string",
+              "description": "The placeholder for the input"
+            },
+            "required": {
+              "type": "boolean",
+              "description": "Whether the input is required"
+            },
+            "type": {
+              "type": "string"
+            },
+            "validationRegex": {
+              "type": "string",
+              "description": "The validation regex for the input"
+            }
+          }
+        }
+      ]
+    },
+    "EntityGroupFilterDTO1": {
+      "required": [
+        "entityGroups",
+        "excludedEntityGroups"
+      ],
+      "type": "object",
+      "properties": {
+        "entityGroups": {
+          "uniqueItems": true,
+          "type": "array",
+          "description": "The entity groups to include",
+          "items": {
+            "type": "string",
+            "description": "The entity groups to include"
+          }
+        },
+        "excludedEntityGroups": {
+          "uniqueItems": true,
+          "type": "array",
+          "description": "The entity groups to exclude",
+          "items": {
+            "type": "string",
+            "description": "The entity groups to exclude"
+          }
+        }
+      },
+      "description": "The entity group filter for the entity"
+    },
+    "GithubAuthor": {
+      "required": [
+        "email",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "description": "The details of the original author of the changes being committed (optional)"
+    },
+    "WorkflowDefinition": {
+      "required": [
+        "actions",
+        "filter",
+        "isDraft",
+        "name",
+        "restrictActionCompletionToRunnerUser",
+        "tag",
+        "variables"
+      ],
+      "type": "object",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "description": "List of actions in the workflow",
+          "items": {
+            "$ref": "#/components/schemas/WorkflowAction"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the workflow"
+        },
+        "failedRunResponseTemplate": {
+          "type": "string",
+          "description": "Template for the response when the workflow run fails"
+        },
+        "filter": {
+          "$ref": "#/components/schemas/WorkflowFilter"
+        },
+        "iconTag": {
+          "type": "string",
+          "description": "Icon tag for the workflow"
+        },
+        "isDraft": {
+          "type": "boolean",
+          "description": "Whether the workflow is a draft"
+        },
+        "isRunnableViaApi": {
+          "type": "boolean",
+          "description": "Whether the workflow is runnable via the public API"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the workflow"
+        },
+        "restrictActionCompletionToRunnerUser": {
+          "type": "boolean",
+          "description": "If true, only the user who started the workflow can complete actions. Defaults to false."
+        },
+        "runResponseTemplate": {
+          "type": "string",
+          "description": "Template for the response when the workflow is completed successfully"
+        },
+        "runRestrictionPolicies": {
+          "type": "array",
+          "description": "List of restriction policies for the workflow",
+          "items": {
+            "$ref": "#/components/schemas/RestrictionPolicyRelationship"
+          }
+        },
+        "tag": {
+          "type": "string",
+          "description": "Tag of the workflow"
+        },
+        "variables": {
+          "type": "array",
+          "description": "List of variable definitions for the workflow",
+          "items": {
+            "$ref": "#/components/schemas/WorkflowVariable"
+          }
+        }
+      }
+    },
+    "RestrictionPolicyRelationship": {
+      "required": [
+        "id",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID of the principal allowed to run the workflow"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of the principal allowed to run the workflow",
+          "enum": [
+            "USER",
+            "TEAM",
+            "CUSTOM_ROLE"
+          ]
+        }
+      },
+      "description": "List of restriction policies for the workflow"
+    },
+    "WorkflowInput.MULTISELECT_FIELD": {
+      "title": "MULTISELECT_FIELD",
+      "required": [
+        "allowAdditionalOptions",
+        "key",
+        "name",
+        "options",
+        "required",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowInput"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "allowAdditionalOptions": {
+              "type": "boolean",
+              "description": "Whether additional options are allowed. Defaults to `false`"
+            },
+            "defaultValue": {
+              "type": "array",
+              "description": "The default value for the input",
+              "items": {
+                "type": "string",
+                "description": "The default value for the input"
+              }
+            },
+            "description": {
+              "type": "string",
+              "description": "The description of the input"
+            },
+            "key": {
+              "type": "string",
+              "description": "The key of the input"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the input"
+            },
+            "options": {
+              "type": "array",
+              "description": "The list of options for the input",
+              "items": {
+                "type": "string",
+                "description": "The list of options for the input"
+              }
+            },
+            "optionsLabels": {
+              "type": "array",
+              "description": "The list of labels for the options. If not provided, the options will be used as labels",
+              "items": {
+                "type": "string",
+                "description": "The list of labels for the options. If not provided, the options will be used as labels"
+              }
+            },
+            "placeholder": {
+              "type": "string",
+              "description": "The placeholder value for the input"
+            },
+            "required": {
+              "type": "boolean",
+              "description": "Whether the input is required"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "GithubCommitter": {
+      "required": [
+        "email",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "description": "The details of the person or system making the commit, such as name and email (optional)"
+    },
+    "Conditional": {
+      "required": [
+        "expression",
+        "name",
+        "slug"
+      ],
+      "type": "object",
+      "properties": {
+        "expression": {
+          "type": "string",
+          "description": "The conditional expression for the branch"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the branch"
+        },
+        "outgoingAction": {
+          "type": "string",
+          "description": "The first action to execute in this branch path"
+        },
+        "slug": {
+          "type": "string",
+          "description": "The slug of the branch"
+        }
+      },
+      "description": "The list of conditional branches that will be evaluated in order"
+    },
+    "CompoundFilter": {
+      "type": "object",
+      "properties": {
+        "entityGroupFilter": {
+          "$ref": "#/components/schemas/EntityGroupFilterDTO1"
+        },
+        "typeFilter": {
+          "$ref": "#/components/schemas/EntityTypeFilter1"
+        }
+      },
+      "description": "The entity filter for the workflow"
+    },
+    "WorkflowInput.DATE_FIELD": {
+      "title": "DATE_FIELD",
+      "required": [
+        "disabled",
+        "format",
+        "key",
+        "name",
+        "required",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowInput"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "defaultValue": {
+              "type": "string",
+              "description": "The default value for the input"
+            },
+            "description": {
+              "type": "string",
+              "description": "The description of the input"
+            },
+            "disabled": {
+              "type": "boolean",
+              "description": "Whether the input should be disabled"
+            },
+            "format": {
+              "type": "string",
+              "description": "The date format of the input",
+              "enum": [
+                "DATE",
+                "DATETIME"
+              ]
+            },
+            "key": {
+              "type": "string",
+              "description": "The key of the input"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the input"
+            },
+            "placeholder": {
+              "type": "string",
+              "description": "The placeholder for the input"
+            },
+            "required": {
+              "type": "boolean",
+              "description": "Whether the input is required"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowInput.INPUT_FIELD": {
+      "title": "INPUT_FIELD",
+      "required": [
+        "key",
+        "name",
+        "required",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowInput"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "defaultValue": {
+              "type": "string",
+              "description": "The default value for the input"
+            },
+            "description": {
+              "type": "string",
+              "description": "The description of the input"
+            },
+            "key": {
+              "type": "string",
+              "description": "The key of the input"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the input"
+            },
+            "placeholder": {
+              "type": "string",
+              "description": "The placeholder for the input"
+            },
+            "required": {
+              "type": "boolean",
+              "description": "Whether the input is required"
+            },
+            "type": {
+              "type": "string"
+            },
+            "validationRegex": {
+              "type": "string",
+              "description": "The validation regex for the input"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowInput.TOGGLE_FIELD": {
+      "title": "TOGGLE_FIELD",
+      "required": [
+        "key",
+        "name",
+        "required",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowInput"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "defaultValue": {
+              "type": "boolean",
+              "description": "The default value for the input"
+            },
+            "description": {
+              "type": "string",
+              "description": "The description of the input"
+            },
+            "key": {
+              "type": "string",
+              "description": "The key of the input"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the input"
+            },
+            "required": {
+              "type": "boolean",
+              "description": "Whether the input is required"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowActionSchema.USER_INPUT": {
+      "title": "USER_INPUT",
+      "required": [
+        "inputOverrides",
+        "inputs",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WorkflowActionSchema"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "inputOverrides": {
+              "type": "array",
+              "description": "The list of overrides for the action inputs",
+              "items": {
+                "$ref": "#/components/schemas/InputOverride"
+              }
+            },
+            "inputs": {
+              "type": "array",
+              "description": "The list of inputs required for the action",
+              "items": {
+                "$ref": "#/components/schemas/WorkflowInput"
+              }
+            },
+            "jsValidatorScript": {
+              "type": "string",
+              "description": "Optional JavaScript validator script to validate the provided inputs"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "WorkflowVariable": {
+      "required": [
+        "slug",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "defaultValue": {
+          "$ref": "#/components/schemas/JsonNode"
+        },
+        "slug": {
+          "type": "string",
+          "description": "The slug of the variable"
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of the variable",
+          "enum": [
+            "STRING",
+            "NUMBER",
+            "BOOLEAN",
+            "OBJECT",
+            "ARRAY_OF_STRING",
+            "ARRAY_OF_NUMBER",
+            "ARRAY_OF_BOOLEAN",
+            "ARRAY_OF_OBJECT"
+          ]
+        }
+      },
+      "description": "List of variable definitions for the workflow"
+    },
+    "ViolationDTO": {
+      "required": [
+        "paths"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "endLine": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pointer": {
+          "type": "string"
+        },
+        "ruleLink": {
+          "type": "string"
+        },
+        "startLine": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "title": {
+          "type": "string"
+        },
+        "violationType": {
+          "type": "string",
+          "enum": [
+            "MUST",
+            "SHOULD",
+            "MAY",
+            "HINT"
+          ]
+        }
+      }
+    },
+    "VariableAssignment": {
+      "required": [
+        "slug",
+        "source"
+      ],
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "The type of the variable"
+        },
+        "source": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/JavaScript"
+            },
+            {
+              "$ref": "#/components/schemas/Reference"
+            }
+          ]
+        }
+      },
+      "description": "The variables to set for the action"
+    }
+  },
+  "referenced_common_schemas": []
+}

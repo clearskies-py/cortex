@@ -1,0 +1,550 @@
+{
+  "tag": "Eng Intel: 1-Registry",
+  "endpoint_count": 1,
+  "schema_count": 15,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/eng-intel/registry/metrics/definitions",
+      "operation_id": "listMetricDefinitions",
+      "summary": "List available engineering metric definitions"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/eng-intel/registry/metrics/definitions",
+      "method": "GET",
+      "operation_id": "listMetricDefinitions",
+      "summary": "List available engineering metric definitions",
+      "details": {
+        "description": "Discover all available engineering metrics and their metadata. Use this before querying metrics to understand what data is available and how to query it effectively.",
+        "operationId": "listMetricDefinitions",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "view",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "basic"
+            }
+          },
+          {
+            "in": "query",
+            "name": "key",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetricDefinitionsResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved metric definitions"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicMetricDefinitionsResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/FullMetricDefinitionsResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Invalid query parameters or filters"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicMetricDefinitionsResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/FullMetricDefinitionsResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Feature not enabled - contact help@cortex.io"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List available engineering metric definitions",
+        "tags": [
+          "Eng Intel: 1-Registry"
+        ],
+        "x-cortex-mcp-description": "List all available engineering metric definitions.\n\n        USAGE - Call this endpoint BEFORE querying metrics (queryPointInTimeMetrics):\n        1. Once at start: Call with view='basic' to discover all available metrics - cache this response\n        2. Once per metric: Call with view='full' and key=METRIC_KEY to get detailed metadata - cache each response\n        3. Use cached metadata to construct valid point-in-time queries\n\n        Cache responses in your context. Only refresh if no longer in your context window or explicitly requested (ex to check if metric readiness has changed).\n\n        Query parameters:\n        - view: 'basic' (default) returns minimal info, 'full' includes sources and query metadata\n        - key: Filter metrics by key (supports multiple values and comma-separated lists)\n\n        Full view provides query construction metadata:\n        - supportedAggregations: Valid aggregation methods for the metric\n        - orderByAttribute: Attribute path for sorting by metric values\n        - groupByOptions[].key: Valid groupBy keys (use exact values, do NOT guess)\n        - filterOptions[].key: Valid filter keys (use exact values, do NOT guess)\n\n        Valid orderBy attributes for metric queries:\n        - orderByAttribute: The metric value itself (returned in full view)\n        - Source attributes: Any attribute from the metric's source (e.g., \"source_name.attribute_name\")\n        - Dimension attributes: Any attribute from related dimensions (e.g., \"source_name.dimension_name.attribute_name\")\n\n        Filter operators by type (for constructing queries):\n        - STRING: EQUAL, NOT_EQUAL, IS_NULL, IS_NOT_NULL, LIKE, NOT_LIKE, IN, NOT_IN, ANY\n        - INTEGER/DECIMAL/DOUBLE: EQUAL, NOT_EQUAL, IS_NULL, IS_NOT_NULL, GREATER_THAN, LESS_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN_OR_EQUAL, IN, NOT_IN, BETWEEN, ANY\n        - DATETIME/DATE: EQUAL, NOT_EQUAL, IS_NULL, IS_NOT_NULL, GREATER_THAN, LESS_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN_OR_EQUAL, BETWEEN\n        - BOOLEAN: EQUAL, NOT_EQUAL, IS_NULL, IS_NOT_NULL, IN, NOT_IN\n        - ARRAY: EQUAL, CONTAINS, IN\n\n        Error responses:\n        - 400: Invalid view parameter (must be 'basic' or 'full')\n        - 403: Restricted Feature (contact help@cortex.io)",
+        "x-cortex-mcp-enabled": "true",
+        "x-internal": true
+      }
+    }
+  ],
+  "schemas": {
+    "FilterOption": {
+      "required": [
+        "displayName",
+        "filter",
+        "key"
+      ],
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "description": "Human-readable label for this filter"
+        },
+        "filter": {
+          "type": "string",
+          "description": "Specific attribute to filter on"
+        },
+        "key": {
+          "type": "string",
+          "description": "Field key to reference in queries"
+        }
+      },
+      "description": "Available filtering options for querying metrics"
+    },
+    "Source": {
+      "required": [
+        "attributes",
+        "description",
+        "dimensions",
+        "filterOptions",
+        "groupByOptions",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "attributes": {
+          "type": "array",
+          "description": "Queryable fields available directly on this source",
+          "items": {
+            "$ref": "#/components/schemas/Attribute1"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of what data this source provides"
+        },
+        "dimensions": {
+          "type": "array",
+          "description": "Related entities that can be joined for additional context",
+          "items": {
+            "$ref": "#/components/schemas/Dimension"
+          }
+        },
+        "filterOptions": {
+          "type": "array",
+          "description": "Available filtering options for querying metrics",
+          "items": {
+            "$ref": "#/components/schemas/FilterOption"
+          }
+        },
+        "groupByOptions": {
+          "type": "array",
+          "description": "Available grouping options for aggregating metrics",
+          "items": {
+            "$ref": "#/components/schemas/GroupByOption"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "Unique identifier for the source"
+        }
+      },
+      "description": "Map of source names to source metadata for query construction"
+    },
+    "MetricDefinition": {
+      "required": [
+        "displayName",
+        "key",
+        "readiness"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "readiness": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/NotReady"
+            },
+            {
+              "$ref": "#/components/schemas/Ready"
+            }
+          ]
+        }
+      }
+    },
+    "NotReady": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/Readiness"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "docsUrl": {
+              "type": "string"
+            },
+            "hint": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "Ready": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/Readiness"
+        }
+      ]
+    },
+    "GroupByOption": {
+      "required": [
+        "displayName",
+        "key"
+      ],
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "description": "Human-readable label for this grouping"
+        },
+        "key": {
+          "type": "string",
+          "description": "Field key to use in GROUP BY clause"
+        }
+      },
+      "description": "Available grouping options for aggregating metrics"
+    },
+    "MetricDefinitionsResponseObject": {
+      "required": [
+        "metrics",
+        "view"
+      ],
+      "type": "object",
+      "properties": {
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "view": {
+          "type": "string"
+        }
+      },
+      "discriminator": {
+        "propertyName": "view"
+      }
+    },
+    "FullMetricDefinition": {
+      "required": [
+        "displayName",
+        "key",
+        "readiness"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of what this metric measures"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Human-readable name"
+        },
+        "key": {
+          "type": "string",
+          "description": "Unique identifier for the metric (used in queries)"
+        },
+        "orderByAttribute": {
+          "type": "string",
+          "description": "The attribute used for ordering/sorting metric results"
+        },
+        "readiness": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/NotReady"
+            },
+            {
+              "$ref": "#/components/schemas/Ready"
+            }
+          ]
+        },
+        "sourceRef": {
+          "type": "string",
+          "description": "Reference to the data source in the sources map - indicates which integration provides this metric"
+        },
+        "supportedAggregations": {
+          "type": "array",
+          "description": "Available aggregation functions for this metric (e.g., SUM, AVG, COUNT)",
+          "items": {
+            "type": "string",
+            "enum": [
+              "SUM",
+              "AVG",
+              "COUNT",
+              "RATIO",
+              "MIN",
+              "MAX",
+              "P50",
+              "P95",
+              "RANKING"
+            ]
+          }
+        },
+        "timeAttribute": {
+          "$ref": "#/components/schemas/Attribute1"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of metric: COUNT (discrete values), DURATION (time-based), RATIO/RATE (percentages), VALUE (continuous)",
+          "enum": [
+            "DURATION",
+            "COUNT",
+            "VALUE",
+            "RATE"
+          ]
+        },
+        "units": {
+          "type": "string",
+          "description": "Units of measurement (e.g., 'seconds', 'count', 'percentage')"
+        },
+        "valence": {
+          "type": "string",
+          "description": "Whether higher values are better (POSITIVE) or worse (NEGATIVE) for this metric",
+          "enum": [
+            "POSITIVE",
+            "NEGATIVE",
+            "NEUTRAL"
+          ]
+        }
+      },
+      "description": "List of available metric definitions with full metadata"
+    },
+    "Dimension": {
+      "required": [
+        "attributes",
+        "description",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "attributes": {
+          "type": "array",
+          "description": "Queryable fields available on this dimension",
+          "items": {
+            "$ref": "#/components/schemas/Attribute1"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the relationship this dimension represents"
+        },
+        "name": {
+          "type": "string",
+          "description": "Dimension identifier for use in queries"
+        }
+      },
+      "description": "Related entities that can be joined for additional context"
+    },
+    "Readiness": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "description": "Whether this metric is ready to use - includes hints if configuration is needed",
+      "discriminator": {
+        "propertyName": "type"
+      }
+    },
+    "MetricDefinitionsResponse": {
+      "required": [
+        "metrics",
+        "view"
+      ],
+      "type": "object",
+      "properties": {
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/MetricDefinition"
+          }
+        },
+        "view": {
+          "type": "string"
+        }
+      },
+      "discriminator": {
+        "propertyName": "view"
+      }
+    },
+    "BasicMetricDefinitionsResponse": {
+      "required": [
+        "metrics"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/MetricDefinitionsResponse"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "metrics": {
+              "type": "array",
+              "description": "List of available metric definitions with basic metadata",
+              "items": {
+                "$ref": "#/components/schemas/BasicMetricDefinition"
+              }
+            }
+          }
+        },
+        {
+          "$ref": "#/components/schemas/MetricDefinitionsResponseObject"
+        }
+      ]
+    },
+    "FullMetricDefinitionsResponse": {
+      "required": [
+        "metrics",
+        "sources"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/MetricDefinitionsResponse"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "metrics": {
+              "type": "array",
+              "description": "List of available metric definitions with full metadata",
+              "items": {
+                "$ref": "#/components/schemas/FullMetricDefinition"
+              }
+            },
+            "sources": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/Source"
+              },
+              "description": "Map of source names to source metadata for query construction"
+            }
+          }
+        },
+        {
+          "$ref": "#/components/schemas/MetricDefinitionsResponseObject"
+        }
+      ]
+    },
+    "Attribute1": {
+      "required": [
+        "name",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of what this field contains"
+        },
+        "name": {
+          "type": "string",
+          "description": "Field name for use in queries"
+        },
+        "type": {
+          "type": "string",
+          "description": "Data type - determines which filter operators are supported (see endpoint description)",
+          "enum": [
+            "STRING",
+            "BOOLEAN",
+            "INTEGER",
+            "DECIMAL",
+            "DOUBLE",
+            "DATE",
+            "TREE",
+            "DATETIME",
+            "JSON",
+            "ARRAY",
+            "ENUM",
+            "UNSUPPORTED"
+          ]
+        }
+      },
+      "description": "Queryable fields available on this dimension"
+    },
+    "BasicMetricDefinition": {
+      "required": [
+        "displayName",
+        "key",
+        "readiness"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of what this metric measures"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Human-readable name"
+        },
+        "key": {
+          "type": "string",
+          "description": "Unique identifier for the metric (used in queries)"
+        },
+        "readiness": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/NotReady"
+            },
+            {
+              "$ref": "#/components/schemas/Ready"
+            }
+          ]
+        }
+      },
+      "description": "List of available metric definitions with basic metadata"
+    }
+  },
+  "referenced_common_schemas": []
+}

@@ -1,0 +1,832 @@
+{
+  "tag": "[Integrations] GitLab",
+  "endpoint_count": 10,
+  "schema_count": 9,
+  "endpoints_summary": [
+    {
+      "method": "POST",
+      "path": "/api/v1/gitlab/configuration",
+      "operation_id": "GitLabSaveConfiguration",
+      "summary": "Add a single configuration"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/gitlab/configuration/validate",
+      "operation_id": "GitLabValidateAllConfigurations",
+      "summary": "Validate all configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/gitlab/configuration/validate/{alias}",
+      "operation_id": "GitLabValidateConfiguration",
+      "summary": "Validate a configuration"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/gitlab/configuration/{alias}",
+      "operation_id": "GitLabRemoveConfiguration",
+      "summary": "Delete a configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/gitlab/configuration/{alias}",
+      "operation_id": "GitLabGetConfiguration",
+      "summary": "Retrieve a configuration"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/gitlab/configuration/{alias}",
+      "operation_id": "GitLabUpdateConfiguration",
+      "summary": "Update a configuration"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/gitlab/configurations",
+      "operation_id": "GitLabRemoveAllConfigurations",
+      "summary": "Delete all configurations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/gitlab/configurations",
+      "operation_id": "GitLabListConfigurations",
+      "summary": "Retrieve configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/gitlab/configurations",
+      "operation_id": "GitLabSaveConfigurations",
+      "summary": "Add multiple configurations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/gitlab/default-configuration",
+      "operation_id": "GitLabGetDefaultConfiguration",
+      "summary": "Retrieve default configuration"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/gitlab/configuration",
+      "method": "POST",
+      "operation_id": "GitLabSaveConfiguration",
+      "summary": "Add a single configuration",
+      "details": {
+        "operationId": "GitLabSaveConfiguration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GitlabConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseGitlabConfiguration"
+                }
+              }
+            },
+            "description": "Successfully added configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add a single configuration",
+        "tags": [
+          "[Integrations] GitLab"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/gitlab/configuration/validate",
+      "method": "POST",
+      "operation_id": "GitLabValidateAllConfigurations",
+      "summary": "Validate all configurations",
+      "details": {
+        "operationId": "GitLabValidateAllConfigurations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleIntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated all configurations"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate all configurations",
+        "tags": [
+          "[Integrations] GitLab"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/gitlab/configuration/validate/{alias}",
+      "method": "POST",
+      "operation_id": "GitLabValidateConfiguration",
+      "summary": "Validate a configuration",
+      "details": {
+        "operationId": "GitLabValidateConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated configuration"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate a configuration",
+        "tags": [
+          "[Integrations] GitLab"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/gitlab/configuration/{alias}",
+      "method": "DELETE",
+      "operation_id": "GitLabRemoveConfiguration",
+      "summary": "Delete a configuration",
+      "details": {
+        "operationId": "GitLabRemoveConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseGitlabConfiguration"
+                }
+              }
+            },
+            "description": "Successfully deleted configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete a configuration",
+        "tags": [
+          "[Integrations] GitLab"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/gitlab/configuration/{alias}",
+      "method": "GET",
+      "operation_id": "GitLabGetConfiguration",
+      "summary": "Retrieve a configuration",
+      "details": {
+        "operationId": "GitLabGetConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GitlabConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve a configuration",
+        "tags": [
+          "[Integrations] GitLab"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/gitlab/configuration/{alias}",
+      "method": "PUT",
+      "operation_id": "GitLabUpdateConfiguration",
+      "summary": "Update a configuration",
+      "details": {
+        "description": "WARNING: Updating aliases for configurations or changing the default configuration could cause entity YAMLs that use this integration to break.",
+        "operationId": "GitLabUpdateConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GitlabUpdateConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseGitlabConfiguration"
+                }
+              }
+            },
+            "description": "Successfully updated configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update a configuration",
+        "tags": [
+          "[Integrations] GitLab"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/gitlab/configurations",
+      "method": "DELETE",
+      "operation_id": "GitLabRemoveAllConfigurations",
+      "summary": "Delete all configurations",
+      "details": {
+        "operationId": "GitLabRemoveAllConfigurations",
+        "responses": {
+          "200": {
+            "description": "Successfully deleted all configurations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete all configurations",
+        "tags": [
+          "[Integrations] GitLab"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/gitlab/configurations",
+      "method": "GET",
+      "operation_id": "GitLabListConfigurations",
+      "summary": "Retrieve configurations",
+      "details": {
+        "operationId": "GitLabListConfigurations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseGitlabConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found configurations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve configurations",
+        "tags": [
+          "[Integrations] GitLab"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/gitlab/configurations",
+      "method": "POST",
+      "operation_id": "GitLabSaveConfigurations",
+      "summary": "Add multiple configurations",
+      "details": {
+        "operationId": "GitLabSaveConfigurations",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigurationsRequestGitlabConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleConfigurationsResponseGitlabConfiguration"
+                }
+              }
+            },
+            "description": "Successfully added configurations"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add multiple configurations",
+        "tags": [
+          "[Integrations] GitLab"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/gitlab/default-configuration",
+      "method": "GET",
+      "operation_id": "GitLabGetDefaultConfiguration",
+      "summary": "Retrieve default configuration",
+      "details": {
+        "operationId": "GitLabGetDefaultConfiguration",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GitlabConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found default configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve default configuration",
+        "tags": [
+          "[Integrations] GitLab"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "ConfigurationsRequestGitlabConfigurationRequest": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/GitlabConfigurationRequest"
+          }
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "GitlabConfiguration": {
+      "required": [
+        "alias",
+        "groupNames",
+        "hidePersonalProjects",
+        "isDefault",
+        "lastFour"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "groupNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hidePersonalProjects": {
+          "type": "boolean"
+        },
+        "host": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "lastFour": {
+          "type": "string"
+        }
+      }
+    },
+    "MultipleIntegrationConfigValidation": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/IntegrationConfigValidation"
+          }
+        }
+      }
+    },
+    "GitlabUpdateConfigurationRequest": {
+      "required": [
+        "alias",
+        "groupNames",
+        "hidePersonalProjects",
+        "isDefault"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "groupNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hidePersonalProjects": {
+          "type": "boolean"
+        },
+        "host": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        }
+      }
+    },
+    "GitlabConfigurationRequest": {
+      "required": [
+        "alias",
+        "groupNames",
+        "hidePersonalProjects",
+        "isDefault",
+        "personalAccessToken"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "groupNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hidePersonalProjects": {
+          "type": "boolean"
+        },
+        "host": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "personalAccessToken": {
+          "type": "string"
+        }
+      }
+    },
+    "IntegrationConfigValidation": {
+      "required": [
+        "isValid"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "isValid": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "MultipleConfigurationsResponseGitlabConfiguration": {
+      "required": [
+        "configurations",
+        "skippedConfigurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/GitlabConfiguration"
+          }
+        },
+        "skippedConfigurations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ConfigurationsResponseGitlabConfiguration": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/GitlabConfiguration"
+          }
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

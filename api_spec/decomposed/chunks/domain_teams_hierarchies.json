@@ -1,0 +1,240 @@
+{
+  "tag": "Teams Hierarchies",
+  "endpoint_count": 2,
+  "schema_count": 5,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/teams/relationships",
+      "operation_id": "getTeamHierarchyRelationships",
+      "summary": "Retrieve team relationships"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/teams/relationships",
+      "operation_id": "replaceAllTeamHierarchyRelationships",
+      "summary": "Replace all relationships"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/teams/relationships",
+      "method": "GET",
+      "operation_id": "getTeamHierarchyRelationships",
+      "summary": "Retrieve team relationships",
+      "details": {
+        "operationId": "getTeamHierarchyRelationships",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamsRelationshipsResponse"
+                }
+              }
+            },
+            "description": "Successfully found team relationships"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve team relationships",
+        "tags": [
+          "Teams Hierarchies"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/teams/relationships",
+      "method": "PUT",
+      "operation_id": "replaceAllTeamHierarchyRelationships",
+      "summary": "Replace all relationships",
+      "details": {
+        "operationId": "replaceAllTeamHierarchyRelationships",
+        "parameters": [
+          {
+            "description": "Supports only replace=true right now",
+            "example": true,
+            "in": "query",
+            "name": "replace",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TeamsRelationshipsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamsRelationshipsResponse"
+                }
+              }
+            },
+            "description": "Successfully created team relationships"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Replace all relationships",
+        "tags": [
+          "Teams Hierarchies"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "TeamsRelationshipsResponse": {
+      "required": [
+        "edges"
+      ],
+      "type": "object",
+      "properties": {
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/TeamEdgeResponse"
+          }
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "TeamsRelationshipsRequest": {
+      "required": [
+        "edges"
+      ],
+      "type": "object",
+      "properties": {
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/TeamEdgeRequest"
+          }
+        }
+      }
+    },
+    "TeamEdgeRequest": {
+      "required": [
+        "childTeamTag",
+        "parentTeamTag"
+      ],
+      "type": "object",
+      "properties": {
+        "childTeamTag": {
+          "type": "string"
+        },
+        "parentTeamTag": {
+          "type": "string"
+        }
+      }
+    },
+    "TeamEdgeResponse": {
+      "required": [
+        "childTeamTag",
+        "parentTeamTag"
+      ],
+      "type": "object",
+      "properties": {
+        "childTeamTag": {
+          "type": "string"
+        },
+        "parentTeamTag": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "WORKDAY"
+          ]
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

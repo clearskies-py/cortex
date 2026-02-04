@@ -1,0 +1,333 @@
+{
+  "tag": "On-call",
+  "endpoint_count": 2,
+  "schema_count": 7,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/integrations/oncall/current",
+      "operation_id": "getCurrentOncallForEntity",
+      "summary": "Retrieve current on-call for entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/integrations/oncall/registration",
+      "operation_id": "getOncallRegistrationForEntity",
+      "summary": "Retrieve on-call registration for entity"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/catalog/{tagOrId}/integrations/oncall/current",
+      "method": "GET",
+      "operation_id": "getCurrentOncallForEntity",
+      "summary": "Retrieve current on-call for entity",
+      "details": {
+        "operationId": "getCurrentOncallForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CurrentOncallDetails"
+                  }
+                }
+              }
+            },
+            "description": "Successfully retrieved current on-call"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve current on-call for entity",
+        "tags": [
+          "On-call"
+        ],
+        "x-cortex-mcp-description": "Retrieve the current on-call personnel for an entity in real-time. Shows who is actively responsible for incident response, including primary and secondary on-call, contact information, and rotation schedules",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/integrations/oncall/registration",
+      "method": "GET",
+      "operation_id": "getOncallRegistrationForEntity",
+      "summary": "Retrieve on-call registration for entity",
+      "details": {
+        "operationId": "getOncallRegistrationForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OncallRegistration"
+                  }
+                }
+              }
+            },
+            "description": "Successfully retrieved on-call registration"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity or registration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve on-call registration for entity",
+        "tags": [
+          "On-call"
+        ],
+        "x-cortex-mcp-description": "Get the on-call registration details for an entity, including the escalation policy, service mapping, and provider information. Disabled for MCP access to protect sensitive on-call information",
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "UserSchedule": {
+      "required": [
+        "user"
+      ],
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/components/schemas/User"
+        }
+      },
+      "description": "User details"
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "User": {
+      "required": [
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Contact email",
+          "example": "cristina@cortex.io"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name",
+          "example": "Cristina Buenahora"
+        }
+      }
+    },
+    "CurrentOncallDetails": {
+      "required": [
+        "current"
+      ],
+      "type": "object",
+      "properties": {
+        "current": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/OncallDetails"
+          }
+        }
+      }
+    },
+    "OncallDetails": {
+      "required": [
+        "escalations",
+        "provider"
+      ],
+      "type": "object",
+      "properties": {
+        "escalations": {
+          "type": "array",
+          "description": "List of escalations",
+          "items": {
+            "$ref": "#/components/schemas/Escalation"
+          }
+        },
+        "provider": {
+          "type": "string",
+          "description": "Integration",
+          "example": "OPSGENIE, PAGERDUTY, VICTOROPS",
+          "enum": [
+            "OPSGENIE",
+            "PAGERDUTY",
+            "VICTOROPS",
+            "XMATTERS"
+          ]
+        }
+      }
+    },
+    "Escalation": {
+      "required": [
+        "escalationLevel",
+        "schedules"
+      ],
+      "type": "object",
+      "properties": {
+        "escalationLevel": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "schedules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/UserSchedule"
+          }
+        }
+      },
+      "description": "List of escalations"
+    },
+    "OncallRegistration": {
+      "required": [
+        "id",
+        "provider",
+        "source",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Registration ID",
+          "example": "ASDF1234"
+        },
+        "provider": {
+          "type": "string",
+          "description": "Integration",
+          "example": "OPSGENIE, PAGERDUTY, VICTOROPS",
+          "enum": [
+            "OPSGENIE",
+            "PAGERDUTY",
+            "VICTOROPS",
+            "XMATTERS"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "description": "Source",
+          "example": "AUTO_MAPPED, DEFINED",
+          "enum": [
+            "AUTO_MAPPED",
+            "DEFINED"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "CQL_FILTER",
+            "SERVICE_FILTER",
+            "RESOURCE_FILTER",
+            "DOMAIN_FILTER",
+            "TEAM_FILTER",
+            "COMPOUND_FILTER"
+          ]
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

@@ -1,0 +1,473 @@
+{
+  "tag": "SCIM",
+  "endpoint_count": 6,
+  "schema_count": 0,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/scim/v2/Users",
+      "operation_id": "findUsers",
+      "summary": "Find users"
+    },
+    {
+      "method": "POST",
+      "path": "/scim/v2/Users",
+      "operation_id": "createUser",
+      "summary": "Creates a user"
+    },
+    {
+      "method": "DELETE",
+      "path": "/scim/v2/Users/{id}",
+      "operation_id": "deleteUser",
+      "summary": "Deletes a user"
+    },
+    {
+      "method": "GET",
+      "path": "/scim/v2/Users/{id}",
+      "operation_id": "getUser",
+      "summary": "Gets a user by id"
+    },
+    {
+      "method": "PATCH",
+      "path": "/scim/v2/Users/{id}",
+      "operation_id": "patchUser",
+      "summary": "Patches a user"
+    },
+    {
+      "method": "PUT",
+      "path": "/scim/v2/Users/{id}",
+      "operation_id": "updateUser",
+      "summary": "Updates a user"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/scim/v2/Users",
+      "method": "GET",
+      "operation_id": "findUsers",
+      "summary": "Find users",
+      "details": {
+        "description": "Fetches users based on provided criteria",
+        "operationId": "findUsers",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "attributes",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "excludedAttributes",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "startIndex",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortOrder",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "domain",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/scim+json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Returns list of requested users"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Find users",
+        "tags": [
+          "SCIM"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/scim/v2/Users",
+      "method": "POST",
+      "operation_id": "createUser",
+      "summary": "Creates a user",
+      "details": {
+        "description": "Creates a user based on provided data.",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "attributes",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "excludedAttributes",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/scim+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/scim+json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Returns created user data"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Creates a user",
+        "tags": [
+          "SCIM"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/scim/v2/Users/{id}",
+      "method": "DELETE",
+      "operation_id": "deleteUser",
+      "summary": "Deletes a user",
+      "details": {
+        "description": "Deletes a user based on provided id",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/scim+json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Returns deleted user data"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Deletes a user",
+        "tags": [
+          "SCIM"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/scim/v2/Users/{id}",
+      "method": "GET",
+      "operation_id": "getUser",
+      "summary": "Gets a user by id",
+      "details": {
+        "description": "Gets a user based on provided id",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "attributes",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "excludedAttributes",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/scim+json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Returns requested user data"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Gets a user by id",
+        "tags": [
+          "SCIM"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/scim/v2/Users/{id}",
+      "method": "PATCH",
+      "operation_id": "patchUser",
+      "summary": "Patches a user",
+      "details": {
+        "description": "Replaces user details based on provided id and data",
+        "operationId": "patchUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "attributes",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "excludedAttributes",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/scim+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/scim+json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Returns patched user data"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Patches a user",
+        "tags": [
+          "SCIM"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/scim/v2/Users/{id}",
+      "method": "PUT",
+      "operation_id": "updateUser",
+      "summary": "Updates a user",
+      "details": {
+        "description": "Updates a user based on provided id and data",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "attributes",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "excludedAttributes",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/scim+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/scim+json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Returns updated user data"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Updates a user",
+        "tags": [
+          "SCIM"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {},
+  "referenced_common_schemas": []
+}

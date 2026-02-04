@@ -1,0 +1,552 @@
+{
+  "tag": "Custom Data",
+  "endpoint_count": 6,
+  "schema_count": 4,
+  "endpoints_summary": [
+    {
+      "method": "PUT",
+      "path": "/api/v1/catalog/custom-data",
+      "operation_id": "createOrUpdateCustomDataInBulk",
+      "summary": "Add custom data in bulk"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{tagOrId}/custom-data",
+      "operation_id": "deleteCustomDataForEntity",
+      "summary": "Delete custom data for entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/custom-data",
+      "operation_id": "getCustomDataForEntity",
+      "summary": "List custom data for entity"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/custom-data",
+      "operation_id": "addCustomDataForEntity",
+      "summary": "Add custom data for entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/custom-data/{key}",
+      "operation_id": "getCustomDataForEntityByKey",
+      "summary": "Retrieve custom data for entity by key"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/custom-integrations/data/{uuid}",
+      "operation_id": "addCustomDataViaWebhook",
+      "summary": "Add custom data via webhook"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/catalog/custom-data",
+      "method": "PUT",
+      "operation_id": "createOrUpdateCustomDataInBulk",
+      "summary": "Add custom data in bulk",
+      "details": {
+        "description": "Add multiple key/values of custom data to multiple entities",
+        "operationId": "createOrUpdateCustomDataInBulk",
+        "parameters": [
+          {
+            "description": "When true, overrides values that were defined in the catalog descriptor. Will be overwritten the next time the catalog descriptor is processed.",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {}
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkCustomDataResponse"
+                }
+              }
+            },
+            "description": "Successfully created/updated custom data"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid custom data request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add custom data in bulk",
+        "tags": [
+          "Custom Data"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/custom-data",
+      "method": "DELETE",
+      "operation_id": "deleteCustomDataForEntity",
+      "summary": "Delete custom data for entity",
+      "details": {
+        "operationId": "deleteCustomDataForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "query",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "When true, overrides values that were defined in the catalog descriptor. Will be overwritten the next time the catalog descriptor is processed.",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted custom data"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete custom data for entity",
+        "tags": [
+          "Custom Data"
+        ],
+        "x-cortex-mcp-description": "Delete custom data from an entity. Disabled for MCP access to protect data integrity and prevent accidental removal of critical metadata",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/custom-data",
+      "method": "GET",
+      "operation_id": "getCustomDataForEntity",
+      "summary": "List custom data for entity",
+      "details": {
+        "operationId": "getCustomDataForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomData"
+                  }
+                }
+              }
+            },
+            "description": "Successfully retrieved custom data. If using pagination, we do not return page, total, or totalPages in the response.  An empty array is returned once you reach the end."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List custom data for entity",
+        "tags": [
+          "Custom Data"
+        ],
+        "x-cortex-mcp-description": "List all custom data key-value pairs associated with an entity. Retrieve metadata, configuration settings, and custom attributes stored for services, resources, or domains. Supports pagination for entities with large amounts of custom data",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/custom-data",
+      "method": "POST",
+      "operation_id": "addCustomDataForEntity",
+      "summary": "Add custom data for entity",
+      "details": {
+        "operationId": "addCustomDataForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "description": "When true, overrides values that were defined in the catalog descriptor. Will be overwritten the next time the catalog descriptor is processed.",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomData"
+                }
+              }
+            },
+            "description": "Successfully created data"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid custom data request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add custom data for entity",
+        "tags": [
+          "Custom Data"
+        ],
+        "x-cortex-mcp-description": "Add custom data to an entity. Disabled for MCP access to prevent uncontrolled metadata modifications that could affect integrations and reporting",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/custom-data/{key}",
+      "method": "GET",
+      "operation_id": "getCustomDataForEntityByKey",
+      "summary": "Retrieve custom data for entity by key",
+      "details": {
+        "operationId": "getCustomDataForEntityByKey",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomData"
+                }
+              }
+            },
+            "description": "Successfully retrieved custom data for key"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Custom data not found for given entity and key"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve custom data for entity by key",
+        "tags": [
+          "Custom Data"
+        ],
+        "x-cortex-mcp-description": "Retrieve a specific custom data value by key for an entity. Efficiently access individual metadata attributes, configuration values, or custom properties without fetching all custom data",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/custom-integrations/data/{uuid}",
+      "method": "POST",
+      "operation_id": "addCustomDataViaWebhook",
+      "summary": "Add custom data via webhook",
+      "details": {
+        "description": "Refer to the [Webhook section](/docs/reference/basics/custom-data#webhook) of the Custom Data docs for more information. This API is preconfigured in your workspace settings under Custom Integrations. The UUID corresponds to a custom data key, as well as a `jq` command that maps the data in this payload to an entity in your workspace.",
+        "operationId": "addCustomDataViaWebhook",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonNode"
+              }
+            }
+          },
+          "description": "A JSON object that contains a valid entity tag in the payload, queryable with the `jq` command defined for this webhook in your workspace.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add custom data via webhook",
+        "tags": [
+          "Custom Data"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "CustomData": {
+      "required": [
+        "dateUpdated",
+        "key",
+        "source",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "dateUpdated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "key": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "YAML",
+            "API",
+            "INTEGRATION"
+          ]
+        },
+        "value": {
+          "$ref": "#/components/schemas/JsonNode"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "JsonNode": {
+      "type": "object"
+    },
+    "BulkCustomDataResponse": {
+      "required": [
+        "values"
+      ],
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "enum": [
+              "NOT_FOUND"
+            ]
+          }
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CustomData"
+          }
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

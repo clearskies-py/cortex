@@ -34,18 +34,20 @@ class StringList(String):
     ```
     """
 
-    def from_backend(self, value: str | list[str]) -> list[str]:
+    def from_backend(self, value: str | list[str] | None) -> list[str]:
         """
         Convert backend value to a Python list.
 
         Handles both string (comma-delimited) and list inputs for flexibility.
 
         Args:
-            value: Either a comma-delimited string or a list of strings.
+            value: Either a comma-delimited string, a list of strings, or None.
 
         Returns:
-            A list of strings.
+            A list of strings. Returns empty list if value is None.
         """
+        if value is None:
+            return []
         if isinstance(value, list):
             return value
         return value.split(",")

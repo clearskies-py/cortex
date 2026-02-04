@@ -1,0 +1,805 @@
+{
+  "tag": "Deploys",
+  "endpoint_count": 7,
+  "schema_count": 7,
+  "endpoints_summary": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/deploys",
+      "operation_id": "deleteDeploysByFilter",
+      "summary": "Delete deploys by filter"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/deploys/all",
+      "operation_id": "deleteAllDeploys",
+      "summary": "Delete all deployments for all entities"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{tagOrId}/deploys",
+      "operation_id": "deleteDeploysForEntity",
+      "summary": "Delete deployments for entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/deploys",
+      "operation_id": "getDeploysForEntity",
+      "summary": "List deployments for entity"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/deploys",
+      "operation_id": "addDeployForEntity",
+      "summary": "Add deployment for entity"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{tagOrId}/deploys/{uuid}",
+      "operation_id": "deleteDeployByUuid",
+      "summary": "Delete deployment by UUID"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/catalog/{tagOrId}/deploys/{uuid}",
+      "operation_id": "updateDeployByUuid",
+      "summary": "Update deployment by UUID"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/catalog/deploys",
+      "method": "DELETE",
+      "operation_id": "deleteDeploysByFilter",
+      "summary": "Delete deploys by filter",
+      "details": {
+        "description": "Filter and delete deploys by SHA hash, environment, or type. Note that at least one of the filters need to be set.\nIf looking to delete all deployments for an entity, use the `Delete all deploys for entity` endpoint instead.",
+        "operationId": "deleteDeploysByFilter",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "environment",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sha",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DEPLOY",
+                "SCALE",
+                "ROLLBACK",
+                "RESTART"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeploysResponse"
+                }
+              }
+            },
+            "description": "Successfully deleted deployment"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Trying to delete deploys without any filters"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete deploys by filter",
+        "tags": [
+          "Deploys"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/deploys/all",
+      "method": "DELETE",
+      "operation_id": "deleteAllDeploys",
+      "summary": "Delete all deployments for all entities",
+      "details": {
+        "description": "Dangerous endpoint that blows away deploys for all entities",
+        "operationId": "deleteAllDeploys",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeploysResponse"
+                }
+              }
+            },
+            "description": "Successfully deleted all deployments"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete all deployments for all entities",
+        "tags": [
+          "Deploys"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/deploys",
+      "method": "DELETE",
+      "operation_id": "deleteDeploysForEntity",
+      "summary": "Delete deployments for entity",
+      "details": {
+        "operationId": "deleteDeploysForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "query",
+            "name": "environment",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sha",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DEPLOY",
+                "SCALE",
+                "ROLLBACK",
+                "RESTART"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomDeploy"
+                }
+              }
+            },
+            "description": "Successfully deleted deployments"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete deployments for entity",
+        "tags": [
+          "Deploys"
+        ],
+        "x-cortex-mcp-description": "Delete multiple deployments. Disabled for MCP access to preserve deployment history",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/deploys",
+      "method": "GET",
+      "operation_id": "getDeploysForEntity",
+      "summary": "List deployments for entity",
+      "details": {
+        "operationId": "getDeploysForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomDeployListPaginatedResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved deployments"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List deployments for entity",
+        "tags": [
+          "Deploys"
+        ],
+        "x-cortex-mcp-description": "List all deployments for a specific catalog entity. Returns deployment history including timestamps, environments, SHAs, and deployment types in paginated format",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/deploys",
+      "method": "POST",
+      "operation_id": "addDeployForEntity",
+      "summary": "Add deployment for entity",
+      "details": {
+        "operationId": "addDeployForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveDeployRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomDeploy"
+                }
+              }
+            },
+            "description": "Successfully created deployment"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add deployment for entity",
+        "tags": [
+          "Deploys"
+        ],
+        "x-cortex-mcp-description": "Create a new deployment record. Disabled for MCP access to prevent external systems from modifying deployment history",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/deploys/{uuid}",
+      "method": "DELETE",
+      "operation_id": "deleteDeployByUuid",
+      "summary": "Delete deployment by UUID",
+      "details": {
+        "operationId": "deleteDeployByUuid",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomDeploy"
+                }
+              }
+            },
+            "description": "Successfully deleted deployment"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity or deployment not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete deployment by UUID",
+        "tags": [
+          "Deploys"
+        ],
+        "x-cortex-mcp-description": "Delete a specific deployment. Disabled for MCP access to preserve deployment history",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/deploys/{uuid}",
+      "method": "PUT",
+      "operation_id": "updateDeployByUuid",
+      "summary": "Update deployment by UUID",
+      "details": {
+        "operationId": "updateDeployByUuid",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveDeployRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomDeploy"
+                }
+              }
+            },
+            "description": "Successfully updated deployment"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity or deployment not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update deployment by UUID",
+        "tags": [
+          "Deploys"
+        ],
+        "x-cortex-mcp-description": "Update an existing deployment. Disabled for MCP access to maintain deployment history integrity",
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "CustomDeploy": {
+      "required": [
+        "serviceId",
+        "timestamp",
+        "title",
+        "type",
+        "uuid"
+      ],
+      "type": "object",
+      "properties": {
+        "customData": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        },
+        "deployerEmail": {
+          "type": "string"
+        },
+        "deployerName": {
+          "type": "string"
+        },
+        "environment": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "serviceId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sha": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "DEPLOY",
+            "SCALE",
+            "ROLLBACK",
+            "RESTART"
+          ]
+        },
+        "url": {
+          "type": "string"
+        },
+        "uuid": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "Deployer": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "SaveDeployRequest": {
+      "required": [
+        "timestamp",
+        "title",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "customData": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        },
+        "deployer": {
+          "$ref": "#/components/schemas/Deployer"
+        },
+        "environment": {
+          "type": "string"
+        },
+        "sha": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "DEPLOY",
+            "SCALE",
+            "ROLLBACK",
+            "RESTART"
+          ]
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "DeploysResponse": {
+      "required": [
+        "deploys"
+      ],
+      "type": "object",
+      "properties": {
+        "deploys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CustomDeploy1"
+          }
+        }
+      }
+    },
+    "CustomDeployListPaginatedResponse": {
+      "required": [
+        "deployments",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "deployments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CustomDeploy1"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "CustomDeploy1": {
+      "required": [
+        "timestamp",
+        "title",
+        "type",
+        "uuid"
+      ],
+      "type": "object",
+      "properties": {
+        "customData": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "description": "Arbitrary string-to-any map of custom data about the deploy event"
+          },
+          "description": "Arbitrary string-to-any map of custom data about the deploy event"
+        },
+        "deployer": {
+          "$ref": "#/components/schemas/Deployer"
+        },
+        "deployerEmail": {
+          "type": "string",
+          "description": "Replaced with Deployer object",
+          "deprecated": true
+        },
+        "deployerName": {
+          "type": "string",
+          "description": "Replaced with Deployer object",
+          "deprecated": true
+        },
+        "environment": {
+          "type": "string"
+        },
+        "sha": {
+          "type": "string",
+          "description": "Optional commit SHA hash that this deploy corresponds to"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "ISO8601 timestamp string in UTC",
+          "format": "date-time"
+        },
+        "title": {
+          "type": "string",
+          "description": "Human readable title for the deploy. This is usually the commit message or PR title."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "DEPLOY",
+            "SCALE",
+            "ROLLBACK",
+            "RESTART"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "description": "Optional URL associated with deployment",
+          "example": "https://cortex.io"
+        },
+        "uuid": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

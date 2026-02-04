@@ -1,0 +1,1101 @@
+{
+  "tag": "[Integrations] GitHub",
+  "endpoint_count": 13,
+  "schema_count": 11,
+  "endpoints_summary": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/github/configurations",
+      "operation_id": "GitHubDeleteConfigurations",
+      "summary": "Delete all configurations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/github/configurations",
+      "operation_id": "GitHubListConfigurations",
+      "summary": "Retrieve configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/github/configurations/app",
+      "operation_id": "GitHubSaveGithubApp",
+      "summary": "Add a single app configuration"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/github/configurations/app/{alias}",
+      "operation_id": "GitHubRemoveGithubApp",
+      "summary": "Delete a single app configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/github/configurations/app/{alias}",
+      "operation_id": "GitHubGetGithubApp",
+      "summary": "Retrieve a single app configuration"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/github/configurations/app/{alias}",
+      "operation_id": "GitHubEditGithubApp",
+      "summary": "Update a single app configuration"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/github/configurations/personal",
+      "operation_id": "GitHubSavePersonalConfiguration",
+      "summary": "Add a single personal configuration"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/github/configurations/personal/{alias}",
+      "operation_id": "GitHubRemovePersonalConfiguration",
+      "summary": "Delete a personal configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/github/configurations/personal/{alias}",
+      "operation_id": "GitHubGetPersonalConfiguration",
+      "summary": "Retrieve a single personal configuration"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/github/configurations/personal/{alias}",
+      "operation_id": "GitHubEditPersonalConfiguration",
+      "summary": "Update a single personal configuration"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/github/configurations/validate",
+      "operation_id": "GitHubValidateAllConfigurations",
+      "summary": "Validate all configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/github/configurations/validate/{alias}",
+      "operation_id": "GitHubValidateConfiguration",
+      "summary": "Validate a configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/github/default-configuration",
+      "operation_id": "GitHubGetDefaultConfiguration",
+      "summary": "Retrieve default configuration"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/github/configurations",
+      "method": "DELETE",
+      "operation_id": "GitHubDeleteConfigurations",
+      "summary": "Delete all configurations",
+      "details": {
+        "operationId": "GitHubDeleteConfigurations",
+        "responses": {
+          "200": {
+            "description": "Successfully deleted all configurations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete all configurations",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/github/configurations",
+      "method": "GET",
+      "operation_id": "GitHubListConfigurations",
+      "summary": "Retrieve configurations",
+      "details": {
+        "operationId": "GitHubListConfigurations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllGithubConfigurationResponse"
+                }
+              }
+            },
+            "description": "Successfully found configurations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve configurations",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/github/configurations/app",
+      "method": "POST",
+      "operation_id": "GitHubSaveGithubApp",
+      "summary": "Add a single app configuration",
+      "details": {
+        "operationId": "GitHubSaveGithubApp",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GithubAppRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GithubConfigurationResponse.APP"
+                }
+              }
+            },
+            "description": "Successfully added configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add a single app configuration",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/github/configurations/app/{alias}",
+      "method": "DELETE",
+      "operation_id": "GitHubRemoveGithubApp",
+      "summary": "Delete a single app configuration",
+      "details": {
+        "operationId": "GitHubRemoveGithubApp",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete a single app configuration",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/github/configurations/app/{alias}",
+      "method": "GET",
+      "operation_id": "GitHubGetGithubApp",
+      "summary": "Retrieve a single app configuration",
+      "details": {
+        "operationId": "GitHubGetGithubApp",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GithubConfigurationResponse.APP"
+                }
+              }
+            },
+            "description": "Successfully found configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve a single app configuration",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/github/configurations/app/{alias}",
+      "method": "PUT",
+      "operation_id": "GitHubEditGithubApp",
+      "summary": "Update a single app configuration",
+      "details": {
+        "operationId": "GitHubEditGithubApp",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditPersonalConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GithubConfigurationResponse.APP"
+                }
+              }
+            },
+            "description": "Successfully updated configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update a single app configuration",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/github/configurations/personal",
+      "method": "POST",
+      "operation_id": "GitHubSavePersonalConfiguration",
+      "summary": "Add a single personal configuration",
+      "details": {
+        "operationId": "GitHubSavePersonalConfiguration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecryptedPersonalAccessToken"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GithubConfigurationResponse.PERSONAL_ACCESS_TOKEN"
+                }
+              }
+            },
+            "description": "Successfully added configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add a single personal configuration",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/github/configurations/personal/{alias}",
+      "method": "DELETE",
+      "operation_id": "GitHubRemovePersonalConfiguration",
+      "summary": "Delete a personal configuration",
+      "details": {
+        "operationId": "GitHubRemovePersonalConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete a personal configuration",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/github/configurations/personal/{alias}",
+      "method": "GET",
+      "operation_id": "GitHubGetPersonalConfiguration",
+      "summary": "Retrieve a single personal configuration",
+      "details": {
+        "operationId": "GitHubGetPersonalConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GithubConfigurationResponse.PERSONAL_ACCESS_TOKEN"
+                }
+              }
+            },
+            "description": "Successfully found configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve a single personal configuration",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/github/configurations/personal/{alias}",
+      "method": "PUT",
+      "operation_id": "GitHubEditPersonalConfiguration",
+      "summary": "Update a single personal configuration",
+      "details": {
+        "operationId": "GitHubEditPersonalConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditPersonalConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GithubConfigurationResponse.PERSONAL_ACCESS_TOKEN"
+                }
+              }
+            },
+            "description": "Successfully updated configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update a single personal configuration",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/github/configurations/validate",
+      "method": "POST",
+      "operation_id": "GitHubValidateAllConfigurations",
+      "summary": "Validate all configurations",
+      "details": {
+        "operationId": "GitHubValidateAllConfigurations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleIntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated all configurations"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate all configurations",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/github/configurations/validate/{alias}",
+      "method": "POST",
+      "operation_id": "GitHubValidateConfiguration",
+      "summary": "Validate a configuration",
+      "details": {
+        "operationId": "GitHubValidateConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated configuration"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate a configuration",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/github/default-configuration",
+      "method": "GET",
+      "operation_id": "GitHubGetDefaultConfiguration",
+      "summary": "Retrieve default configuration",
+      "details": {
+        "operationId": "GitHubGetDefaultConfiguration",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GithubConfigurationResponse"
+                }
+              }
+            },
+            "description": "Successfully found default configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve default configuration",
+        "tags": [
+          "[Integrations] GitHub"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "GithubConfigurationResponse.APP": {
+      "title": "APP",
+      "required": [
+        "alias",
+        "isDefault",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/GithubConfigurationResponse"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "appUrl": {
+              "type": "string"
+            },
+            "installation": {
+              "$ref": "#/components/schemas/Installation"
+            }
+          }
+        }
+      ]
+    },
+    "EditPersonalConfigurationRequest": {
+      "required": [
+        "alias",
+        "isDefault"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Installation": {
+      "required": [
+        "installationId"
+      ],
+      "type": "object",
+      "properties": {
+        "installationId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "DecryptedPersonalAccessToken": {
+      "required": [
+        "accessToken",
+        "alias",
+        "isDefault"
+      ],
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        },
+        "alias": {
+          "type": "string"
+        },
+        "apiHost": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MultipleIntegrationConfigValidation": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/IntegrationConfigValidation"
+          }
+        }
+      }
+    },
+    "AllGithubConfigurationResponse": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/GithubConfigurationResponse"
+          }
+        }
+      }
+    },
+    "IntegrationConfigValidation": {
+      "required": [
+        "isValid"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "isValid": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "GithubAppRequest": {
+      "required": [
+        "alias",
+        "appUrl",
+        "applicationId",
+        "clientId",
+        "clientSecret",
+        "isDefault",
+        "privateKey"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "apiHost": {
+          "type": "string"
+        },
+        "appUrl": {
+          "type": "string"
+        },
+        "applicationId": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": "string"
+        },
+        "clientSecret": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "privateKey": {
+          "type": "string"
+        }
+      }
+    },
+    "GithubConfigurationResponse.PERSONAL_ACCESS_TOKEN": {
+      "title": "PERSONAL_ACCESS_TOKEN",
+      "required": [
+        "alias",
+        "isDefault",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/GithubConfigurationResponse"
+        }
+      ]
+    },
+    "GithubConfigurationResponse": {
+      "required": [
+        "alias",
+        "isDefault",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/GithubConfigurationResponse.APP"
+        },
+        {
+          "$ref": "#/components/schemas/GithubConfigurationResponse.PERSONAL_ACCESS_TOKEN"
+        }
+      ]
+    }
+  },
+  "referenced_common_schemas": []
+}

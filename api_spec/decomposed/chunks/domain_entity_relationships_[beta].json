@@ -1,0 +1,1154 @@
+{
+  "tag": "Entity Relationships [Beta]",
+  "endpoint_count": 9,
+  "schema_count": 13,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/relationships/{relationshipTypeTag}/destinations",
+      "operation_id": "listEntityDestinationsForRelationshipType",
+      "summary": "List entity destinations for a relationship type"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/relationships/{relationshipTypeTag}/destinations",
+      "operation_id": "addEntityDestinations",
+      "summary": "Add direct entity destinations for a given entity"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/catalog/{tagOrId}/relationships/{relationshipTypeTag}/destinations",
+      "operation_id": "updateEntityDestinations",
+      "summary": "Update direct entity destinations for a given entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/relationships/{relationshipTypeTag}/sources",
+      "operation_id": "listEntitySourcesForRelationshipType",
+      "summary": "List entity sources for a relationship type"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/relationships/{relationshipTypeTag}/sources",
+      "operation_id": "addEntitySources",
+      "summary": "Add direct entity sources for a given entity"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/catalog/{tagOrId}/relationships/{relationshipTypeTag}/sources",
+      "operation_id": "updateEntitySources",
+      "summary": "Update direct entity sources for a given entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/relationships/{relationshipTypeTag}",
+      "operation_id": "listEntityRelationships",
+      "summary": "List entity relationships for a relationship type"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/relationships/{relationshipTypeTag}",
+      "operation_id": "addEntityRelationships",
+      "summary": "Add entity relationships for a relationship type"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/relationships/{relationshipTypeTag}",
+      "operation_id": "updateEntityRelationships",
+      "summary": "Update entity relationships for a relationship type"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/catalog/{tagOrId}/relationships/{relationshipTypeTag}/destinations",
+      "method": "GET",
+      "operation_id": "listEntityDestinationsForRelationshipType",
+      "summary": "List entity destinations for a relationship type",
+      "details": {
+        "description": "List all entity destinations for a certain relationship type. Optional depth parameter to limit the depth of the relationship tree.",
+        "operationId": "listEntityDestinationsForRelationshipType",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "relationshipTypeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Maximum depth to traverse in the relationship hierarchy. Defaults to 1 (i.e., direct relationships only).",
+            "example": 2,
+            "in": "query",
+            "name": "depth",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true will include relationships that traverse archived entities",
+            "example": false,
+            "in": "query",
+            "name": "includeArchived",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityDestinationsResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved entity sources"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity or relationship type not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List entity destinations for a relationship type",
+        "tags": [
+          "Entity Relationships [Beta]"
+        ],
+        "x-cortex-mcp-description": "List all destinations for a certain relationship type & entity. Use the listRelationshipTypes tool to find the relevant relationshipTypeTag.",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/relationships/{relationshipTypeTag}/destinations",
+      "method": "POST",
+      "operation_id": "addEntityDestinations",
+      "summary": "Add direct entity destinations for a given entity",
+      "details": {
+        "description": "Add direct destinations for a given entity and entity relationship type",
+        "operationId": "addEntityDestinations",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "relationshipTypeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "When true, overrides values that were defined in the catalog descriptor. Will be overwritten the next time the catalog descriptor is processed.",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEntityRelationshipDestinations"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityDestinationsResponse"
+                }
+              }
+            },
+            "description": "Successfully added entity destinations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Relationship validation error"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity or relationship type not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add direct entity destinations for a given entity",
+        "tags": [
+          "Entity Relationships [Beta]"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/relationships/{relationshipTypeTag}/destinations",
+      "method": "PUT",
+      "operation_id": "updateEntityDestinations",
+      "summary": "Update direct entity destinations for a given entity",
+      "details": {
+        "description": "Update all direct destinations for a given entity and entity relationship type",
+        "operationId": "updateEntityDestinations",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "relationshipTypeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "When true, overrides values that were defined in the catalog descriptor. Will be overwritten the next time the catalog descriptor is processed.",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEntityRelationshipDestinations"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityDestinationsResponse"
+                }
+              }
+            },
+            "description": "Successfully updated entity destinations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Relationship validation error"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity or relationship type not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update direct entity destinations for a given entity",
+        "tags": [
+          "Entity Relationships [Beta]"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/relationships/{relationshipTypeTag}/sources",
+      "method": "GET",
+      "operation_id": "listEntitySourcesForRelationshipType",
+      "summary": "List entity sources for a relationship type",
+      "details": {
+        "description": "List all entity sources for a certain relationship type. Optional depth parameter to limit the depth of the relationship tree.",
+        "operationId": "listEntitySourcesForRelationshipType",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "relationshipTypeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Maximum depth to traverse in the relationship hierarchy. Defaults to 1 (i.e., direct relationships only).",
+            "example": 2,
+            "in": "query",
+            "name": "depth",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true will include relationships that traverse archived entities",
+            "example": false,
+            "in": "query",
+            "name": "includeArchived",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntitySourcesResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved entity sources"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity or relationship type not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List entity sources for a relationship type",
+        "tags": [
+          "Entity Relationships [Beta]"
+        ],
+        "x-cortex-mcp-description": "List all sources for a certain relationship type & entity. Use the listRelationshipTypes tool to find the relevant relationshipTypeTag.",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/relationships/{relationshipTypeTag}/sources",
+      "method": "POST",
+      "operation_id": "addEntitySources",
+      "summary": "Add direct entity sources for a given entity",
+      "details": {
+        "description": "Add direct sources for a given entity and entity relationship type",
+        "operationId": "addEntitySources",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "relationshipTypeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "When true, overrides values that were defined in the catalog descriptor. Will be overwritten the next time the catalog descriptor is processed.",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEntityRelationshipSources"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntitySourcesResponse"
+                }
+              }
+            },
+            "description": "Successfully added entity sources"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Relationship validation error"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity or relationship type not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add direct entity sources for a given entity",
+        "tags": [
+          "Entity Relationships [Beta]"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/relationships/{relationshipTypeTag}/sources",
+      "method": "PUT",
+      "operation_id": "updateEntitySources",
+      "summary": "Update direct entity sources for a given entity",
+      "details": {
+        "description": "Update all direct sources for a given entity and entity relationship type",
+        "operationId": "updateEntitySources",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "relationshipTypeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "When true, overrides values that were defined in the catalog descriptor. Will be overwritten the next time the catalog descriptor is processed.",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEntityRelationshipSources"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntitySourcesResponse"
+                }
+              }
+            },
+            "description": "Successfully updated entity sources"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Relationship validation error"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity or relationship type not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update direct entity sources for a given entity",
+        "tags": [
+          "Entity Relationships [Beta]"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/relationships/{relationshipTypeTag}",
+      "method": "GET",
+      "operation_id": "listEntityRelationships",
+      "summary": "List entity relationships for a relationship type",
+      "details": {
+        "description": "List all entity relationships for a certain relationship type.",
+        "operationId": "listEntityRelationships",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "relationshipTypeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListRelationships"
+                }
+              }
+            },
+            "description": "Successfully retrieved entity relationships"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Relationship type not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List entity relationships for a relationship type",
+        "tags": [
+          "Entity Relationships [Beta]"
+        ],
+        "x-cortex-mcp-description": "List all entity relationships/full graph for a specific relationship type across the entire organization. Returns paginated results showing all source-destination pairs, useful for understanding the complete relationship graph and finding all connections of a particular type",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/relationships/{relationshipTypeTag}",
+      "method": "POST",
+      "operation_id": "addEntityRelationships",
+      "summary": "Add entity relationships for a relationship type",
+      "details": {
+        "description": "Add all entity relationships for a certain relationship type.",
+        "operationId": "addEntityRelationships",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "relationshipTypeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "When true, overrides values that were defined in the catalog descriptor. Will be overwritten the next time the catalog descriptor is processed.",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEntityRelationships"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkUpdateEntityRelationshipsResponse"
+                }
+              }
+            },
+            "description": "Successfully added entity relationships"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Relationship type not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add entity relationships for a relationship type",
+        "tags": [
+          "Entity Relationships [Beta]"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/relationships/{relationshipTypeTag}",
+      "method": "PUT",
+      "operation_id": "updateEntityRelationships",
+      "summary": "Update entity relationships for a relationship type",
+      "details": {
+        "description": "Update all entity relationships for a certain relationship type.",
+        "operationId": "updateEntityRelationships",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "relationshipTypeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "When true, overrides values that were defined in the catalog descriptor. Will be overwritten the next time the catalog descriptor is processed.",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEntityRelationships"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkUpdateEntityRelationshipsResponse"
+                }
+              }
+            },
+            "description": "Successfully updated entity relationships"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Relationship type not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update entity relationships for a relationship type",
+        "tags": [
+          "Entity Relationships [Beta]"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "UpdateEntityRelationshipSources": {
+      "required": [
+        "sources"
+      ],
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": "array",
+          "description": "List of code tags for the entities to add as sources",
+          "example": [
+            "entity-1",
+            "entity-2"
+          ],
+          "items": {
+            "type": "string",
+            "description": "List of code tags for the entities to add as sources",
+            "example": "[\"entity-1\",\"entity-2\"]"
+          }
+        }
+      },
+      "description": "Updates to entity relationship sources"
+    },
+    "RelatedEntityDetails": {
+      "required": [
+        "id",
+        "name",
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of the entity visible in the Service, Resource, or Domain Catalog. This may contain markdown."
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique, immutable, 18-character auto-generated identifier for the entity.",
+          "example": "en2da8159dbeefb974"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name for the entity",
+          "example": "My Favorite Entity"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Unique identifier for the entity. Corresponds to the x-cortex-tag field in the entity descriptor.",
+          "example": "my-favorite-entity"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of the entity. Corresponds to the x-cortex-type field in the entity descriptor or 'service' for services.",
+          "example": "service"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "UpdateEntityRelationships": {
+      "required": [
+        "relationships"
+      ],
+      "type": "object",
+      "properties": {
+        "relationships": {
+          "type": "array",
+          "description": "List of code tags for the entities to add as sources",
+          "items": {
+            "$ref": "#/components/schemas/EntityRelationshipRequest"
+          }
+        }
+      },
+      "description": "Updates to entity relationships"
+    },
+    "EntityRelationshipRequest": {
+      "required": [
+        "destination",
+        "source"
+      ],
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "string",
+          "description": "Code Tag for the destination entity",
+          "example": "service-b"
+        },
+        "source": {
+          "type": "string",
+          "description": "Code Tag for the source entity",
+          "example": "service-a"
+        }
+      },
+      "description": "Request to create a relationship between two entities"
+    },
+    "EntityDestinationsResponse": {
+      "required": [
+        "destinations"
+      ],
+      "type": "object",
+      "properties": {
+        "destinations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RelatedEntityDetails"
+          }
+        }
+      }
+    },
+    "BulkUpdateEntityRelationshipsResponse": {
+      "required": [
+        "errors",
+        "relationships"
+      ],
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "array",
+          "description": "Errors encountered during the operation",
+          "items": {
+            "$ref": "#/components/schemas/EntityRelationshipError"
+          }
+        },
+        "relationships": {
+          "type": "array",
+          "description": "Successfully created or updated relationships",
+          "items": {
+            "$ref": "#/components/schemas/EntityRelationship"
+          }
+        }
+      },
+      "description": "Response from bulk entity relationship operations"
+    },
+    "UpdateEntityRelationshipDestinations": {
+      "required": [
+        "destinations"
+      ],
+      "type": "object",
+      "properties": {
+        "destinations": {
+          "type": "array",
+          "description": "List of code tags for the entities to add as sources",
+          "example": [
+            "entity-1",
+            "entity-2"
+          ],
+          "items": {
+            "type": "string",
+            "description": "List of code tags for the entities to add as sources",
+            "example": "[\"entity-1\",\"entity-2\"]"
+          }
+        }
+      },
+      "description": "Updates to entity relationship destinations"
+    },
+    "ListRelationships": {
+      "required": [
+        "page",
+        "relationships",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "relationships": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/EntityRelationshipDetails"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      },
+      "description": "List of related entities."
+    },
+    "EntityRelationship": {
+      "required": [
+        "destinationEntityTag",
+        "relationshipTypeTag",
+        "sourceEntityTag"
+      ],
+      "type": "object",
+      "properties": {
+        "destinationEntityTag": {
+          "type": "string",
+          "description": "Code tag of the destination entity",
+          "example": "service-b"
+        },
+        "providerType": {
+          "type": "string",
+          "description": "Provider that created or manages this relationship",
+          "example": "WORKDAY",
+          "enum": [
+            "WORKDAY"
+          ]
+        },
+        "relationshipTypeTag": {
+          "type": "string",
+          "description": "Tag of the relationship type",
+          "example": "depends-on"
+        },
+        "sourceEntityTag": {
+          "type": "string",
+          "description": "Code tag of the source entity",
+          "example": "service-a"
+        }
+      },
+      "description": "A relationship between two entities"
+    },
+    "EntityRelationshipDetails": {
+      "required": [
+        "destinationEntity",
+        "relationshipTypeTag",
+        "sourceEntity"
+      ],
+      "type": "object",
+      "properties": {
+        "destinationEntity": {
+          "$ref": "#/components/schemas/RelatedEntityDetails"
+        },
+        "providerType": {
+          "type": "string",
+          "description": "Provider that created or manages this relationship",
+          "example": "WORKDAY",
+          "enum": [
+            "WORKDAY"
+          ]
+        },
+        "relationshipTypeTag": {
+          "type": "string",
+          "description": "Tag of the relationship type",
+          "example": "depends-on"
+        },
+        "sourceEntity": {
+          "$ref": "#/components/schemas/RelatedEntityDetails"
+        }
+      },
+      "description": "Describes a specific entity relationship"
+    },
+    "EntityRelationshipError": {
+      "required": [
+        "destinationEntityTag",
+        "errorMessage",
+        "relationshipTypeTag",
+        "sourceEntityTag"
+      ],
+      "type": "object",
+      "properties": {
+        "destinationEntityTag": {
+          "type": "string",
+          "description": "Code tag of the destination entity",
+          "example": "service-b"
+        },
+        "errorMessage": {
+          "type": "string",
+          "description": "Human-readable error message",
+          "example": "Source entity not found"
+        },
+        "relationshipTypeTag": {
+          "type": "string",
+          "description": "Tag of the relationship type",
+          "example": "depends-on"
+        },
+        "sourceEntityTag": {
+          "type": "string",
+          "description": "Code tag of the source entity",
+          "example": "service-a"
+        }
+      },
+      "description": "Error details for a failed relationship operation"
+    },
+    "EntitySourcesResponse": {
+      "required": [
+        "sources"
+      ],
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RelatedEntityDetails"
+          }
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

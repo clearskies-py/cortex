@@ -1,0 +1,433 @@
+{
+  "tag": "[Integrations] PagerDuty",
+  "endpoint_count": 5,
+  "schema_count": 6,
+  "endpoints_summary": [
+    {
+      "method": "POST",
+      "path": "/api/v1/pagerduty/configuration",
+      "operation_id": "PagerDutySaveConfiguration",
+      "summary": "Add a configuration"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/pagerduty/configuration",
+      "operation_id": "PagerDutyReplaceConfiguration",
+      "summary": "Replace the existing configuration"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pagerduty/configuration/validate",
+      "operation_id": "PagerDutyValidateConfiguration",
+      "summary": "Validate a configuration"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/pagerduty/configurations",
+      "operation_id": "PagerDutyDeleteConfiguration",
+      "summary": "Delete a configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pagerduty/default-configuration",
+      "operation_id": "PagerDutyGetConfiguration",
+      "summary": "Retrieve a configuration"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/pagerduty/configuration",
+      "method": "POST",
+      "operation_id": "PagerDutySaveConfiguration",
+      "summary": "Add a configuration",
+      "details": {
+        "operationId": "PagerDutySaveConfiguration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PagerdutyConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponsePagerdutyConfiguration"
+                }
+              }
+            },
+            "description": "Successfully added configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add a configuration",
+        "tags": [
+          "[Integrations] PagerDuty"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/pagerduty/configuration",
+      "method": "PUT",
+      "operation_id": "PagerDutyReplaceConfiguration",
+      "summary": "Replace the existing configuration",
+      "details": {
+        "operationId": "PagerDutyReplaceConfiguration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PagerdutyConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponsePagerdutyConfiguration"
+                }
+              }
+            },
+            "description": "Successfully replaces configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Replace the existing configuration",
+        "tags": [
+          "[Integrations] PagerDuty"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/pagerduty/configuration/validate",
+      "method": "POST",
+      "operation_id": "PagerDutyValidateConfiguration",
+      "summary": "Validate a configuration",
+      "details": {
+        "operationId": "PagerDutyValidateConfiguration",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleIntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated configuration"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate a configuration",
+        "tags": [
+          "[Integrations] PagerDuty"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/pagerduty/configurations",
+      "method": "DELETE",
+      "operation_id": "PagerDutyDeleteConfiguration",
+      "summary": "Delete a configuration",
+      "details": {
+        "operationId": "PagerDutyDeleteConfiguration",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponsePagerdutyConfiguration"
+                }
+              }
+            },
+            "description": "Successfully deleted configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete a configuration",
+        "tags": [
+          "[Integrations] PagerDuty"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/pagerduty/default-configuration",
+      "method": "GET",
+      "operation_id": "PagerDutyGetConfiguration",
+      "summary": "Retrieve a configuration",
+      "details": {
+        "operationId": "PagerDutyGetConfiguration",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagerdutyConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve a configuration",
+        "tags": [
+          "[Integrations] PagerDuty"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "PagerdutyConfiguration": {
+      "required": [
+        "isTokenReadonly",
+        "lastFour"
+      ],
+      "type": "object",
+      "properties": {
+        "isTokenReadonly": {
+          "type": "boolean"
+        },
+        "lastFour": {
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "IntegrationConfigValidation": {
+      "required": [
+        "isValid"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "isValid": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "PagerdutyConfigurationRequest": {
+      "required": [
+        "isTokenReadonly",
+        "token"
+      ],
+      "type": "object",
+      "properties": {
+        "isTokenReadonly": {
+          "type": "boolean"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "ConfigurationsResponsePagerdutyConfiguration": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/PagerdutyConfiguration"
+          }
+        }
+      }
+    },
+    "MultipleIntegrationConfigValidation": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/IntegrationConfigValidation"
+          }
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

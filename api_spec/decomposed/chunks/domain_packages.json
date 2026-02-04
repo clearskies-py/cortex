@@ -1,0 +1,1435 @@
+{
+  "tag": "Packages",
+  "endpoint_count": 18,
+  "schema_count": 3,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/packages",
+      "operation_id": "listPackages",
+      "summary": "List packages"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{tagOrId}/packages/dotnet/nuget",
+      "operation_id": "deleteNugetPackage",
+      "summary": "[csharp] Delete Nuget package"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/packages/dotnet/nuget/csproj",
+      "operation_id": "uploadNugetCsproj",
+      "summary": "[csharp] Upload Nuget csproj"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/packages/dotnet/nuget/packages-lock",
+      "operation_id": "uploadNugetPackagesLock",
+      "summary": "[csharp] Upload Nuget packages.lock.json"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{tagOrId}/packages/go",
+      "operation_id": "deleteGoPackage",
+      "summary": "[go] Delete Go package"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/packages/go/gosum",
+      "operation_id": "uploadGoSumPackage",
+      "summary": "[golang] Upload go.sum"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{tagOrId}/packages/java",
+      "operation_id": "deleteJavaPackage",
+      "summary": "[java] Delete Java package"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/packages/java",
+      "operation_id": "uploadJavaPackage",
+      "summary": "[java] Upload single Java package"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/packages/java/bulk",
+      "operation_id": "uploadJavaPackages",
+      "summary": "[java] Upload multiple Java packages"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/packages/java/maven-pom",
+      "operation_id": "uploadMavenPom",
+      "summary": "[java] Upload maven pom.xml"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{tagOrId}/packages/node",
+      "operation_id": "deleteNodePackage",
+      "summary": "[node] Delete Node package"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/packages/node/package-json",
+      "operation_id": "uploadNpmPackageJson",
+      "summary": "[js] Upload NPM/Yarn/PNPM package.json"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/packages/node/package-lock",
+      "operation_id": "uploadNpmPackageLockJson",
+      "summary": "[js] Upload NPM package-lock.json"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/packages/node/pnpm-lock",
+      "operation_id": "uploadPnpmLock",
+      "summary": "[js] Upload pnpm-lock.yaml"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/packages/node/yarn-lock",
+      "operation_id": "uploadYarnLock",
+      "summary": "[js] Upload yarn.lock"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{tagOrId}/packages/python",
+      "operation_id": "deletePythonPackage",
+      "summary": "[python] Delete Python package"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/packages/python/pipfile",
+      "operation_id": "uploadPipfileLock",
+      "summary": "[python] Upload pipfile.lock"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/packages/python/requirements",
+      "operation_id": "uploadRequirementsTxt",
+      "summary": "[python] Upload requirements.txt"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages",
+      "method": "GET",
+      "operation_id": "listPackages",
+      "summary": "List packages",
+      "details": {
+        "operationId": "listPackages",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Package"
+                  }
+                }
+              }
+            },
+            "description": "All packages. If using pagination, we do not return page, total, or totalPages in the response. An empty array is returned once you reach the end."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List packages",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/dotnet/nuget",
+      "method": "DELETE",
+      "operation_id": "deleteNugetPackage",
+      "summary": "[csharp] Delete Nuget package",
+      "details": {
+        "operationId": "deleteNugetPackage",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted package"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[csharp] Delete Nuget package",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/dotnet/nuget/csproj",
+      "method": "POST",
+      "operation_id": "uploadNugetCsproj",
+      "summary": "[csharp] Upload Nuget csproj",
+      "details": {
+        "operationId": "uploadNugetCsproj",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/xml": {}
+          },
+          "description": "Stringified version of your *.csproj file",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "dateCreated": "2023-01-01T01:01:01.000Z",
+                    "id": 0,
+                    "name": "string",
+                    "packageType": "NUGET",
+                    "version": "string"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Package"
+                  }
+                }
+              }
+            },
+            "description": "Successfully saved packages"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[csharp] Upload Nuget csproj",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/dotnet/nuget/packages-lock",
+      "method": "POST",
+      "operation_id": "uploadNugetPackagesLock",
+      "summary": "[csharp] Upload Nuget packages.lock.json",
+      "details": {
+        "operationId": "uploadNugetPackagesLock",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Stringified version of your nuget package.lock.json file",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "dateCreated": "2023-01-01T01:01:01.000Z",
+                    "id": 0,
+                    "name": "string",
+                    "packageType": "NUGET",
+                    "version": "string"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Package"
+                  }
+                }
+              }
+            },
+            "description": "Successfully saved packages"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[csharp] Upload Nuget packages.lock.json",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/go",
+      "method": "DELETE",
+      "operation_id": "deleteGoPackage",
+      "summary": "[go] Delete Go package",
+      "details": {
+        "operationId": "deleteGoPackage",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted package"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[go] Delete Go package",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/go/gosum",
+      "method": "POST",
+      "operation_id": "uploadGoSumPackage",
+      "summary": "[golang] Upload go.sum",
+      "details": {
+        "operationId": "uploadGoSumPackage",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Stringified version of your go.sum file",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "dateCreated": "2023-01-01T01:01:01.000Z",
+                    "id": 0,
+                    "name": "string",
+                    "packageType": "GO",
+                    "version": "string"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Package"
+                  }
+                }
+              }
+            },
+            "description": "Successfully saved packages"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[golang] Upload go.sum",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/java",
+      "method": "DELETE",
+      "operation_id": "deleteJavaPackage",
+      "summary": "[java] Delete Java package",
+      "details": {
+        "operationId": "deleteJavaPackage",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted package"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[java] Delete Java package",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/java",
+      "method": "POST",
+      "operation_id": "uploadJavaPackage",
+      "summary": "[java] Upload single Java package",
+      "details": {
+        "operationId": "uploadJavaPackage",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PackageVersionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "dateCreated": "2023-01-01T01:01:01.000Z",
+                  "id": 0,
+                  "name": "string",
+                  "packageType": "JAVA",
+                  "version": "string"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Package"
+                }
+              }
+            },
+            "description": "Successfully saved package"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[java] Upload single Java package",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/java/bulk",
+      "method": "POST",
+      "operation_id": "uploadJavaPackages",
+      "summary": "[java] Upload multiple Java packages",
+      "details": {
+        "operationId": "uploadJavaPackages",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PackageVersionRequest"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "dateCreated": "2023-01-01T01:01:01.000Z",
+                    "id": 0,
+                    "name": "string",
+                    "packageType": "JAVA",
+                    "version": "string"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Package"
+                  }
+                }
+              }
+            },
+            "description": "Successfully saved packages"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[java] Upload multiple Java packages",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/java/maven-pom",
+      "method": "POST",
+      "operation_id": "uploadMavenPom",
+      "summary": "[java] Upload maven pom.xml",
+      "details": {
+        "operationId": "uploadMavenPom",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Stringified version of your pom.xml file",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "dateCreated": "2023-01-01T01:01:01.000Z",
+                    "id": 0,
+                    "name": "string",
+                    "packageType": "JAVA",
+                    "version": "string"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Package"
+                  }
+                }
+              }
+            },
+            "description": "Successfully saved packages"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[java] Upload maven pom.xml",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/node",
+      "method": "DELETE",
+      "operation_id": "deleteNodePackage",
+      "summary": "[node] Delete Node package",
+      "details": {
+        "operationId": "deleteNodePackage",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted package"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[node] Delete Node package",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/node/package-json",
+      "method": "POST",
+      "operation_id": "uploadNpmPackageJson",
+      "summary": "[js] Upload NPM/Yarn/PNPM package.json",
+      "details": {
+        "operationId": "uploadNpmPackageJson",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Stringified version of your package.json",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "dateCreated": "2023-01-01T01:01:01.000Z",
+                    "id": 0,
+                    "name": "string",
+                    "packageType": "NODE",
+                    "version": "string"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Package"
+                  }
+                }
+              }
+            },
+            "description": "Successfully saved packages"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[js] Upload NPM/Yarn/PNPM package.json",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/node/package-lock",
+      "method": "POST",
+      "operation_id": "uploadNpmPackageLockJson",
+      "summary": "[js] Upload NPM package-lock.json",
+      "details": {
+        "operationId": "uploadNpmPackageLockJson",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Stringified version of your NPM package-lock.json",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "dateCreated": "2023-01-01T01:01:01.000Z",
+                    "id": 0,
+                    "name": "string",
+                    "packageType": "NODE",
+                    "version": "string"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Package"
+                  }
+                }
+              }
+            },
+            "description": "Successfully saved packages"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[js] Upload NPM package-lock.json",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/node/pnpm-lock",
+      "method": "POST",
+      "operation_id": "uploadPnpmLock",
+      "summary": "[js] Upload pnpm-lock.yaml",
+      "details": {
+        "operationId": "uploadPnpmLock",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Stringified version of your pnpm-lock.yaml file; supported version 6 or higher",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "dateCreated": "2023-01-01T01:01:01.000Z",
+                    "id": 0,
+                    "name": "string",
+                    "packageType": "NODE",
+                    "version": "string"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Package"
+                  }
+                }
+              }
+            },
+            "description": "Successfully saved packages"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[js] Upload pnpm-lock.yaml",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/node/yarn-lock",
+      "method": "POST",
+      "operation_id": "uploadYarnLock",
+      "summary": "[js] Upload yarn.lock",
+      "details": {
+        "operationId": "uploadYarnLock",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Stringified version of your yarn.lock file",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "dateCreated": "2023-01-01T01:01:01.000Z",
+                    "id": 0,
+                    "name": "string",
+                    "packageType": "NODE",
+                    "version": "string"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Package"
+                  }
+                }
+              }
+            },
+            "description": "Successfully saved packages"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[js] Upload yarn.lock",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/python",
+      "method": "DELETE",
+      "operation_id": "deletePythonPackage",
+      "summary": "[python] Delete Python package",
+      "details": {
+        "operationId": "deletePythonPackage",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted package"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[python] Delete Python package",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/python/pipfile",
+      "method": "POST",
+      "operation_id": "uploadPipfileLock",
+      "summary": "[python] Upload pipfile.lock",
+      "details": {
+        "operationId": "uploadPipfileLock",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Stringified version of your Pipfile.lock file",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "dateCreated": "2023-01-01T01:01:01.000Z",
+                    "id": 0,
+                    "name": "string",
+                    "packageType": "PYTHON",
+                    "version": "string"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Package"
+                  }
+                }
+              }
+            },
+            "description": "Successfully saved packages"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[python] Upload pipfile.lock",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/packages/python/requirements",
+      "method": "POST",
+      "operation_id": "uploadRequirementsTxt",
+      "summary": "[python] Upload requirements.txt",
+      "details": {
+        "operationId": "uploadRequirementsTxt",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Stringified version of your requirements.txt file",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "dateCreated": "2023-01-01T01:01:01.000Z",
+                    "id": 0,
+                    "name": "string",
+                    "packageType": "PYTHON",
+                    "version": "string"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Package"
+                  }
+                }
+              }
+            },
+            "description": "Successfully saved packages"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[python] Upload requirements.txt",
+        "tags": [
+          "Packages"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "Package": {
+      "required": [
+        "dateCreated",
+        "id",
+        "name",
+        "packageType",
+        "version"
+      ],
+      "type": "object",
+      "properties": {
+        "dateCreated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "packageType": {
+          "type": "string",
+          "enum": [
+            "NODE",
+            "JAVA",
+            "PYTHON",
+            "GO",
+            "NUGET"
+          ]
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "PackageVersionRequest": {
+      "required": [
+        "name",
+        "version"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Package name, like io.cortex.scorecards",
+          "example": "io.cortex.scorecards"
+        },
+        "version": {
+          "type": "string",
+          "description": "Semver package version",
+          "example": "1.2.3"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

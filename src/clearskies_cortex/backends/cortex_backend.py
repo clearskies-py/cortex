@@ -54,16 +54,18 @@ class CortexBackend(clearskies.backends.ApiBackend):
 
     ## Pagination
 
-    The Cortex API uses page-based pagination with the following response format:
+    The Cortex API uses 0-indexed page-based pagination with the following response format:
 
     ```json
     {
         "entities": [...],
-        "page": 1,
+        "page": 0,
         "totalPages": 5,
         "total": 100
     }
     ```
+
+    Where `page` is 0-indexed (first page is 0, last page is totalPages - 1).
 
     The backend automatically handles extracting pagination data and provides the next page
     information to clearskies for seamless iteration through results.
@@ -136,7 +138,7 @@ class CortexBackend(clearskies.backends.ApiBackend):
 
         The Cortex API returns responses in a specific format where the actual records are nested
         within a dictionary alongside pagination metadata. This method extracts the records and
-        removes the pagination fields before passing to the parent implementation.
+        filters out the pagination fields before passing to the parent implementation.
 
         Example Cortex API response:
 
@@ -152,15 +154,15 @@ class CortexBackend(clearskies.backends.ApiBackend):
         This method will extract the `entities` list and pass it to the parent for further processing.
         """
         if isinstance(response_data, dict):
-            if "page" in response_data:
-                del response_data["page"]
-                del response_data["totalPages"]
-                del response_data["total"]
-            first_item = next(iter(response_data))
-            if isinstance(response_data[first_item], list) and all(
-                isinstance(item, dict) for item in response_data[first_item]
-            ):
-                return super().map_records_response(response_data[first_item], query, query_data)
+            # Filter out pagination fields without mutating the original response_data
+            # This is important because get_next_page_data_from_response() needs these fields
+            filtered_data = {k: v for k, v in response_data.items() if k not in ("page", "totalPages", "total")}
+            if filtered_data:
+                first_item = next(iter(filtered_data))
+                if isinstance(filtered_data[first_item], list) and all(
+                    isinstance(item, dict) for item in filtered_data[first_item]
+                ):
+                    return super().map_records_response(filtered_data[first_item], query, query_data)
         return super().map_records_response(response_data, query, query_data)
 
     def get_next_page_data_from_response(
@@ -202,10 +204,12 @@ class CortexBackend(clearskies.backends.ApiBackend):
                 if total_pages is not None:
                     next_page_data["total_pages"] = total_pages
 
-            # Check if there are more pages
+            # Check if there are more pages (Cortex API uses 0-indexed pages)
+            # page=0 is first page, page=totalPages-1 is last page
+            # So there are more pages if page + 1 < totalPages
             page = response_data.get("page", None)
             total_pages_from_response = response_data.get("totalPages", None)
-            if page is not None and total_pages_from_response is not None and page < total_pages_from_response:
+            if page is not None and total_pages_from_response is not None and page + 1 < total_pages_from_response:
                 next_page_data[self.pagination_parameter_name] = page + 1
 
         return next_page_data

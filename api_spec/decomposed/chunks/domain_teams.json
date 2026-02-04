@@ -1,0 +1,1327 @@
+{
+  "tag": "Teams",
+  "endpoint_count": 9,
+  "schema_count": 26,
+  "endpoints_summary": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/teams",
+      "operation_id": "deleteTeam",
+      "summary": "Delete team"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/teams",
+      "operation_id": "getTeamDetailsAdvanced",
+      "summary": "Retrieve list of teams or team details"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/teams",
+      "operation_id": "createTeam",
+      "summary": "Create a team"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/teams/{tagOrId}",
+      "operation_id": "deleteTeamByTagOrId",
+      "summary": "Delete team by tag or ID"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/teams/{tagOrId}",
+      "operation_id": "getTeamDetails",
+      "summary": "Retrieve team details"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/teams/{tagOrId}",
+      "operation_id": "updateTeamMetadata",
+      "summary": "Update team metadata"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/teams/{tagOrId}/archive",
+      "operation_id": "archiveTeam",
+      "summary": "Archive team"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/teams/{tagOrId}/members",
+      "operation_id": "updateCortexTeamMembers",
+      "summary": "[Cortex managed teams] Update members in team"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/teams/{tagOrId}/unarchive",
+      "operation_id": "unarchiveTeam",
+      "summary": "Unarchive team"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/teams",
+      "method": "DELETE",
+      "operation_id": "deleteTeam",
+      "summary": "Delete team",
+      "details": {
+        "operationId": "deleteTeam",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "teamTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unit"
+                }
+              }
+            },
+            "description": "Successfully deleted team"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Team not found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unit"
+                }
+              }
+            },
+            "description": "Team delete is not allowed"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete team",
+        "tags": [
+          "Teams"
+        ],
+        "x-cortex-mcp-description": "Delete a team by tag. Disabled for MCP access to prevent removal of organizational units",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/teams",
+      "method": "GET",
+      "operation_id": "getTeamDetailsAdvanced",
+      "summary": "Retrieve list of teams or team details",
+      "details": {
+        "description": "*Warning:* This API can return team details if you pass in a teamTag query parameter. However, this should only be used to retrieve team details if your team identifier contains non-alphanumeric characters. Otherwise, use the standard API under `Teams` -> `Retrieve team details`. When retrieving team details, the response will be a single team entity instead of a list.\n\nNote: the response objects can also include an `idpGroup` or `cortexTeam` field depending on whether the team contains a `group` or only consists of individually defined `members`.",
+        "operationId": "getTeamDetailsAdvanced",
+        "parameters": [
+          {
+            "description": "Include teams without members",
+            "example": false,
+            "in": "query",
+            "name": "includeTeamsWithoutMembers",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Team identifier",
+            "example": "my-team",
+            "in": "query",
+            "name": "teamTag",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllTeamsResponse"
+                }
+              }
+            },
+            "description": "Object containing a list of teams"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Team not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve list of teams or team details",
+        "tags": [
+          "Teams"
+        ],
+        "x-cortex-mcp-description": "Retrieve a list of all teams in the organization. Disabled for MCP access - use the catalog API with type=team filter instead to retrieve team information",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/teams",
+      "method": "POST",
+      "operation_id": "createTeam",
+      "summary": "Create a team",
+      "details": {
+        "description": "Team memberships can be backed by an IdP group (from Okta, Azure AD, Google Groups, etc), or can be managed directly through Cortex. Each has a separate request shape, so make sure to select the correct example.",
+        "operationId": "createTeam",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTeamRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamResponse"
+                }
+              }
+            },
+            "description": "Successfully created a team"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create a team",
+        "tags": [
+          "Teams"
+        ],
+        "x-cortex-mcp-description": "Create a new team. Disabled for MCP access to prevent external systems from modifying organizational structure",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/teams/{tagOrId}",
+      "method": "DELETE",
+      "operation_id": "deleteTeamByTagOrId",
+      "summary": "Delete team by tag or ID",
+      "details": {
+        "operationId": "deleteTeamByTagOrId",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unit"
+                }
+              }
+            },
+            "description": "Successfully deleted team"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Team not found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unit"
+                }
+              }
+            },
+            "description": "Team delete is not allowed"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete team by tag or ID",
+        "tags": [
+          "Teams"
+        ],
+        "x-cortex-mcp-description": "Delete a team by tag or ID. Disabled for MCP access to prevent removal of organizational units",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/teams/{tagOrId}",
+      "method": "GET",
+      "operation_id": "getTeamDetails",
+      "summary": "Retrieve team details",
+      "details": {
+        "operationId": "getTeamDetails",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamResponse"
+                }
+              }
+            },
+            "description": "Successfully found team\n\nNote: the response objects can also include an `idpGroup` or `cortexTeam` field depending on whether the team contains a `group` or only consists of individually defined `members`."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Team not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve team details",
+        "tags": [
+          "Teams"
+        ],
+        "x-cortex-mcp-description": "Retrieve detailed information about a specific team by its tag or ID. Returns complete team data including members, slack channels, metadata, and whether it's backed by an identity provider group",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/teams/{tagOrId}",
+      "method": "PUT",
+      "operation_id": "updateTeamMetadata",
+      "summary": "Update team metadata",
+      "details": {
+        "operationId": "updateTeamMetadata",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTeamRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamResponse"
+                }
+              }
+            },
+            "description": "Successfully updated team"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Team not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update team metadata",
+        "tags": [
+          "Teams"
+        ],
+        "x-cortex-mcp-description": "Update team metadata. Disabled for MCP access to prevent external modifications to team structure",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/teams/{tagOrId}/archive",
+      "method": "PUT",
+      "operation_id": "archiveTeam",
+      "summary": "Archive team",
+      "details": {
+        "operationId": "archiveTeam",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamResponse"
+                }
+              }
+            },
+            "description": "Successfully archived team"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Team not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Archive team",
+        "tags": [
+          "Teams"
+        ],
+        "x-cortex-mcp-description": "Archive a team. Disabled for MCP access to prevent modification of team status",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/teams/{tagOrId}/members",
+      "method": "PUT",
+      "operation_id": "updateCortexTeamMembers",
+      "summary": "[Cortex managed teams] Update members in team",
+      "details": {
+        "description": "For teams whose members are not backed by an IdP, use this API to update the team members. Note that it will replace the members in the team with the members defined in this request.",
+        "operationId": "updateCortexTeamMembers",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CortexManagedTeamMembersRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamResponse"
+                }
+              }
+            },
+            "description": "Successfully updated team members"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Team not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "[Cortex managed teams] Update members in team",
+        "tags": [
+          "Teams"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/teams/{tagOrId}/unarchive",
+      "method": "PUT",
+      "operation_id": "unarchiveTeam",
+      "summary": "Unarchive team",
+      "details": {
+        "operationId": "unarchiveTeam",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamResponse"
+                }
+              }
+            },
+            "description": "Successfully unarchived team"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Team not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Unarchive team",
+        "tags": [
+          "Teams"
+        ],
+        "x-cortex-mcp-description": "Unarchive a team. Disabled for MCP access to prevent modification of team status",
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "CortexTeamMemberDetails": {
+      "required": [
+        "email",
+        "name",
+        "notificationsEnabled",
+        "roles"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "notificationsEnabled": {
+          "type": "boolean"
+        },
+        "role": {
+          "$ref": "#/components/schemas/CortexTeamMemberRole"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CortexTeamMemberRole"
+          }
+        }
+      }
+    },
+    "Member": {
+      "required": [
+        "id",
+        "roles"
+      ],
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/components/schemas/Role"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Role"
+          }
+        }
+      }
+    },
+    "CortexTeamMember": {
+      "required": [
+        "email",
+        "name",
+        "notificationsEnabled",
+        "roleTags"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "notificationsEnabled": {
+          "type": "boolean"
+        },
+        "roleTags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "IdpGroupDetailsResponse": {
+      "required": [
+        "group",
+        "members",
+        "provider"
+      ],
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Member"
+          }
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "ACTIVE_DIRECTORY",
+            "AZURE_DEVOPS",
+            "BAMBOOHR",
+            "GIT",
+            "GITLAB",
+            "GOOGLE",
+            "OKTA",
+            "OPSGENIE",
+            "SERVICE_NOW",
+            "SLACK",
+            "WORKDAY"
+          ]
+        }
+      }
+    },
+    "CreateTeamRequest.CORTEX": {
+      "title": "CORTEX",
+      "required": [
+        "cortexTeam",
+        "links",
+        "metadata",
+        "slackChannels",
+        "teamTag",
+        "type"
+      ],
+      "type": "object",
+      "description": "Use this request shape when creating a team entry whose memberships are manually maintained via API or the UI.",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CreateTeamRequest"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "cortexTeam": {
+              "$ref": "#/components/schemas/CortexTeamDetails"
+            },
+            "teamTag": {
+              "type": "string",
+              "description": "A unique identifier for the team, which is used for programmatic access as well as in Catalog Descriptors to define ownership of an entity."
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "CortexTeamMemberRole.TEAM_ROLE": {
+      "title": "TEAM_ROLE",
+      "required": [
+        "name",
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CortexTeamMemberRole"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "UpdateTeamRequest.CORTEX": {
+      "title": "CORTEX",
+      "required": [
+        "cortexTeam",
+        "links",
+        "metadata",
+        "slackChannels",
+        "type"
+      ],
+      "type": "object",
+      "description": "Use this request shape when updating a team entry whose memberships are manually maintained via API or the UI.",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UpdateTeamRequest"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "cortexTeam": {
+              "$ref": "#/components/schemas/CortexTeamDetails"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "CortexTeamMemberRole.MISCONFIGURED": {
+      "title": "MISCONFIGURED",
+      "required": [
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CortexTeamMemberRole"
+        }
+      ]
+    },
+    "TeamResponse.IDP": {
+      "title": "IDP",
+      "required": [
+        "catalogEntityTag",
+        "id",
+        "idpGroup",
+        "isArchived",
+        "links",
+        "metadata",
+        "slackChannels",
+        "teamTag",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TeamResponse"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "idpGroup": {
+              "$ref": "#/components/schemas/IdpGroupDetailsResponse"
+            }
+          }
+        }
+      ]
+    },
+    "TeamResponse.CORTEX": {
+      "title": "CORTEX",
+      "required": [
+        "catalogEntityTag",
+        "cortexTeam",
+        "id",
+        "isArchived",
+        "links",
+        "metadata",
+        "slackChannels",
+        "teamTag",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TeamResponse"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "cortexTeam": {
+              "$ref": "#/components/schemas/CortexTeamDetails"
+            }
+          }
+        }
+      ]
+    },
+    "TeamsLink": {
+      "required": [
+        "name",
+        "type",
+        "url"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateTeamRequest": {
+      "required": [
+        "links",
+        "metadata",
+        "slackChannels",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/TeamsLink"
+          }
+        },
+        "metadata": {
+          "$ref": "#/components/schemas/TeamMetadata"
+        },
+        "slackChannels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SlackChannel1"
+          }
+        },
+        "type": {
+          "type": "string",
+          "description": "Use \"IDP\" for IdentityProviderBackedTeam and \"CORTEX\" for ManagedTeam"
+        }
+      },
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/UpdateTeamRequest.CORTEX"
+        },
+        {
+          "$ref": "#/components/schemas/UpdateTeamRequest.IDP"
+        }
+      ]
+    },
+    "IdpGroupDetailsRequest": {
+      "required": [
+        "group",
+        "provider"
+      ],
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "ACTIVE_DIRECTORY",
+            "AZURE_DEVOPS",
+            "BAMBOOHR",
+            "GIT",
+            "GITLAB",
+            "GOOGLE",
+            "OKTA",
+            "OPSGENIE",
+            "SERVICE_NOW",
+            "SLACK",
+            "WORKDAY"
+          ]
+        }
+      }
+    },
+    "CreateTeamRequest.IDP": {
+      "title": "IDP",
+      "required": [
+        "idpGroup",
+        "links",
+        "metadata",
+        "slackChannels",
+        "teamTag",
+        "type"
+      ],
+      "type": "object",
+      "description": "Use this request shape when creating a team entry whose memberships are synced with an Idp group, such as from Okta, Google Groups, Github Teams, Azure AD, etc.",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CreateTeamRequest"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "idpGroup": {
+              "$ref": "#/components/schemas/IdpGroupDetailsRequest"
+            },
+            "teamTag": {
+              "type": "string",
+              "description": "A unique identifier for the team to be used for API/programmatic access"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "SlackChannel1": {
+      "required": [
+        "name",
+        "notificationsEnabled"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "notificationsEnabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "TeamResponse": {
+      "required": [
+        "catalogEntityTag",
+        "id",
+        "isArchived",
+        "links",
+        "metadata",
+        "slackChannels",
+        "teamTag",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "catalogEntityTag": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "isArchived": {
+          "type": "boolean"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/TeamsLink"
+          }
+        },
+        "metadata": {
+          "$ref": "#/components/schemas/TeamMetadata"
+        },
+        "slackChannels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SlackChannel1"
+          }
+        },
+        "teamTag": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/TeamResponse.CORTEX"
+        },
+        {
+          "$ref": "#/components/schemas/TeamResponse.IDP"
+        }
+      ]
+    },
+    "CreateTeamRequest": {
+      "required": [
+        "links",
+        "metadata",
+        "slackChannels",
+        "teamTag",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/TeamsLink"
+          }
+        },
+        "metadata": {
+          "$ref": "#/components/schemas/TeamMetadata"
+        },
+        "slackChannels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SlackChannel1"
+          }
+        },
+        "teamTag": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "description": "Use \"IDP\" for IdentityProviderBackedTeam and \"CORTEX\" for ManagedTeam"
+        }
+      },
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/CreateTeamRequest.CORTEX"
+        },
+        {
+          "$ref": "#/components/schemas/CreateTeamRequest.IDP"
+        }
+      ]
+    },
+    "AllTeamsResponse": {
+      "required": [
+        "teams"
+      ],
+      "type": "object",
+      "properties": {
+        "teams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/TeamResponse"
+          }
+        }
+      }
+    },
+    "CortexTeamDetails": {
+      "required": [
+        "members"
+      ],
+      "type": "object",
+      "properties": {
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CortexTeamMemberDetails"
+          }
+        }
+      }
+    },
+    "Unit": {
+      "type": "object"
+    },
+    "CortexTeamMemberRole": {
+      "required": [
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/CortexTeamMemberRole.MISCONFIGURED"
+        },
+        {
+          "$ref": "#/components/schemas/CortexTeamMemberRole.TEAM_ROLE"
+        }
+      ]
+    },
+    "CortexManagedTeamMembersRequest": {
+      "required": [
+        "members",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CortexTeamMember"
+          }
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateTeamRequest.IDP": {
+      "title": "IDP",
+      "required": [
+        "links",
+        "metadata",
+        "slackChannels",
+        "type"
+      ],
+      "type": "object",
+      "description": "Use this request shape when updating a team entry whose memberships are synced with an Idp group, such as from Okta, Google Groups, Github Teams, Azure AD, etc.",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UpdateTeamRequest"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "TeamMetadata": {
+      "required": [
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        }
+      }
+    },
+    "Role": {
+      "required": [
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the role",
+          "example": "Team Leader"
+        },
+        "source": {
+          "type": "string",
+          "description": "Source of the role if pulled in through integration. This will be blank if manually defined in Cortex.",
+          "example": "WORKDAY"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

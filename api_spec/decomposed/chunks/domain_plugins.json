@@ -1,0 +1,1101 @@
+{
+  "tag": "Plugins",
+  "endpoint_count": 6,
+  "schema_count": 20,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/plugins",
+      "operation_id": "listAllPlugins",
+      "summary": "Get all plugins"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/plugins",
+      "operation_id": "createPlugin",
+      "summary": "Create a plugin"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/plugins/{tag}",
+      "operation_id": "deletePlugin",
+      "summary": "Delete a plugin"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/plugins/{tag}",
+      "operation_id": "getPluginByTag",
+      "summary": "Get plugin by tag"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/plugins/{tag}",
+      "operation_id": "patchPlugin",
+      "summary": "Patch a plugin"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/plugins/{tag}",
+      "operation_id": "updatePlugin",
+      "summary": "Replace a plugin"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/plugins",
+      "method": "GET",
+      "operation_id": "listAllPlugins",
+      "summary": "Get all plugins",
+      "details": {
+        "description": "Retrieve a list of all plugins, excluding drafts",
+        "operationId": "listAllPlugins",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "includeDrafts",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginsMetadataResponse"
+                }
+              }
+            },
+            "description": "List of plugins"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Get all plugins",
+        "tags": [
+          "Plugins"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/plugins",
+      "method": "POST",
+      "operation_id": "createPlugin",
+      "summary": "Create a plugin",
+      "details": {
+        "description": "Create a new plugin",
+        "operationId": "createPlugin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePluginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginMetadata"
+                }
+              }
+            },
+            "description": "Metadata of the created plugin"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create a plugin",
+        "tags": [
+          "Plugins"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/plugins/{tag}",
+      "method": "DELETE",
+      "operation_id": "deletePlugin",
+      "summary": "Delete a plugin",
+      "details": {
+        "description": "Delete a plugin by tag",
+        "operationId": "deletePlugin",
+        "parameters": [
+          {
+            "description": "Unique identifier for the plugin",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Plugin deleted"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Plugin not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete a plugin",
+        "tags": [
+          "Plugins"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/plugins/{tag}",
+      "method": "GET",
+      "operation_id": "getPluginByTag",
+      "summary": "Get plugin by tag",
+      "details": {
+        "description": "Retrieve the metadata of a plugin by tag",
+        "operationId": "getPluginByTag",
+        "parameters": [
+          {
+            "description": "Unique identifier for the plugin",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "When true, returns the plugin blob. Defaults to false.",
+            "in": "query",
+            "name": "includeBlob",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginMetadataWithBlob"
+                }
+              }
+            },
+            "description": "Metadata of the plugin"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Plugin not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Get plugin by tag",
+        "tags": [
+          "Plugins"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/plugins/{tag}",
+      "method": "PATCH",
+      "operation_id": "patchPlugin",
+      "summary": "Patch a plugin",
+      "details": {
+        "description": "Partially update plugin by tag",
+        "operationId": "patchPlugin",
+        "parameters": [
+          {
+            "description": "Unique identifier for the plugin",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchPluginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginMetadataWithBlob"
+                }
+              }
+            },
+            "description": "Plugin updated successfully"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid input, such as malformed tag or invalid metadata"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Plugin with the specified tag not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Patch a plugin",
+        "tags": [
+          "Plugins"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/plugins/{tag}",
+      "method": "PUT",
+      "operation_id": "updatePlugin",
+      "summary": "Replace a plugin",
+      "details": {
+        "description": "Replace an existing plugin by tag",
+        "operationId": "updatePlugin",
+        "parameters": [
+          {
+            "description": "Unique identifier for the plugin",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePluginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginMetadata"
+                }
+              }
+            },
+            "description": "Metadata of the replaced plugin"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Plugin not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Replace a plugin",
+        "tags": [
+          "Plugins"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "PluginMetadataWithBlob": {
+      "required": [
+        "contexts",
+        "isDraft",
+        "lastUpdated",
+        "minimumRoleRequired",
+        "name",
+        "tag"
+      ],
+      "type": "object",
+      "properties": {
+        "blob": {
+          "type": "string",
+          "description": "The raw source code of the plugin; only returned if the blob is updated as part of the request."
+        },
+        "contexts": {
+          "type": "array",
+          "description": "Which contexts the plugin should execute/show up in, e.g. `{ \"type\": \"GLOBAL\" }`",
+          "items": {
+            "$ref": "#/components/schemas/CortexPluginContext"
+          }
+        },
+        "createdBy": {
+          "$ref": "#/components/schemas/CortexUserDefinition"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the plugin"
+        },
+        "iconTag": {
+          "type": "string",
+          "description": "Icon tag for the plugin"
+        },
+        "isDraft": {
+          "type": "boolean",
+          "description": "Whether the plugin is generally available or not"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "When the plugin was last updated"
+        },
+        "minimumRoleRequired": {
+          "type": "string",
+          "description": "The minimum role required to view the plugin, e.g. `VIEWER`, `USER`, `MANAGER`, `OWNER`, or the tag for a custom role. Learn more about each permission in our [docs](https://docs.cortex.io/docs/walkthroughs/workspace-settings/permissioning#roles-in-cortex)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the plugin"
+        },
+        "proxyTag": {
+          "type": "string",
+          "description": "The identifier of the proxy to use for requests from this plugin"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Unique identifier for the plugin"
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of the plugin"
+        }
+      }
+    },
+    "COMPOUND_FILTER": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "cqlFilter": {
+              "$ref": "#/components/schemas/CQL_FILTER"
+            },
+            "entityGroupFilter": {
+              "$ref": "#/components/schemas/EntityGroupFilterDTO"
+            },
+            "typeFilter": {
+              "$ref": "#/components/schemas/EntityTypeFilter"
+            }
+          }
+        }
+      ]
+    },
+    "UpdatePluginRequest": {
+      "required": [
+        "blob",
+        "contexts",
+        "isDraft",
+        "minimumRoleRequired",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "blob": {
+          "type": "string",
+          "description": "The raw source code of the plugin. This should be an HTML file"
+        },
+        "contexts": {
+          "type": "array",
+          "description": "Which contexts the plugin should execute/show up in, e.g. `{ \"type\": \"GLOBAL\" }`",
+          "items": {
+            "$ref": "#/components/schemas/CortexPluginContext"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the plugin"
+        },
+        "iconTag": {
+          "type": "string",
+          "description": "Icon tag for the plugin"
+        },
+        "isDraft": {
+          "type": "boolean",
+          "description": "Whether the plugin is generally available or not"
+        },
+        "minimumRoleRequired": {
+          "type": "string",
+          "description": "The minimum role required to view the plugin, e.g. `VIEWER`, `USER`, `MANAGER`, `OWNER`, or the tag for a custom role. Learn more about each permission in our [docs](https://docs.cortex.io/docs/walkthroughs/workspace-settings/permissioning#roles-in-cortex)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the plugin"
+        },
+        "proxyTag": {
+          "type": "string",
+          "description": "The identifier of the proxy to use for requests from this plugin"
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of the plugin"
+        }
+      }
+    },
+    "CortexUserDefinition": {
+      "required": [
+        "dateCreated",
+        "email",
+        "name",
+        "oauthUserId",
+        "tenantId"
+      ],
+      "type": "object",
+      "properties": {
+        "dateCreated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "lastLogin": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "name": {
+          "type": "string"
+        },
+        "oauthUserId": {
+          "type": "string"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "timezone": {
+          "type": "string"
+        }
+      },
+      "description": "The creator of the plugin. Null if created via API."
+    },
+    "PluginsMetadataResponse": {
+      "required": [
+        "page",
+        "plugins",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "plugins": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/PluginMetadata"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "TEAM_FILTER": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityGroupFilter": {
+              "$ref": "#/components/schemas/EntityGroupFilterDTO"
+            }
+          }
+        }
+      ]
+    },
+    "DOMAIN_FILTER": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityGroupFilter": {
+              "$ref": "#/components/schemas/EntityGroupFilterDTO"
+            }
+          }
+        }
+      ]
+    },
+    "GLOBAL": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CortexPluginContext"
+        }
+      ]
+    },
+    "CortexPluginContext": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "description": "Which contexts the plugin should execute/show up in, e.g. `{ \"type\": \"GLOBAL\" }`",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ENTITY"
+        },
+        {
+          "$ref": "#/components/schemas/GLOBAL"
+        }
+      ]
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "PatchPluginRequest": {
+      "type": "object",
+      "properties": {
+        "blob": {
+          "type": "string",
+          "description": "The raw source code of the plugin. This should be an HTML file",
+          "nullable": true
+        },
+        "contexts": {
+          "type": "array",
+          "description": "Which contexts the plugin should execute/show up in, e.g. `{ \"type\": \"GLOBAL\" }`",
+          "nullable": true,
+          "items": {
+            "$ref": "#/components/schemas/CortexPluginContext"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the plugin",
+          "nullable": true
+        },
+        "iconTag": {
+          "type": "string",
+          "description": "Icon tag for the plugin",
+          "nullable": true
+        },
+        "isDraft": {
+          "type": "boolean",
+          "description": "Whether the plugin is generally available or not",
+          "nullable": true
+        },
+        "minimumRoleRequired": {
+          "type": "string",
+          "description": "The minimum role required to view the plugin, e.g. `VIEWER`, `USER`, `MANAGER`, `OWNER`, or custom role tags.",
+          "nullable": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the plugin",
+          "nullable": true
+        },
+        "proxyTag": {
+          "type": "string",
+          "description": "The identifier of the proxy to use for requests from this plugin",
+          "nullable": true
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of the plugin"
+        }
+      }
+    },
+    "CreatePluginRequest": {
+      "required": [
+        "blob",
+        "contexts",
+        "isDraft",
+        "minimumRoleRequired",
+        "name",
+        "tag"
+      ],
+      "type": "object",
+      "properties": {
+        "blob": {
+          "type": "string",
+          "description": "The raw source code of the plugin. This should be an HTML file"
+        },
+        "contexts": {
+          "type": "array",
+          "description": "Which contexts the plugin should execute/show up in, e.g. `{ \"type\": \"GLOBAL\" }`",
+          "items": {
+            "$ref": "#/components/schemas/CortexPluginContext"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the plugin"
+        },
+        "iconTag": {
+          "type": "string",
+          "description": "Icon tag for the plugin"
+        },
+        "isDraft": {
+          "type": "boolean",
+          "description": "Whether the plugin is generally available or not"
+        },
+        "minimumRoleRequired": {
+          "type": "string",
+          "description": "The minimum role required to view the plugin, e.g. `VIEWER`, `USER`, `MANAGER`, `OWNER`, or the tag for a custom role. Learn more about each permission in our [docs](https://docs.cortex.io/docs/walkthroughs/workspace-settings/permissioning#roles-in-cortex)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the plugin"
+        },
+        "proxyTag": {
+          "type": "string",
+          "description": "The identifier of the proxy to use for requests from this plugin"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Unique identifier for the plugin"
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of the plugin"
+        }
+      }
+    },
+    "EntityTypeFilter": {
+      "required": [
+        "include",
+        "types"
+      ],
+      "type": "object",
+      "properties": {
+        "include": {
+          "type": "boolean"
+        },
+        "types": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "CQL_FILTER": {
+      "required": [
+        "category",
+        "query",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "enum": [
+                "Service",
+                "Resource",
+                "Domain",
+                "Team",
+                "Generic"
+              ]
+            },
+            "cqlVersion": {
+              "type": "string",
+              "enum": [
+                "V1",
+                "V2"
+              ]
+            },
+            "query": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "EntityGroupFilterDTO": {
+      "required": [
+        "entityGroups",
+        "excludedEntityGroups"
+      ],
+      "type": "object",
+      "properties": {
+        "entityGroups": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excludedEntityGroups": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "EntityFilter": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "CQL_FILTER",
+            "SERVICE_FILTER",
+            "RESOURCE_FILTER",
+            "DOMAIN_FILTER",
+            "TEAM_FILTER",
+            "COMPOUND_FILTER"
+          ]
+        }
+      },
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/CQL_FILTER"
+        },
+        {
+          "$ref": "#/components/schemas/SERVICE_FILTER"
+        },
+        {
+          "$ref": "#/components/schemas/RESOURCE_FILTER"
+        },
+        {
+          "$ref": "#/components/schemas/DOMAIN_FILTER"
+        },
+        {
+          "$ref": "#/components/schemas/TEAM_FILTER"
+        },
+        {
+          "$ref": "#/components/schemas/COMPOUND_FILTER"
+        }
+      ]
+    },
+    "ENTITY": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CortexPluginContext"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityFilter": {
+              "$ref": "#/components/schemas/EntityFilter"
+            }
+          }
+        }
+      ]
+    },
+    "RESOURCE_FILTER": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityGroupFilter": {
+              "$ref": "#/components/schemas/EntityGroupFilterDTO"
+            },
+            "typeFilter": {
+              "$ref": "#/components/schemas/EntityTypeFilter"
+            }
+          }
+        }
+      ]
+    },
+    "PluginMetadata": {
+      "required": [
+        "contexts",
+        "isDraft",
+        "lastUpdated",
+        "minimumRoleRequired",
+        "name",
+        "tag"
+      ],
+      "type": "object",
+      "properties": {
+        "contexts": {
+          "type": "array",
+          "description": "Which contexts the plugin should execute/show up in, e.g. `{ \"type\": \"GLOBAL\" }`",
+          "items": {
+            "$ref": "#/components/schemas/CortexPluginContext"
+          }
+        },
+        "createdBy": {
+          "$ref": "#/components/schemas/CortexUserDefinition"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the plugin"
+        },
+        "iconTag": {
+          "type": "string",
+          "description": "Icon tag for the plugin"
+        },
+        "isDraft": {
+          "type": "boolean",
+          "description": "Whether the plugin is generally available or not"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "When the plugin was last updated"
+        },
+        "minimumRoleRequired": {
+          "type": "string",
+          "description": "The minimum role required to view the plugin, e.g. `VIEWER`, `USER`, `MANAGER`, `OWNER`, or the tag for a custom role. Learn more about each permission in our [docs](https://docs.cortex.io/docs/walkthroughs/workspace-settings/permissioning#roles-in-cortex)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the plugin"
+        },
+        "proxyTag": {
+          "type": "string",
+          "description": "The identifier of the proxy to use for requests from this plugin"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Unique identifier for the plugin"
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of the plugin"
+        }
+      }
+    },
+    "SERVICE_FILTER": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityFilter"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityGroupFilter": {
+              "$ref": "#/components/schemas/EntityGroupFilterDTO"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "referenced_common_schemas": []
+}

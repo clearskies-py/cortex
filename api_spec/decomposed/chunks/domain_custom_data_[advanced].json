@@ -1,0 +1,326 @@
+{
+  "tag": "Custom Data [Advanced]",
+  "endpoint_count": 3,
+  "schema_count": 3,
+  "endpoints_summary": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/custom-data",
+      "operation_id": "getCustomDataForEntityByKeyAdvanced",
+      "summary": "Delete custom data by key for entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/custom-data",
+      "operation_id": "retrieveCustomDataForEntityAdvanced",
+      "summary": "Retrieve custom data for entity"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/custom-data",
+      "operation_id": "addCustomDataForEntityAdvanced",
+      "summary": "Add custom data for entity"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/catalog/custom-data",
+      "method": "DELETE",
+      "operation_id": "getCustomDataForEntityByKeyAdvanced",
+      "summary": "Delete custom data by key for entity",
+      "details": {
+        "description": "Use this endpoint when attempting to delete custom data where the key contains non-alphanumeric characters. Otherwise, use the standard API under `Custom Data`.",
+        "operationId": "getCustomDataForEntityByKeyAdvanced",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted custom data"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete custom data by key for entity",
+        "tags": [
+          "Custom Data [Advanced]"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/custom-data",
+      "method": "GET",
+      "operation_id": "retrieveCustomDataForEntityAdvanced",
+      "summary": "Retrieve custom data for entity",
+      "details": {
+        "description": "Use this endpoint when attempting to delete custom data where the key contains non-alphanumeric characters. Otherwise, use the standard API under `Custom Data`.",
+        "operationId": "retrieveCustomDataForEntityAdvanced",
+        "parameters": [
+          {
+            "description": "Entity tag (x-cortex-tag), supports non-alphanumeric characters",
+            "in": "query",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "When set, returns the entity's value at this key. Otherwise, returns all custom data key/values for the entity.",
+            "in": "query",
+            "name": "key",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomData"
+                  }
+                }
+              }
+            },
+            "description": "Successfully retrieved custom data"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve custom data for entity",
+        "tags": [
+          "Custom Data [Advanced]"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/custom-data",
+      "method": "POST",
+      "operation_id": "addCustomDataForEntityAdvanced",
+      "summary": "Add custom data for entity",
+      "details": {
+        "operationId": "addCustomDataForEntityAdvanced",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "When true, overrides values that were defined in the catalog descriptor. Will be overwritten the next time the catalog descriptor is processed.",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {}
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomData"
+                }
+              }
+            },
+            "description": "Successfully created data"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid custom data request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add custom data for entity",
+        "tags": [
+          "Custom Data [Advanced]"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "JsonNode": {
+      "type": "object"
+    },
+    "CustomData": {
+      "required": [
+        "dateUpdated",
+        "key",
+        "source",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "dateUpdated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "key": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "YAML",
+            "API",
+            "INTEGRATION"
+          ]
+        },
+        "value": {
+          "$ref": "#/components/schemas/JsonNode"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

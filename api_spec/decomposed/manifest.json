@@ -1,0 +1,465 @@
+{
+  "spec_info": {
+    "description": "The Cortex REST API provides programmatic access to the data in the catalog, Scorecards, and more.",
+    "title": "Cortex API",
+    "version": "v1"
+  },
+  "total_endpoints": 316,
+  "total_tags": 50,
+  "shared_files": [
+    "shared/common_schemas.json",
+    "shared/common_parameters.json"
+  ],
+  "chunks": [
+    {
+      "tag": "Packages",
+      "slug": "packages",
+      "path": "chunks/domain_packages.json",
+      "endpoint_count": 18,
+      "schema_count": 3,
+      "estimated_tokens": 6296,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Catalog Entities",
+      "slug": "catalog_entities",
+      "path": "chunks/domain_catalog_entities.json",
+      "endpoint_count": 13,
+      "schema_count": 32,
+      "estimated_tokens": 11012,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] GitHub",
+      "slug": "[integrations]_github",
+      "path": "chunks/domain_[integrations]_github.json",
+      "endpoint_count": 13,
+      "schema_count": 11,
+      "estimated_tokens": 4564,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Scorecards",
+      "slug": "scorecards",
+      "path": "chunks/domain_scorecards.json",
+      "endpoint_count": 13,
+      "schema_count": 35,
+      "estimated_tokens": 8752,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] Azure Resources",
+      "slug": "[integrations]_azure_resources",
+      "path": "chunks/domain_[integrations]_azure_resources.json",
+      "endpoint_count": 12,
+      "schema_count": 12,
+      "estimated_tokens": 4687,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] AWS",
+      "slug": "[integrations]_aws",
+      "path": "chunks/domain_[integrations]_aws.json",
+      "endpoint_count": 10,
+      "schema_count": 12,
+      "estimated_tokens": 3661,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] Azure Devops",
+      "slug": "[integrations]_azure_devops",
+      "path": "chunks/domain_[integrations]_azure_devops.json",
+      "endpoint_count": 10,
+      "schema_count": 15,
+      "estimated_tokens": 4266,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] CircleCI",
+      "slug": "[integrations]_circleci",
+      "path": "chunks/domain_[integrations]_circleci.json",
+      "endpoint_count": 10,
+      "schema_count": 9,
+      "estimated_tokens": 3409,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] Coralogix",
+      "slug": "[integrations]_coralogix",
+      "path": "chunks/domain_[integrations]_coralogix.json",
+      "endpoint_count": 10,
+      "schema_count": 9,
+      "estimated_tokens": 3454,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] Datadog",
+      "slug": "[integrations]_datadog",
+      "path": "chunks/domain_[integrations]_datadog.json",
+      "endpoint_count": 10,
+      "schema_count": 9,
+      "estimated_tokens": 3519,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] GitLab",
+      "slug": "[integrations]_gitlab",
+      "path": "chunks/domain_[integrations]_gitlab.json",
+      "endpoint_count": 10,
+      "schema_count": 9,
+      "estimated_tokens": 3484,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] Incident.io",
+      "slug": "[integrations]_incident.io",
+      "path": "chunks/domain_[integrations]_incident.io.json",
+      "endpoint_count": 10,
+      "schema_count": 9,
+      "estimated_tokens": 3431,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] LaunchDarkly",
+      "slug": "[integrations]_launchdarkly",
+      "path": "chunks/domain_[integrations]_launchdarkly.json",
+      "endpoint_count": 10,
+      "schema_count": 9,
+      "estimated_tokens": 3509,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] New Relic",
+      "slug": "[integrations]_new_relic",
+      "path": "chunks/domain_[integrations]_new_relic.json",
+      "endpoint_count": 10,
+      "schema_count": 9,
+      "estimated_tokens": 3454,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] Prometheus",
+      "slug": "[integrations]_prometheus",
+      "path": "chunks/domain_[integrations]_prometheus.json",
+      "endpoint_count": 10,
+      "schema_count": 9,
+      "estimated_tokens": 3490,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] SonarQube",
+      "slug": "[integrations]_sonarqube",
+      "path": "chunks/domain_[integrations]_sonarqube.json",
+      "endpoint_count": 10,
+      "schema_count": 9,
+      "estimated_tokens": 3425,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Entity Relationships [Beta]",
+      "slug": "entity_relationships_[beta]",
+      "path": "chunks/domain_entity_relationships_[beta].json",
+      "endpoint_count": 9,
+      "schema_count": 13,
+      "estimated_tokens": 6075,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Teams",
+      "slug": "teams",
+      "path": "chunks/domain_teams.json",
+      "endpoint_count": 9,
+      "schema_count": 26,
+      "estimated_tokens": 5546,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Dependencies",
+      "slug": "dependencies",
+      "path": "chunks/domain_dependencies.json",
+      "endpoint_count": 8,
+      "schema_count": 10,
+      "estimated_tokens": 4152,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Deploys",
+      "slug": "deploys",
+      "path": "chunks/domain_deploys.json",
+      "endpoint_count": 7,
+      "schema_count": 7,
+      "estimated_tokens": 3466,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Custom Data",
+      "slug": "custom_data",
+      "path": "chunks/domain_custom_data.json",
+      "endpoint_count": 6,
+      "schema_count": 4,
+      "estimated_tokens": 2768,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Custom Events",
+      "slug": "custom_events",
+      "path": "chunks/domain_custom_events.json",
+      "endpoint_count": 6,
+      "schema_count": 3,
+      "estimated_tokens": 3267,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Plugins",
+      "slug": "plugins",
+      "path": "chunks/domain_plugins.json",
+      "endpoint_count": 6,
+      "schema_count": 20,
+      "estimated_tokens": 4708,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Workflows",
+      "slug": "workflows",
+      "path": "chunks/domain_workflows.json",
+      "endpoint_count": 6,
+      "schema_count": 55,
+      "estimated_tokens": 11528,
+      "needs_splitting": false
+    },
+    {
+      "tag": "SCIM",
+      "slug": "scim",
+      "path": "chunks/domain_scim.json",
+      "endpoint_count": 6,
+      "schema_count": 0,
+      "estimated_tokens": 1576,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] Azure Active Directory",
+      "slug": "[integrations]_azure_active_directory",
+      "path": "chunks/domain_[integrations]_azure_active_directory.json",
+      "endpoint_count": 5,
+      "schema_count": 6,
+      "estimated_tokens": 1978,
+      "needs_splitting": false
+    },
+    {
+      "tag": "API Keys",
+      "slug": "api_keys",
+      "path": "chunks/domain_api_keys.json",
+      "endpoint_count": 5,
+      "schema_count": 9,
+      "estimated_tokens": 3243,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Entity Types",
+      "slug": "entity_types",
+      "path": "chunks/domain_entity_types.json",
+      "endpoint_count": 5,
+      "schema_count": 6,
+      "estimated_tokens": 1998,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Initiatives",
+      "slug": "initiatives",
+      "path": "chunks/domain_initiatives.json",
+      "endpoint_count": 5,
+      "schema_count": 12,
+      "estimated_tokens": 3423,
+      "needs_splitting": false
+    },
+    {
+      "tag": "[Integrations] PagerDuty",
+      "slug": "[integrations]_pagerduty",
+      "path": "chunks/domain_[integrations]_pagerduty.json",
+      "endpoint_count": 5,
+      "schema_count": 6,
+      "estimated_tokens": 1843,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Entity Relationship Types [Beta]",
+      "slug": "entity_relationship_types_[beta]",
+      "path": "chunks/domain_entity_relationship_types_[beta].json",
+      "endpoint_count": 5,
+      "schema_count": 6,
+      "estimated_tokens": 3743,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Secrets",
+      "slug": "secrets",
+      "path": "chunks/domain_secrets.json",
+      "endpoint_count": 5,
+      "schema_count": 5,
+      "estimated_tokens": 2089,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Custom Metrics",
+      "slug": "custom_metrics",
+      "path": "chunks/domain_custom_metrics.json",
+      "endpoint_count": 4,
+      "schema_count": 6,
+      "estimated_tokens": 2567,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Teams [Departments] (legacy)",
+      "slug": "teams_[departments]_(legacy)",
+      "path": "chunks/domain_teams_[departments]_(legacy).json",
+      "endpoint_count": 4,
+      "schema_count": 11,
+      "estimated_tokens": 1931,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Custom Data [Advanced]",
+      "slug": "custom_data_[advanced]",
+      "path": "chunks/domain_custom_data_[advanced].json",
+      "endpoint_count": 3,
+      "schema_count": 3,
+      "estimated_tokens": 1436,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Docs",
+      "slug": "docs",
+      "path": "chunks/domain_docs.json",
+      "endpoint_count": 3,
+      "schema_count": 2,
+      "estimated_tokens": 1253,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Groups",
+      "slug": "groups",
+      "path": "chunks/domain_groups.json",
+      "endpoint_count": 3,
+      "schema_count": 4,
+      "estimated_tokens": 1497,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Eng Intel: User Labels",
+      "slug": "eng_intel:_user_labels",
+      "path": "chunks/domain_eng_intel:_user_labels.json",
+      "endpoint_count": 3,
+      "schema_count": 6,
+      "estimated_tokens": 1886,
+      "needs_splitting": false
+    },
+    {
+      "tag": "IP Allowlist",
+      "slug": "ip_allowlist",
+      "path": "chunks/domain_ip_allowlist.json",
+      "endpoint_count": 3,
+      "schema_count": 6,
+      "estimated_tokens": 1560,
+      "needs_splitting": false
+    },
+    {
+      "tag": "On-call",
+      "slug": "on_call",
+      "path": "chunks/domain_on_call.json",
+      "endpoint_count": 2,
+      "schema_count": 7,
+      "estimated_tokens": 1490,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Notification Logs",
+      "slug": "notification_logs",
+      "path": "chunks/domain_notification_logs.json",
+      "endpoint_count": 2,
+      "schema_count": 6,
+      "estimated_tokens": 4545,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Queries",
+      "slug": "queries",
+      "path": "chunks/domain_queries.json",
+      "endpoint_count": 2,
+      "schema_count": 5,
+      "estimated_tokens": 1106,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Teams [Advanced]",
+      "slug": "teams_[advanced]",
+      "path": "chunks/domain_teams_[advanced].json",
+      "endpoint_count": 2,
+      "schema_count": 20,
+      "estimated_tokens": 2704,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Teams Hierarchies",
+      "slug": "teams_hierarchies",
+      "path": "chunks/domain_teams_hierarchies.json",
+      "endpoint_count": 2,
+      "schema_count": 5,
+      "estimated_tokens": 973,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Audit Logs",
+      "slug": "audit_logs",
+      "path": "chunks/domain_audit_logs.json",
+      "endpoint_count": 1,
+      "schema_count": 2,
+      "estimated_tokens": 1054,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Discovery Audit",
+      "slug": "discovery_audit",
+      "path": "chunks/domain_discovery_audit.json",
+      "endpoint_count": 1,
+      "schema_count": 20,
+      "estimated_tokens": 2597,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Eng Intel: 2-Metrics",
+      "slug": "eng_intel:_2_metrics",
+      "path": "chunks/domain_eng_intel:_2_metrics.json",
+      "endpoint_count": 1,
+      "schema_count": 13,
+      "estimated_tokens": 2897,
+      "needs_splitting": false
+    },
+    {
+      "tag": "Eng Intel: 1-Registry",
+      "slug": "eng_intel:_1_registry",
+      "path": "chunks/domain_eng_intel:_1_registry.json",
+      "endpoint_count": 1,
+      "schema_count": 15,
+      "estimated_tokens": 2906,
+      "needs_splitting": false
+    },
+    {
+      "tag": "GitOps Logs",
+      "slug": "gitops_logs",
+      "path": "chunks/domain_gitops_logs.json",
+      "endpoint_count": 1,
+      "schema_count": 8,
+      "estimated_tokens": 1286,
+      "needs_splitting": false
+    },
+    {
+      "tag": "My Workspace",
+      "slug": "my_workspace",
+      "path": "chunks/domain_my_workspace.json",
+      "endpoint_count": 1,
+      "schema_count": 22,
+      "estimated_tokens": 4520,
+      "needs_splitting": false
+    }
+  ]
+}

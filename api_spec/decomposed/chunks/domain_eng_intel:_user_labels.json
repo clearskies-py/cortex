@@ -1,0 +1,358 @@
+{
+  "tag": "Eng Intel: User Labels",
+  "endpoint_count": 3,
+  "schema_count": 6,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/eng-intel/labels",
+      "operation_id": "listUserLabels",
+      "summary": "List user labels"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/eng-intel/labels/users",
+      "operation_id": "updateUserLabelAssignments",
+      "summary": "Update user label assignments"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/eng-intel/labels/{id}",
+      "operation_id": "getUserLabel",
+      "summary": "Retrieve user label"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/eng-intel/labels",
+      "method": "GET",
+      "operation_id": "listUserLabels",
+      "summary": "List user labels",
+      "details": {
+        "description": "Retrieves a list of all available user labels.\n\nAPI key must have the `View Eng Intelligence` permission.",
+        "operationId": "listUserLabels",
+        "parameters": [
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLabelListResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved user labels"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List user labels",
+        "tags": [
+          "Eng Intel: User Labels"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/eng-intel/labels/users",
+      "method": "POST",
+      "operation_id": "updateUserLabelAssignments",
+      "summary": "Update user label assignments",
+      "details": {
+        "description": "Assign user label values to user emails in bulk.\n\nAPI key must have the `Edit user labels` permission.",
+        "operationId": "updateUserLabelAssignments",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkUserLabelAssignmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkUserLabelAssignmentResponse"
+                }
+              }
+            },
+            "description": "Successfully updated user label assignments"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update user label assignments",
+        "tags": [
+          "Eng Intel: User Labels"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/eng-intel/labels/{id}",
+      "method": "GET",
+      "operation_id": "getUserLabel",
+      "summary": "Retrieve user label",
+      "details": {
+        "description": "Get user label.\n\nAPI key must have the `View Eng Intelligence` permission.",
+        "operationId": "getUserLabel",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLabel"
+                }
+              }
+            },
+            "description": "Successfully retrieved user label"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "User label not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve user label",
+        "tags": [
+          "Eng Intel: User Labels"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "BulkUserLabelAssignmentResponse": {
+      "required": [
+        "userLabelAssignments"
+      ],
+      "type": "object",
+      "properties": {
+        "userLabelAssignments": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "description": "Map of user email to the list of assigned user label values",
+            "items": {
+              "$ref": "#/components/schemas/UserLabelValue"
+            }
+          },
+          "description": "Map of user email to the list of assigned user label values"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "UserLabelValue": {
+      "required": [
+        "id",
+        "name",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "description": "Map of user email to the list of assigned user label values"
+    },
+    "UserLabelListResponse": {
+      "required": [
+        "labels",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/UserLabel"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "UserLabel": {
+      "required": [
+        "id",
+        "name",
+        "values"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Optional description of the user label"
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique, immutable, 18-character auto-generated identifier for the user label.",
+          "example": "ul2da8159dbeefb974"
+        },
+        "name": {
+          "type": "string",
+          "description": "Unique name for the user label"
+        },
+        "values": {
+          "type": "array",
+          "description": "Possible values for the user label",
+          "items": {
+            "type": "string",
+            "description": "Possible values for the user label"
+          }
+        }
+      }
+    },
+    "BulkUserLabelAssignmentRequest": {
+      "required": [
+        "userLabelAssignments"
+      ],
+      "type": "object",
+      "properties": {
+        "userLabelAssignments": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "description": "Map of user email to the list of user label values that should be assigned to the user",
+            "example": "\n            {\n                \"user@email.com\": [\n                    {\"id\": \"ul2da8159dbeefb974\", \"name\": \"Coding Language\", \"value\": \"Java\"},\n                    {\"id\": \"ul2da8159234bsdfas\", \"name\": \"Engineering Level\", \"value\": \"Senior\"}\n                ],\n                \"another_user@email.com\": [\n                    {\"id\": \"ul2da8159dbeefb974\", \"name\": \"Coding Language\", \"value\": \"Typescript\"},\n                ]\n            }\n        ",
+            "items": {
+              "$ref": "#/components/schemas/UserLabelValue"
+            }
+          },
+          "description": "Map of user email to the list of user label values that should be assigned to the user",
+          "example": "\n            {\n                \"user@email.com\": [\n                    {\"id\": \"ul2da8159dbeefb974\", \"name\": \"Coding Language\", \"value\": \"Java\"},\n                    {\"id\": \"ul2da8159234bsdfas\", \"name\": \"Engineering Level\", \"value\": \"Senior\"}\n                ],\n                \"another_user@email.com\": [\n                    {\"id\": \"ul2da8159dbeefb974\", \"name\": \"Coding Language\", \"value\": \"Typescript\"},\n                ]\n            }\n        "
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

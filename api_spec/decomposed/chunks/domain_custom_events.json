@@ -1,0 +1,654 @@
+{
+  "tag": "Custom Events",
+  "endpoint_count": 6,
+  "schema_count": 3,
+  "endpoints_summary": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{tagOrId}/custom-events",
+      "operation_id": "deleteCustomEventsForEntity",
+      "summary": "Delete ALL custom events for an entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/custom-events",
+      "operation_id": "listCustomEventsForEntity",
+      "summary": "List custom events for entity"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{tagOrId}/custom-events",
+      "operation_id": "createCustomEventForEntity",
+      "summary": "Create custom event for entity"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{tagOrId}/custom-events/{uuid}",
+      "operation_id": "deleteCustomEventForEntityByUuid",
+      "summary": "Delete custom events by UUID"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/custom-events/{uuid}",
+      "operation_id": "getCustomEventForEntityByUuid",
+      "summary": "Retrieve custom event by UUID"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/catalog/{tagOrId}/custom-events/{uuid}",
+      "operation_id": "replaceCustomEventForEntityByUuid",
+      "summary": "Update custom event by UUID"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/catalog/{tagOrId}/custom-events",
+      "method": "DELETE",
+      "operation_id": "deleteCustomEventsForEntity",
+      "summary": "Delete ALL custom events for an entity",
+      "details": {
+        "operationId": "deleteCustomEventsForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Use 'startTime' instead",
+            "in": "query",
+            "name": "timestamp",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "description": "If provided, events with greater than or equal to timestamp will be deleted (a date-time without a time-zone in the ISO-8601 calendar system)",
+            "in": "query",
+            "name": "startTime",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "description": "If provided, events with less than or equal to timestamp will be deleted (a date-time without a time-zone in the ISO-8601 calendar system)",
+            "in": "query",
+            "name": "endTime",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted custom events"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete ALL custom events for an entity",
+        "tags": [
+          "Custom Events"
+        ],
+        "x-cortex-mcp-description": "Delete multiple custom events with filters. Disabled for MCP access to preserve event history",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/custom-events",
+      "method": "GET",
+      "operation_id": "listCustomEventsForEntity",
+      "summary": "List custom events for entity",
+      "details": {
+        "operationId": "listCustomEventsForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Use 'startTime' instead",
+            "in": "query",
+            "name": "timestamp",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "description": "If provided, events with greater than or equal to timestamp will be returned (a date-time without a time-zone in the ISO-8601 calendar system)",
+            "in": "query",
+            "name": "startTime",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "description": "If provided, events with less than or equal to timestamp will be returned (a date-time without a time-zone in the ISO-8601 calendar system)",
+            "in": "query",
+            "name": "endTime",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEventListResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved custom events"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEventListResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEventListResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List custom events for entity",
+        "tags": [
+          "Custom Events"
+        ],
+        "x-cortex-mcp-description": "List custom events for an entity with optional filtering by type and time range. Supports pagination and filtering by event type, start time, and end time to retrieve historical event data",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/custom-events",
+      "method": "POST",
+      "operation_id": "createCustomEventForEntity",
+      "summary": "Create custom event for entity",
+      "details": {
+        "operationId": "createCustomEventForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveCustomEventRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEventResponse"
+                }
+              }
+            },
+            "description": "Successfully created custom event"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEventResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEventResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create custom event for entity",
+        "tags": [
+          "Custom Events"
+        ],
+        "x-cortex-mcp-description": "Create a new custom event. Disabled for MCP access to prevent external systems from creating events that could affect operational tracking",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/custom-events/{uuid}",
+      "method": "DELETE",
+      "operation_id": "deleteCustomEventForEntityByUuid",
+      "summary": "Delete custom events by UUID",
+      "details": {
+        "operationId": "deleteCustomEventForEntityByUuid",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted custom event"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Entity or custom event not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete custom events by UUID",
+        "tags": [
+          "Custom Events"
+        ],
+        "x-cortex-mcp-description": "Delete a specific custom event by UUID. Disabled for MCP access to preserve event history",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/custom-events/{uuid}",
+      "method": "GET",
+      "operation_id": "getCustomEventForEntityByUuid",
+      "summary": "Retrieve custom event by UUID",
+      "details": {
+        "operationId": "getCustomEventForEntityByUuid",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEventResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved custom event"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEventResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEventResponse"
+                }
+              }
+            },
+            "description": "Entity or custom event not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve custom event by UUID",
+        "tags": [
+          "Custom Events"
+        ],
+        "x-cortex-mcp-description": "Retrieve a specific custom event by its UUID. Returns event details including title, description, timestamp, type, and any custom data associated with the event",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/custom-events/{uuid}",
+      "method": "PUT",
+      "operation_id": "replaceCustomEventForEntityByUuid",
+      "summary": "Update custom event by UUID",
+      "details": {
+        "operationId": "replaceCustomEventForEntityByUuid",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveCustomEventRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEventResponse"
+                }
+              }
+            },
+            "description": "Successfully updated custom event"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEventResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEventResponse"
+                }
+              }
+            },
+            "description": "Entity or custom event not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update custom event by UUID",
+        "tags": [
+          "Custom Events"
+        ],
+        "x-cortex-mcp-description": "Update an existing custom event. Disabled for MCP access to maintain event history integrity",
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "CustomEventListResponse": {
+      "required": [
+        "events",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CustomEventResponse"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "CustomEventResponse": {
+      "required": [
+        "timestamp",
+        "title",
+        "type",
+        "uuid"
+      ],
+      "type": "object",
+      "properties": {
+        "customData": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "description": "Optional property to store additional data"
+          },
+          "description": "Optional property to store additional data"
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional description of custom event"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Time when event occurred",
+          "format": "date-time"
+        },
+        "title": {
+          "type": "string",
+          "description": "Name for custom event",
+          "example": "Created K8s pod"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of custom event",
+          "example": "POD_CREATION"
+        },
+        "url": {
+          "type": "string",
+          "description": "Optional URL associated with custom event",
+          "example": "https://cortex.io"
+        },
+        "uuid": {
+          "type": "string",
+          "description": "Automatically generated identifier",
+          "format": "uuid",
+          "example": "d853c6e0-1bca-40bf-a264-db5d4ee38d77"
+        }
+      }
+    },
+    "SaveCustomEventRequest": {
+      "required": [
+        "timestamp",
+        "title",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "customData": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "description": "Optional property to store additional data"
+          },
+          "description": "Optional property to store additional data"
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional description of custom event"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Time when event occurred",
+          "format": "date-time"
+        },
+        "title": {
+          "type": "string",
+          "description": "Name for custom event",
+          "example": "Created K8s pod"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of custom event",
+          "example": "POD_CREATION"
+        },
+        "url": {
+          "type": "string",
+          "description": "Optional URL associated with custom event",
+          "example": "https://cortex.io"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

@@ -1,0 +1,516 @@
+{
+  "tag": "Custom Metrics",
+  "endpoint_count": 4,
+  "schema_count": 6,
+  "endpoints_summary": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/eng-intel/custom-metrics/{customMetricKey}/entity/{tagOrId}",
+      "operation_id": "deleteByTimeRange",
+      "summary": "Delete custom metrics data points"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/eng-intel/custom-metrics/{customMetricKey}/entity/{tagOrId}",
+      "operation_id": "getCustomMetricData",
+      "summary": "Retrieve custom metrics data points"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/eng-intel/custom-metrics/{customMetricKey}/entity/{tagOrId}",
+      "operation_id": "createCustomMetricData",
+      "summary": "Add custom metrics data point"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/eng-intel/custom-metrics/{customMetricKey}/entity/{tagOrId}/bulk",
+      "operation_id": "createBulkCustomMetricData",
+      "summary": "Add custom metrics data points in bulk"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/eng-intel/custom-metrics/{customMetricKey}/entity/{tagOrId}",
+      "method": "DELETE",
+      "operation_id": "deleteByTimeRange",
+      "summary": "Delete custom metrics data points",
+      "details": {
+        "description": "Deletes custom metric data points for entity.",
+        "operationId": "deleteByTimeRange",
+        "parameters": [
+          {
+            "description": "Key for the custom metric filter",
+            "in": "path",
+            "name": "customMetricKey",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "description": "Start date for the deletion (inclusive)",
+            "in": "query",
+            "name": "startDate",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "description": "End date for the deletion (inclusive)",
+            "in": "query",
+            "name": "endDate",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted data points"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid filters"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete custom metrics data points",
+        "tags": [
+          "Custom Metrics"
+        ],
+        "x-cortex-mcp-description": "Delete custom metric data points within a time range. Disabled for MCP access to preserve metric history",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/eng-intel/custom-metrics/{customMetricKey}/entity/{tagOrId}",
+      "method": "GET",
+      "operation_id": "getCustomMetricData",
+      "summary": "Retrieve custom metrics data points",
+      "details": {
+        "description": "Lists all custom metrics data points for an entity",
+        "operationId": "getCustomMetricData",
+        "parameters": [
+          {
+            "description": "Key for the custom metric filter",
+            "in": "path",
+            "name": "customMetricKey",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "description": "Start date for the filter (inclusive). Default: 6 months",
+            "in": "query",
+            "name": "startDate",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "description": "End date for the filter (inclusive)",
+            "in": "query",
+            "name": "endDate",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomMetricDataResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved custom metrics data points"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid filters"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve custom metrics data points",
+        "tags": [
+          "Custom Metrics"
+        ],
+        "x-cortex-mcp-description": "Retrieve custom metric data points for an entity. Returns paginated time-series data for a specific custom metric, with optional filtering by date range to analyze trends and patterns",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/eng-intel/custom-metrics/{customMetricKey}/entity/{tagOrId}",
+      "method": "POST",
+      "operation_id": "createCustomMetricData",
+      "summary": "Add custom metrics data point",
+      "details": {
+        "description": "Adds a single custom metric data point for entity.",
+        "operationId": "createCustomMetricData",
+        "parameters": [
+          {
+            "description": "Key for the custom metric filter",
+            "in": "path",
+            "name": "customMetricKey",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomDataRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully added data point"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid filters"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add custom metrics data point",
+        "tags": [
+          "Custom Metrics"
+        ],
+        "x-cortex-mcp-description": "Add a single custom metric data point. Disabled for MCP access to prevent external systems from modifying metric data",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/eng-intel/custom-metrics/{customMetricKey}/entity/{tagOrId}/bulk",
+      "method": "POST",
+      "operation_id": "createBulkCustomMetricData",
+      "summary": "Add custom metrics data points in bulk",
+      "details": {
+        "description": "Adds multiple custom metric data points for entity.",
+        "operationId": "createBulkCustomMetricData",
+        "parameters": [
+          {
+            "description": "Key for the custom metric filter",
+            "in": "path",
+            "name": "customMetricKey",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomDataBulkRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully added data points"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid filters"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add custom metrics data points in bulk",
+        "tags": [
+          "Custom Metrics"
+        ],
+        "x-cortex-mcp-description": "Add multiple custom metric data points in bulk. Disabled for MCP access to prevent external systems from modifying metric data",
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "CreateCustomDataRequest": {
+      "required": [
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp for the data point. Note: It can't be earlier than 6 months",
+          "format": "date-time"
+        },
+        "value": {
+          "type": "number",
+          "description": "Value for the data point",
+          "format": "double"
+        }
+      },
+      "description": "Data point to be added"
+    },
+    "CreateCustomDataBulkDef": {
+      "maxLength": 100,
+      "minLength": 1,
+      "required": [
+        "timestamp",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp for the data point. Note: It can't be earlier than 6 months",
+          "format": "date-time"
+        },
+        "value": {
+          "type": "number",
+          "description": "Value for the data point",
+          "format": "double"
+        }
+      },
+      "description": "List of data points"
+    },
+    "CustomMetricDataResponse": {
+      "required": [
+        "data",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "description": "Data points",
+          "items": {
+            "$ref": "#/components/schemas/CustomMetricData"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "CustomMetricData": {
+      "required": [
+        "timestamp",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "value": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "description": "Data points"
+    },
+    "CreateCustomDataBulkRequest": {
+      "required": [
+        "series"
+      ],
+      "type": "object",
+      "properties": {
+        "series": {
+          "maxLength": 100,
+          "minLength": 1,
+          "type": "array",
+          "description": "List of data points",
+          "items": {
+            "$ref": "#/components/schemas/CreateCustomDataBulkDef"
+          }
+        }
+      },
+      "description": "Data points to be added"
+    }
+  },
+  "referenced_common_schemas": []
+}

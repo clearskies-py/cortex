@@ -1,0 +1,363 @@
+{
+  "tag": "IP Allowlist",
+  "endpoint_count": 3,
+  "schema_count": 6,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/ip-allowlist",
+      "operation_id": "listAllowedIpAddresses",
+      "summary": "Gets allowlist of IP addresses & ranges"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/ip-allowlist",
+      "operation_id": "upsertAllowedIpAddresses",
+      "summary": "Replace existing allowlist with provided list of IP addresses & ranges"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ip-allowlist/validate",
+      "operation_id": "validateAllowedIpAddresses",
+      "summary": "Validates allowlist of IP addresses & ranges"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/ip-allowlist",
+      "method": "GET",
+      "operation_id": "listAllowedIpAddresses",
+      "summary": "Gets allowlist of IP addresses & ranges",
+      "details": {
+        "operationId": "listAllowedIpAddresses",
+        "parameters": [
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IpAllowlistResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved IP allowlist"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Gets allowlist of IP addresses & ranges",
+        "tags": [
+          "IP Allowlist"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/ip-allowlist",
+      "method": "PUT",
+      "operation_id": "upsertAllowedIpAddresses",
+      "summary": "Replace existing allowlist with provided list of IP addresses & ranges",
+      "details": {
+        "operationId": "upsertAllowedIpAddresses",
+        "parameters": [
+          {
+            "description": "When true, entries will be updated even if the list doesn't contain the requestor's IP address",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IpAllowlistRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IpAllowlistResponse"
+                }
+              }
+            },
+            "description": "Successfully replaced allowlist"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Replace existing allowlist with provided list of IP addresses & ranges",
+        "tags": [
+          "IP Allowlist"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/ip-allowlist/validate",
+      "method": "POST",
+      "operation_id": "validateAllowedIpAddresses",
+      "summary": "Validates allowlist of IP addresses & ranges",
+      "details": {
+        "operationId": "validateAllowedIpAddresses",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IpAllowlistRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ValidIpAllowlistEntry"
+                    },
+                    {
+                      "$ref": "#/components/schemas/InvalidIpAllowlistEntry"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Successfully validated allowlist"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validates allowlist of IP addresses & ranges",
+        "tags": [
+          "IP Allowlist"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "IpAllowlistResponse": {
+      "required": [
+        "entries",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "description": "Allowlist entries",
+          "items": {
+            "$ref": "#/components/schemas/IpAllowlistEntry"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "IpAllowlistRequest": {
+      "required": [
+        "entries"
+      ],
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "description": "Allowlist entries",
+          "items": {
+            "$ref": "#/components/schemas/IpAllowlistEntry"
+          }
+        }
+      }
+    },
+    "IpAllowlistEntry": {
+      "required": [
+        "address"
+      ],
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "IP address or range",
+          "example": "10.0.0.1"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of an entry"
+        }
+      },
+      "description": "Allowlist entries"
+    },
+    "InvalidIpAllowlistEntry": {
+      "required": [
+        "address",
+        "message",
+        "valid"
+      ],
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "IP address or range",
+          "example": "10.0.0.1"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of an entry"
+        },
+        "message": {
+          "type": "string",
+          "description": "Validation error message"
+        },
+        "valid": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ValidIpAllowlistEntry": {
+      "required": [
+        "address",
+        "valid"
+      ],
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "IP address or range",
+          "example": "10.0.0.1"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of an entry"
+        },
+        "valid": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

@@ -1,0 +1,706 @@
+{
+  "tag": "Initiatives",
+  "endpoint_count": 5,
+  "schema_count": 12,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/initiatives",
+      "operation_id": "listInitiatives",
+      "summary": "List Initiatives"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/initiatives",
+      "operation_id": "createInitiative",
+      "summary": "Create an Initiative"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/initiatives/{cid}",
+      "operation_id": "deleteInitiative",
+      "summary": "Delete Initiative"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/initiatives/{cid}",
+      "operation_id": "getInitiative",
+      "summary": "Get Initiative"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/initiatives/{cid}",
+      "operation_id": "updateInitiative",
+      "summary": "Update an Initiative"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/initiatives",
+      "method": "GET",
+      "operation_id": "listInitiatives",
+      "summary": "List Initiatives",
+      "details": {
+        "description": "Retrieves a list of Initiatives.\n\nAPI key must have the `View Initiatives` permission.",
+        "operationId": "listInitiatives",
+        "parameters": [
+          {
+            "description": "Whether or not to include draft Initiatives in the response",
+            "in": "query",
+            "name": "includeDrafts",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "Whether or not to include expired Initiatives in the response",
+            "in": "query",
+            "name": "includeExpired",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitiativeListResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved Initiatives"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List Initiatives",
+        "tags": [
+          "Initiatives"
+        ],
+        "x-cortex-mcp-description": "List all initiatives in the organization with optional filters for draft and expired initiatives. View active improvement programs, strategic projects, and their current status to understand organizational priorities and track progress",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/initiatives",
+      "method": "POST",
+      "operation_id": "createInitiative",
+      "summary": "Create an Initiative",
+      "details": {
+        "description": "Create an Initiative.\n\nAPI key must have the `Edit Initiative` permission.",
+        "operationId": "createInitiative",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitiativeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Initiative"
+                }
+              }
+            },
+            "description": "Successfully created Initiative"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create an Initiative",
+        "tags": [
+          "Initiatives"
+        ],
+        "x-cortex-mcp-description": "Create a new initiative. Disabled for MCP access as initiative creation requires careful planning and governance approval",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/initiatives/{cid}",
+      "method": "DELETE",
+      "operation_id": "deleteInitiative",
+      "summary": "Delete Initiative",
+      "details": {
+        "operationId": "deleteInitiative",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted Initiative"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Initiative not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete Initiative",
+        "tags": [
+          "Initiatives"
+        ],
+        "x-cortex-mcp-description": "Delete an initiative. Disabled for MCP access to preserve historical tracking and prevent loss of progress data",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/initiatives/{cid}",
+      "method": "GET",
+      "operation_id": "getInitiative",
+      "summary": "Get Initiative",
+      "details": {
+        "description": "Get Initiative.\n\nAPI key must have the `View Initiatives` permission.",
+        "operationId": "getInitiative",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Initiative"
+                }
+              }
+            },
+            "description": "Successfully retrieved Initiative"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Initiative not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Get Initiative",
+        "tags": [
+          "Initiatives"
+        ],
+        "x-cortex-mcp-description": "Retrieve detailed information about a specific initiative including its goals, timeline, affected entities, scorecard targets, and current progress. Essential for understanding initiative scope and tracking achievement of objectives",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/initiatives/{cid}",
+      "method": "PUT",
+      "operation_id": "updateInitiative",
+      "summary": "Update an Initiative",
+      "details": {
+        "description": "Update an Initiative.\n\nAPI key must have the `Edit Initiative` permission.",
+        "operationId": "updateInitiative",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitiativeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Initiative"
+                }
+              }
+            },
+            "description": "Successfully updated Initiative"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Initiative not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update an Initiative",
+        "tags": [
+          "Initiatives"
+        ],
+        "x-cortex-mcp-description": "Update an existing initiative. Disabled for MCP access as modifying initiatives can impact organizational priorities and resource allocation",
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "EmphasizedRule": {
+      "required": [
+        "expression"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Optional description of the emphasized rule"
+        },
+        "expression": {
+          "type": "string",
+          "description": "CQL expression for the emphasized rule"
+        },
+        "title": {
+          "type": "string",
+          "description": "Optional title of the emphasized rule"
+        }
+      },
+      "description": "Emphasized rules for the Initiative"
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "EmphasizedLadderLevelRequest": {
+      "required": [
+        "rank"
+      ],
+      "type": "object",
+      "properties": {
+        "rank": {
+          "type": "integer",
+          "description": "Rank of the level where 1 is the highest",
+          "format": "int32"
+        }
+      },
+      "description": "Emphasized levels for the Initiative. Either emphasized levels or rules must be provided"
+    },
+    "Filter": {
+      "type": "object",
+      "properties": {
+        "groups": {
+          "$ref": "#/components/schemas/GroupFilter"
+        },
+        "query": {
+          "type": "string",
+          "description": "CQL expression to apply as a filter"
+        },
+        "types": {
+          "$ref": "#/components/schemas/TypeFilter"
+        }
+      },
+      "description": "Filter applied to the Initiative"
+    },
+    "InitiativeRequest": {
+      "required": [
+        "emphasizedLevels",
+        "emphasizedRules",
+        "isDraft",
+        "name",
+        "scorecardTag",
+        "targetDate"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Optional description of the Initiative"
+        },
+        "emphasizedLevels": {
+          "type": "array",
+          "description": "Emphasized levels for the Initiative. Either emphasized levels or rules must be provided",
+          "items": {
+            "$ref": "#/components/schemas/EmphasizedLadderLevelRequest"
+          }
+        },
+        "emphasizedRules": {
+          "type": "array",
+          "description": "Emphasized rules for the Initiative. Either emphasized levels or rules must be provided",
+          "items": {
+            "$ref": "#/components/schemas/EmphasizedRuleRequest"
+          }
+        },
+        "filter": {
+          "$ref": "#/components/schemas/Filter"
+        },
+        "isDraft": {
+          "type": "boolean",
+          "description": "Whether or not the Initiative is a draft"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the Initiative"
+        },
+        "notificationSchedule": {
+          "$ref": "#/components/schemas/NotificationSchedule"
+        },
+        "scorecardTag": {
+          "type": "string",
+          "description": "Tag of the scorecard associated with the Initiative"
+        },
+        "targetDate": {
+          "type": "string",
+          "description": "Target date for the Initiative to be completed. Must be in the future",
+          "format": "date"
+        }
+      }
+    },
+    "GroupFilter": {
+      "type": "object",
+      "properties": {
+        "exclude": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "include": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Entity groups to include or exclude"
+    },
+    "TypeFilter": {
+      "type": "object",
+      "properties": {
+        "exclude": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "include": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Entity types (e.g. service, domain, team) to include or exclude. Only one of `include` or `exclude` can be set"
+    },
+    "EmphasizedLevel": {
+      "required": [
+        "color",
+        "name",
+        "rank"
+      ],
+      "type": "object",
+      "properties": {
+        "color": {
+          "type": "string",
+          "description": "Color associated with the emphasized level"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the emphasized level"
+        },
+        "rank": {
+          "type": "integer",
+          "description": "Rank of the level where 1 is the highest",
+          "format": "int32"
+        }
+      },
+      "description": "Emphasized levels for the Initiative"
+    },
+    "EmphasizedRuleRequest": {
+      "required": [
+        "expression"
+      ],
+      "type": "object",
+      "properties": {
+        "expression": {
+          "type": "string",
+          "description": "CQL expression for the emphasized rule"
+        }
+      },
+      "description": "Emphasized rules for the Initiative. Either emphasized levels or rules must be provided"
+    },
+    "InitiativeListResponse": {
+      "required": [
+        "initiatives",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "initiatives": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Initiative"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "NotificationSchedule": {
+      "required": [
+        "isDisabled",
+        "timeInterval",
+        "timeUnit"
+      ],
+      "type": "object",
+      "properties": {
+        "isDisabled": {
+          "type": "boolean",
+          "description": "Whether or not notifications are disabled for this Initiative"
+        },
+        "replyToEmails": {
+          "type": "array",
+          "description": "Optional list of reply-to emails",
+          "items": {
+            "type": "string",
+            "description": "Optional list of reply-to emails"
+          }
+        },
+        "timeInterval": {
+          "type": "integer",
+          "description": "Time interval for the notification schedule cadence",
+          "format": "int32"
+        },
+        "timeUnit": {
+          "type": "string",
+          "description": "Time unit for the notification schedule. Must be one of DAY, WEEK, MONTH"
+        }
+      },
+      "description": "Notification schedule for the Initiative"
+    },
+    "Initiative": {
+      "required": [
+        "emphasizedLevels",
+        "emphasizedRules",
+        "isDraft",
+        "name",
+        "scorecardName",
+        "scorecardTag",
+        "targetDate"
+      ],
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string",
+          "description": "Unique, immutable, 18-character auto-generated identifier for the Initiative.",
+          "example": "in2da8159dbeefb974"
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional description of the Initiative"
+        },
+        "emphasizedLevels": {
+          "uniqueItems": true,
+          "type": "array",
+          "description": "Emphasized levels for the Initiative",
+          "items": {
+            "$ref": "#/components/schemas/EmphasizedLevel"
+          }
+        },
+        "emphasizedRules": {
+          "uniqueItems": true,
+          "type": "array",
+          "description": "Emphasized rules for the Initiative",
+          "items": {
+            "$ref": "#/components/schemas/EmphasizedRule"
+          }
+        },
+        "filter": {
+          "$ref": "#/components/schemas/Filter"
+        },
+        "isDraft": {
+          "type": "boolean",
+          "description": "Whether or not the Initiative is a draft"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the Initiative"
+        },
+        "notificationSchedule": {
+          "$ref": "#/components/schemas/NotificationSchedule"
+        },
+        "scorecardName": {
+          "type": "string",
+          "description": "Name of the scorecard associated with the Initiative"
+        },
+        "scorecardTag": {
+          "type": "string",
+          "description": "Tag of the scorecard associated with the Initiative"
+        },
+        "targetDate": {
+          "type": "string",
+          "description": "Target date for the Initiative to be completed",
+          "format": "date"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

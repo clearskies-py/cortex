@@ -1,0 +1,1042 @@
+{
+  "tag": "[Integrations] Azure Resources",
+  "endpoint_count": 12,
+  "schema_count": 12,
+  "endpoints_summary": [
+    {
+      "method": "POST",
+      "path": "/api/v1/azure-resources/configuration",
+      "operation_id": "AzureResourcesSaveConfiguration",
+      "summary": "Add a single configuration"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/azure-resources/configuration/validate",
+      "operation_id": "AzureResourcesValidateAllConfigurations",
+      "summary": "Validate all configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/azure-resources/configuration/validate/{alias}",
+      "operation_id": "AzureResourcesValidateConfiguration",
+      "summary": "Validate a configuration"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/azure-resources/configuration/{alias}",
+      "operation_id": "AzureResourcesRemoveConfiguration",
+      "summary": "Delete a configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/azure-resources/configuration/{alias}",
+      "operation_id": "AzureResourcesGetConfiguration",
+      "summary": "Retrieve a configuration"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/azure-resources/configuration/{alias}",
+      "operation_id": "AzureResourcesUpdateConfiguration",
+      "summary": "Update a configuration"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/azure-resources/configurations",
+      "operation_id": "AzureResourcesRemoveAllConfigurations",
+      "summary": "Delete all configurations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/azure-resources/configurations",
+      "operation_id": "AzureResourcesListConfigurations",
+      "summary": "Retrieve configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/azure-resources/configurations",
+      "operation_id": "AzureResourcesSaveConfigurations",
+      "summary": "Add multiple configurations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/azure-resources/default-configuration",
+      "operation_id": "AzureResourcesGetDefaultConfiguration",
+      "summary": "Retrieve default configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/azure-resources/types",
+      "operation_id": "AzureResourcesListAzureResourceTypes",
+      "summary": "List Azure Resources types"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/azure-resources/types",
+      "operation_id": "AzureResourcesReplaceAzureResourceTypes",
+      "summary": "Update configured Azure Resources types"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/azure-resources/configuration",
+      "method": "POST",
+      "operation_id": "AzureResourcesSaveConfiguration",
+      "summary": "Add a single configuration",
+      "details": {
+        "operationId": "AzureResourcesSaveConfiguration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AzureResourcesConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseAzureResourcesConfiguration"
+                }
+              }
+            },
+            "description": "Successfully added configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add a single configuration",
+        "tags": [
+          "[Integrations] Azure Resources"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/azure-resources/configuration/validate",
+      "method": "POST",
+      "operation_id": "AzureResourcesValidateAllConfigurations",
+      "summary": "Validate all configurations",
+      "details": {
+        "operationId": "AzureResourcesValidateAllConfigurations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleIntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated all configurations"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate all configurations",
+        "tags": [
+          "[Integrations] Azure Resources"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/azure-resources/configuration/validate/{alias}",
+      "method": "POST",
+      "operation_id": "AzureResourcesValidateConfiguration",
+      "summary": "Validate a configuration",
+      "details": {
+        "operationId": "AzureResourcesValidateConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated configuration"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate a configuration",
+        "tags": [
+          "[Integrations] Azure Resources"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/azure-resources/configuration/{alias}",
+      "method": "DELETE",
+      "operation_id": "AzureResourcesRemoveConfiguration",
+      "summary": "Delete a configuration",
+      "details": {
+        "operationId": "AzureResourcesRemoveConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseAzureResourcesConfiguration"
+                }
+              }
+            },
+            "description": "Successfully deleted configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete a configuration",
+        "tags": [
+          "[Integrations] Azure Resources"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/azure-resources/configuration/{alias}",
+      "method": "GET",
+      "operation_id": "AzureResourcesGetConfiguration",
+      "summary": "Retrieve a configuration",
+      "details": {
+        "operationId": "AzureResourcesGetConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AzureResourcesConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve a configuration",
+        "tags": [
+          "[Integrations] Azure Resources"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/azure-resources/configuration/{alias}",
+      "method": "PUT",
+      "operation_id": "AzureResourcesUpdateConfiguration",
+      "summary": "Update a configuration",
+      "details": {
+        "description": "WARNING: Updating aliases for configurations or changing the default configuration could cause entity YAMLs that use this integration to break.",
+        "operationId": "AzureResourcesUpdateConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AzureResourcesUpdateConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseAzureResourcesConfiguration"
+                }
+              }
+            },
+            "description": "Successfully updated configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update a configuration",
+        "tags": [
+          "[Integrations] Azure Resources"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/azure-resources/configurations",
+      "method": "DELETE",
+      "operation_id": "AzureResourcesRemoveAllConfigurations",
+      "summary": "Delete all configurations",
+      "details": {
+        "operationId": "AzureResourcesRemoveAllConfigurations",
+        "responses": {
+          "200": {
+            "description": "Successfully deleted all configurations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete all configurations",
+        "tags": [
+          "[Integrations] Azure Resources"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/azure-resources/configurations",
+      "method": "GET",
+      "operation_id": "AzureResourcesListConfigurations",
+      "summary": "Retrieve configurations",
+      "details": {
+        "operationId": "AzureResourcesListConfigurations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseAzureResourcesConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found configurations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve configurations",
+        "tags": [
+          "[Integrations] Azure Resources"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/azure-resources/configurations",
+      "method": "POST",
+      "operation_id": "AzureResourcesSaveConfigurations",
+      "summary": "Add multiple configurations",
+      "details": {
+        "operationId": "AzureResourcesSaveConfigurations",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigurationsRequestAzureResourcesConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleConfigurationsResponseAzureResourcesConfiguration"
+                }
+              }
+            },
+            "description": "Successfully added configurations"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add multiple configurations",
+        "tags": [
+          "[Integrations] Azure Resources"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/azure-resources/default-configuration",
+      "method": "GET",
+      "operation_id": "AzureResourcesGetDefaultConfiguration",
+      "summary": "Retrieve default configuration",
+      "details": {
+        "operationId": "AzureResourcesGetDefaultConfiguration",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AzureResourcesConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found default configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve default configuration",
+        "tags": [
+          "[Integrations] Azure Resources"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/azure-resources/types",
+      "method": "GET",
+      "operation_id": "AzureResourcesListAzureResourceTypes",
+      "summary": "List Azure Resources types",
+      "details": {
+        "operationId": "AzureResourcesListAzureResourceTypes",
+        "parameters": [
+          {
+            "description": "Whether to include disabled Azure Resources types",
+            "in": "query",
+            "name": "includeDisabled",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AzureResourceTypesResponse"
+                }
+              }
+            },
+            "description": "Successfully found Azure Resources types"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Azure Resources types not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List Azure Resources types",
+        "tags": [
+          "[Integrations] Azure Resources"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/azure-resources/types",
+      "method": "PUT",
+      "operation_id": "AzureResourcesReplaceAzureResourceTypes",
+      "summary": "Update configured Azure Resources types",
+      "details": {
+        "operationId": "AzureResourcesReplaceAzureResourceTypes",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateConfiguredAzureResourcesTypesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AzureResourceTypesResponse"
+                }
+              }
+            },
+            "description": "Successfully replaced Azure Resources types"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Azure Resources types not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update configured Azure Resources types",
+        "tags": [
+          "[Integrations] Azure Resources"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "AzureResourcesConfiguration": {
+      "required": [
+        "alias",
+        "azureTenantId",
+        "clientId",
+        "isDefault",
+        "lastFour",
+        "subscriptionId"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "azureTenantId": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "lastFour": {
+          "type": "string"
+        },
+        "subscriptionId": {
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "ConfigurationsRequestAzureResourcesConfigurationRequest": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/AzureResourcesConfigurationRequest"
+          }
+        }
+      }
+    },
+    "AzureResourceType": {
+      "required": [
+        "enabled",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether Azure Resources type is configured to be discovered and imported into the catalogs"
+        },
+        "type": {
+          "type": "string",
+          "description": "Azure Resources type",
+          "example": "microsoft.policyinsights/policyevents"
+        }
+      },
+      "description": "List of Azure Resources types and whether they're configured to be discovered and imported into the catalogs"
+    },
+    "ConfigurationsResponseAzureResourcesConfiguration": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/AzureResourcesConfiguration"
+          }
+        }
+      }
+    },
+    "MultipleIntegrationConfigValidation": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/IntegrationConfigValidation"
+          }
+        }
+      }
+    },
+    "AzureResourceTypesResponse": {
+      "required": [
+        "hasMore",
+        "page",
+        "total",
+        "totalPages",
+        "types"
+      ],
+      "type": "object",
+      "properties": {
+        "hasMore": {
+          "type": "boolean",
+          "description": "If there are more pages"
+        },
+        "page": {
+          "type": "integer",
+          "description": "Number of page",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of Azure Resources types",
+          "format": "int64"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        },
+        "types": {
+          "type": "array",
+          "description": "List of Azure Resources types and whether they're configured to be discovered and imported into the catalogs",
+          "items": {
+            "$ref": "#/components/schemas/AzureResourceType"
+          }
+        }
+      }
+    },
+    "UpdateConfiguredAzureResourcesTypesRequest": {
+      "required": [
+        "types"
+      ],
+      "type": "object",
+      "properties": {
+        "types": {
+          "type": "array",
+          "description": "List of Azure Resources types and whether they're configured to be discovered and imported into the catalogs",
+          "items": {
+            "$ref": "#/components/schemas/AzureResourceType"
+          }
+        }
+      }
+    },
+    "AzureResourcesUpdateConfigurationRequest": {
+      "required": [
+        "alias",
+        "isDefault"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "azureTenantId": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": "string"
+        },
+        "clientSecret": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "subscriptionId": {
+          "type": "string"
+        }
+      }
+    },
+    "AzureResourcesConfigurationRequest": {
+      "required": [
+        "alias",
+        "azureTenantId",
+        "clientId",
+        "clientSecret",
+        "isDefault",
+        "subscriptionId"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "azureTenantId": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": "string"
+        },
+        "clientSecret": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "subscriptionId": {
+          "type": "string"
+        }
+      }
+    },
+    "IntegrationConfigValidation": {
+      "required": [
+        "isValid"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "isValid": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "MultipleConfigurationsResponseAzureResourcesConfiguration": {
+      "required": [
+        "configurations",
+        "skippedConfigurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/AzureResourcesConfiguration"
+          }
+        },
+        "skippedConfigurations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

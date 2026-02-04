@@ -1,0 +1,495 @@
+{
+  "tag": "Entity Types",
+  "endpoint_count": 5,
+  "schema_count": 6,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/definitions",
+      "operation_id": "listDefinitions",
+      "summary": "List entity types"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/definitions",
+      "operation_id": "createDefinition",
+      "summary": "Create entity type"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/definitions/{type}",
+      "operation_id": "deleteDefinition",
+      "summary": "Delete entity type"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/definitions/{type}",
+      "operation_id": "getDefinition",
+      "summary": "Retrieve entity type"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/catalog/definitions/{type}",
+      "operation_id": "updateDefinition",
+      "summary": "Update entity type"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/catalog/definitions",
+      "method": "GET",
+      "operation_id": "listDefinitions",
+      "summary": "List entity types",
+      "details": {
+        "description": "List entity types\n\nResponse excludes Cortex default types of service, domain, and team.",
+        "operationId": "listDefinitions",
+        "parameters": [
+          {
+            "description": "When true, returns the built-in entity types that Cortex provides, such as `rds` and `s3`. Defaults to false.",
+            "in": "query",
+            "name": "includeBuiltIn",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogDefinitionsListResponse"
+                }
+              }
+            },
+            "description": "Successfully found entity types"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List entity types",
+        "tags": [
+          "Entity Types"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/definitions",
+      "method": "POST",
+      "operation_id": "createDefinition",
+      "summary": "Create entity type",
+      "details": {
+        "operationId": "createDefinition",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCatalogDefinitionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogDefinitionResponse"
+                }
+              }
+            },
+            "description": "Successfully created entity type"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Failed to create entity type"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create entity type",
+        "tags": [
+          "Entity Types"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/definitions/{type}",
+      "method": "DELETE",
+      "operation_id": "deleteDefinition",
+      "summary": "Delete entity type",
+      "details": {
+        "operationId": "deleteDefinition",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted entity type"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity type not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete entity type",
+        "tags": [
+          "Entity Types"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/definitions/{type}",
+      "method": "GET",
+      "operation_id": "getDefinition",
+      "summary": "Retrieve entity type",
+      "details": {
+        "operationId": "getDefinition",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogDefinitionResponse"
+                }
+              }
+            },
+            "description": "Successfully found entity types"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity type not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve entity type",
+        "tags": [
+          "Entity Types"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/definitions/{type}",
+      "method": "PUT",
+      "operation_id": "updateDefinition",
+      "summary": "Update entity type",
+      "details": {
+        "operationId": "updateDefinition",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "When true, schema will be updated even if it results in broken schemas for existing entities. Defaults to false.",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCatalogDefinitionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogDefinitionResponse"
+                }
+              }
+            },
+            "description": "Successfully updated entity type"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Failed to update entity type"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity type not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update entity type",
+        "tags": [
+          "Entity Types"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "CreateCatalogDefinitionRequest": {
+      "required": [
+        "schema",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "iconTag": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "schema": {
+          "$ref": "#/components/schemas/JsonNode"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "CatalogDefinitionResponse": {
+      "required": [
+        "schema",
+        "source",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "iconTag": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "schema": {
+          "$ref": "#/components/schemas/JsonNode"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "CORTEX",
+            "CUSTOM"
+          ]
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "CatalogDefinitionsListResponse": {
+      "required": [
+        "definitions",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "definitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CatalogDefinitionResponse"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "UpdateCatalogDefinitionRequest": {
+      "required": [
+        "schema"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "iconTag": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "schema": {
+          "$ref": "#/components/schemas/JsonNode"
+        }
+      }
+    },
+    "JsonNode": {
+      "type": "object"
+    }
+  },
+  "referenced_common_schemas": []
+}

@@ -1,0 +1,282 @@
+{
+  "tag": "Queries",
+  "endpoint_count": 2,
+  "schema_count": 5,
+  "endpoints_summary": [
+    {
+      "method": "POST",
+      "path": "/api/v1/queries",
+      "operation_id": "createQuery",
+      "summary": "Run query"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/queries/{jobId}",
+      "operation_id": "getQueryResults",
+      "summary": "Retrieve query results"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/queries",
+      "method": "POST",
+      "operation_id": "createQuery",
+      "summary": "Run query",
+      "details": {
+        "description": "Run a CQL query. For more information about the types of queries you can run, take a look at our CQL Explorer in the app.",
+        "operationId": "createQuery",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryResponse"
+                }
+              }
+            },
+            "description": "Successfully submitted query"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Run query",
+        "tags": [
+          "Queries"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/queries/{jobId}",
+      "method": "GET",
+      "operation_id": "getQueryResults",
+      "summary": "Retrieve query results",
+      "details": {
+        "description": "Retrieve the status and results of a CQL query",
+        "operationId": "getQueryResults",
+        "parameters": [
+          {
+            "description": "jobId of the query to retrieve",
+            "in": "path",
+            "name": "jobId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "jobId of the query to retrieve"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryBuilderResult"
+                }
+              }
+            },
+            "description": "Successfully found query"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Query not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve query results",
+        "tags": [
+          "Queries"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "QueryResult": {
+      "required": [
+        "name",
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "QueryBuilderResult": {
+      "required": [
+        "queryDetails",
+        "status"
+      ],
+      "type": "object",
+      "properties": {
+        "progress": {
+          "type": "number"
+        },
+        "queryDetails": {
+          "$ref": "#/components/schemas/QueryResponse"
+        },
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/QueryResult"
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "IN_PROGRESS",
+            "DONE",
+            "CANCELLED",
+            "FAILURE",
+            "TIMED_OUT"
+          ]
+        }
+      }
+    },
+    "QueryRequest": {
+      "required": [
+        "query"
+      ],
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string"
+        }
+      }
+    },
+    "QueryResponse": {
+      "required": [
+        "initiatedAt",
+        "jobId",
+        "query"
+      ],
+      "type": "object",
+      "properties": {
+        "initiatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "jobId": {
+          "type": "string",
+          "description": "Id that can be used to request the status of the query. If you would like to re-run the query, you must re-run the query in the UI. See [retrieve query results](/docs/api/get-query-results)"
+        },
+        "query": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

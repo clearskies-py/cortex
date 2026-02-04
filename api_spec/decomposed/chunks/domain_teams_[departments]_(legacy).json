@@ -1,0 +1,530 @@
+{
+  "tag": "Teams [Departments] (legacy)",
+  "endpoint_count": 4,
+  "schema_count": 11,
+  "endpoints_summary": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/teams/departments",
+      "operation_id": "deleteDepartment",
+      "summary": "Delete department"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/teams/departments",
+      "operation_id": "listDepartments",
+      "summary": "Retrieve department details"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/teams/departments",
+      "operation_id": "createDepartment",
+      "summary": "Create department"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/teams/departments",
+      "operation_id": "updateDepartment",
+      "summary": "Update department"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/teams/departments",
+      "method": "DELETE",
+      "operation_id": "deleteDepartment",
+      "summary": "Delete department",
+      "details": {
+        "operationId": "deleteDepartment",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "departmentTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unit"
+                }
+              }
+            },
+            "description": "Successfully deleted department"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Department not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete department",
+        "tags": [
+          "Teams [Departments] (legacy)"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/teams/departments",
+      "method": "GET",
+      "operation_id": "listDepartments",
+      "summary": "Retrieve department details",
+      "details": {
+        "operationId": "listDepartments",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "departmentTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/DepartmentResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/AllDepartmentsResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Successfully found department"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Department not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve department details",
+        "tags": [
+          "Teams [Departments] (legacy)"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/teams/departments",
+      "method": "POST",
+      "operation_id": "createDepartment",
+      "summary": "Create department",
+      "details": {
+        "operationId": "createDepartment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDepartmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepartmentResponse"
+                }
+              }
+            },
+            "description": "Successfully created a department"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create department",
+        "tags": [
+          "Teams [Departments] (legacy)"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/teams/departments",
+      "method": "PUT",
+      "operation_id": "updateDepartment",
+      "summary": "Update department",
+      "details": {
+        "operationId": "updateDepartment",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "departmentTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDepartmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepartmentResponse"
+                }
+              }
+            },
+            "description": "Successfully updated department"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Department not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update department",
+        "tags": [
+          "Teams [Departments] (legacy)"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "UpdateDepartmentRequest": {
+      "required": [
+        "members",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/DepartmentMemberRequest"
+          }
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "DepartmentResponse.BaseRole.MISCONFIGURED": {
+      "title": "MISCONFIGURED",
+      "required": [
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/BaseRole"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tag": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "BaseRole": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/DepartmentResponse.BaseRole.MISCONFIGURED"
+        },
+        {
+          "$ref": "#/components/schemas/DepartmentResponse.BaseRole.TEAM_ROLE"
+        }
+      ]
+    },
+    "Unit": {
+      "type": "object"
+    },
+    "DepartmentResponse.BaseRole.TEAM_ROLE": {
+      "title": "TEAM_ROLE",
+      "required": [
+        "name",
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/BaseRole"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "AllDepartmentsResponse": {
+      "required": [
+        "departments"
+      ],
+      "type": "object",
+      "properties": {
+        "departments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/DepartmentResponse"
+          }
+        }
+      }
+    },
+    "DepartmentMemberRequest": {
+      "required": [
+        "email",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "notificationsEnabled": {
+          "type": "boolean"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "DepartmentMemberResponse": {
+      "required": [
+        "email",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/components/schemas/BaseRole"
+        }
+      }
+    },
+    "CreateDepartmentRequest": {
+      "required": [
+        "departmentTag",
+        "members",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "departmentTag": {
+          "type": "string",
+          "description": "Unique identifier for the department, which is used for API operations"
+        },
+        "description": {
+          "type": "string"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/DepartmentMemberRequest"
+          }
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "DepartmentResponse": {
+      "required": [
+        "catalogEntityTag",
+        "departmentTag",
+        "id",
+        "members",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "catalogEntityTag": {
+          "type": "string"
+        },
+        "departmentTag": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/DepartmentMemberResponse"
+          }
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

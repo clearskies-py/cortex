@@ -1,0 +1,897 @@
+{
+  "tag": "Dependencies",
+  "endpoint_count": 8,
+  "schema_count": 10,
+  "endpoints_summary": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/dependencies",
+      "operation_id": "deleteDependenciesInBulk",
+      "summary": "Delete dependencies in bulk"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/catalog/dependencies",
+      "operation_id": "createOrUpdateDependenciesInBulk",
+      "summary": "Create or update dependencies in bulk"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{callerTag}/dependencies",
+      "operation_id": "deleteDependenciesFromEntity",
+      "summary": "Delete dependencies from entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{callerTag}/dependencies",
+      "operation_id": "listDependenciesForEntity",
+      "summary": "Retrieve all dependencies for an entity"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{callerTag}/dependencies/{calleeTag}",
+      "operation_id": "deleteDependency",
+      "summary": "Delete dependency"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{callerTag}/dependencies/{calleeTag}",
+      "operation_id": "getDependency",
+      "summary": "Retrieve dependency between entities"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/catalog/{callerTag}/dependencies/{calleeTag}",
+      "operation_id": "createDependency",
+      "summary": "Create dependency from entity"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/catalog/{callerTag}/dependencies/{calleeTag}",
+      "operation_id": "updateDependency",
+      "summary": "Update dependency between entities"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/catalog/dependencies",
+      "method": "DELETE",
+      "operation_id": "deleteDependenciesInBulk",
+      "summary": "Delete dependencies in bulk",
+      "details": {
+        "operationId": "deleteDependenciesInBulk",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkDependencyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully deleted dependencies"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Cannot modify dependency that is defined in cortex.yaml"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete dependencies in bulk",
+        "tags": [
+          "Dependencies"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/dependencies",
+      "method": "PUT",
+      "operation_id": "createOrUpdateDependenciesInBulk",
+      "summary": "Create or update dependencies in bulk",
+      "details": {
+        "description": "This API allows you to create multiple dependencies for multiple entities at once.",
+        "operationId": "createOrUpdateDependenciesInBulk",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkDependencyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkDependencyResponse"
+                }
+              }
+            },
+            "description": "Successfully created / updated dependencies"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Cannot modify dependency that is defined in cortex.yaml"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create or update dependencies in bulk",
+        "tags": [
+          "Dependencies"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{callerTag}/dependencies",
+      "method": "DELETE",
+      "operation_id": "deleteDependenciesFromEntity",
+      "summary": "Delete dependencies from entity",
+      "details": {
+        "description": "Deletes any outgoing dependencies from the entity. Note: this only deletes dependencies that were created via the API.",
+        "operationId": "deleteDependenciesFromEntity",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "callerTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DependencyResponse"
+                }
+              }
+            },
+            "description": "Successfully deleted dependencies"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Caller not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete dependencies from entity",
+        "tags": [
+          "Dependencies"
+        ],
+        "x-cortex-mcp-description": "Delete all dependencies for an entity. Disabled for MCP access to protect dependency graph integrity and prevent accidental removal of critical relationship data",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{callerTag}/dependencies",
+      "method": "GET",
+      "operation_id": "listDependenciesForEntity",
+      "summary": "Retrieve all dependencies for an entity",
+      "details": {
+        "operationId": "listDependenciesForEntity",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "callerTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "includeOutgoing",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "in": "query",
+            "name": "includeIncoming",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DependencyResponse"
+                }
+              }
+            },
+            "description": "Successfully found entity dependencies"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity dependencies not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve all dependencies for an entity",
+        "tags": [
+          "Dependencies"
+        ],
+        "x-cortex-mcp-description": "List all dependencies for an entity including both incoming (who depends on this service) and outgoing (what this service depends on) relationships. Essential for understanding service interactions, planning changes, and assessing blast radius",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{callerTag}/dependencies/{calleeTag}",
+      "method": "DELETE",
+      "operation_id": "deleteDependency",
+      "summary": "Delete dependency",
+      "details": {
+        "description": "Deletes a single dependency edge between the `caller` and the `callee`. \nNote: This is only supported for edges created via the API.",
+        "operationId": "deleteDependency",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "callerTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "calleeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "method",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DependencyResponse"
+                }
+              }
+            },
+            "description": "Successfully deleted dependency"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid endpoint"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Dependency not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete dependency",
+        "tags": [
+          "Dependencies"
+        ],
+        "x-cortex-mcp-description": "Delete a specific dependency between two entities. Disabled for MCP access as removing dependencies can mask critical system relationships",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{callerTag}/dependencies/{calleeTag}",
+      "method": "GET",
+      "operation_id": "getDependency",
+      "summary": "Retrieve dependency between entities",
+      "details": {
+        "description": "If a dependency exists between the `callee` and the `caller`, returns metadata about the edge.",
+        "operationId": "getDependency",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "callerTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "calleeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "method",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DependencyResponse"
+                }
+              }
+            },
+            "description": "Successfully found dependency"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid endpoint"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Dependency not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve dependency between entities",
+        "tags": [
+          "Dependencies"
+        ],
+        "x-cortex-mcp-description": "Get specific dependency details between two entities including method, path, and metadata. Useful for understanding the nature of the relationship, API contracts, and communication patterns between services",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{callerTag}/dependencies/{calleeTag}",
+      "method": "POST",
+      "operation_id": "createDependency",
+      "summary": "Create dependency from entity",
+      "details": {
+        "operationId": "createDependency",
+        "parameters": [
+          {
+            "description": "The entity tag (x-cortex-tag) for the callee entity (\"from\" entity)",
+            "in": "path",
+            "name": "callerTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The entity tag (x-cortex-tag) for the caller entity (\"to\" entity)",
+            "in": "path",
+            "name": "calleeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "HTTP Method",
+            "example": "POST",
+            "in": "query",
+            "name": "method",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DependencyCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DependencyResponse"
+                }
+              }
+            },
+            "description": "Successfully created dependency"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid endpoint"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create dependency from entity",
+        "tags": [
+          "Dependencies"
+        ],
+        "x-cortex-mcp-description": "Create a dependency between entities. Disabled for MCP access to prevent unauthorized architecture modifications that could impact system understanding",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{callerTag}/dependencies/{calleeTag}",
+      "method": "PUT",
+      "operation_id": "updateDependency",
+      "summary": "Update dependency between entities",
+      "details": {
+        "description": "If a dependency exists between two entities, replace the metadata with the payload. \nNote: This only supports dependencies created via the API.",
+        "operationId": "updateDependency",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "callerTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "calleeTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "method",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DependencyUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DependencyResponse"
+                }
+              }
+            },
+            "description": "Successfully updated dependency"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid endpoint"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update dependency between entities",
+        "tags": [
+          "Dependencies"
+        ],
+        "x-cortex-mcp-description": "Update dependency between entities. Disabled for MCP access as modifying dependencies requires careful validation to maintain accurate system topology",
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "BulkDependencyInnerRequest": {
+      "required": [
+        "tag"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/components/schemas/JsonNode"
+        },
+        "method": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Entity tag (`x-cortex-tag`) for the `callee`"
+        }
+      },
+      "description": "Map of `caller` service to dependencies"
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "BulkDependencyInnerResponse": {
+      "required": [
+        "tag"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/components/schemas/JsonNode"
+        },
+        "method": {
+          "$ref": "#/components/schemas/HttpMethod"
+        },
+        "path": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Entity tag (`x-cortex-tag`) for the `callee`"
+        }
+      },
+      "description": "Map of `caller` service to dependencies"
+    },
+    "DependencyUpdateRequest": {
+      "required": [
+        "description",
+        "metadata"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/components/schemas/JsonNode"
+        }
+      }
+    },
+    "DependencyResponse": {
+      "required": [
+        "calleeTag",
+        "calleeType",
+        "callerTag",
+        "callerType"
+      ],
+      "type": "object",
+      "properties": {
+        "calleeTag": {
+          "type": "string",
+          "description": "Entity tag (x-cortex-tag) for the callee entity"
+        },
+        "calleeType": {
+          "type": "string",
+          "description": "Type of the callee entity. Corresponds to the x-cortex-type field in the entity descriptor or \u2018service\u2019 for services."
+        },
+        "callerTag": {
+          "type": "string",
+          "description": "Entity tag (x-cortex-tag) for the caller entity"
+        },
+        "callerType": {
+          "type": "string",
+          "description": "Type of the caller entity. Corresponds to the x-cortex-type field in the entity descriptor or \u2018service\u2019 for services."
+        },
+        "description": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/components/schemas/JsonNode"
+        },
+        "method": {
+          "type": "string",
+          "description": "Possible values: [GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE]"
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "BulkDependencyResponse": {
+      "required": [
+        "values"
+      ],
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "description": "Map of `caller` service to dependencies",
+            "items": {
+              "$ref": "#/components/schemas/BulkDependencyInnerResponse"
+            }
+          },
+          "description": "Map of `caller` service to dependencies"
+        }
+      }
+    },
+    "HttpMethod": {
+      "type": "object"
+    },
+    "DependencyCreateRequest": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/components/schemas/JsonNode"
+        }
+      }
+    },
+    "JsonNode": {
+      "type": "object"
+    },
+    "BulkDependencyRequest": {
+      "required": [
+        "values"
+      ],
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "description": "Map of `caller` service to dependencies",
+            "items": {
+              "$ref": "#/components/schemas/BulkDependencyInnerRequest"
+            }
+          },
+          "description": "Map of `caller` service to dependencies"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

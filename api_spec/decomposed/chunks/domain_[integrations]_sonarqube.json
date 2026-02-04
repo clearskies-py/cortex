@@ -1,0 +1,798 @@
+{
+  "tag": "[Integrations] SonarQube",
+  "endpoint_count": 10,
+  "schema_count": 9,
+  "endpoints_summary": [
+    {
+      "method": "POST",
+      "path": "/api/v1/sonarqube/configuration",
+      "operation_id": "SonarQubeSaveConfiguration",
+      "summary": "Add a single configuration"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sonarqube/configuration/validate",
+      "operation_id": "SonarQubeValidateAllConfigurations",
+      "summary": "Validate all configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sonarqube/configuration/validate/{alias}",
+      "operation_id": "SonarQubeValidateConfiguration",
+      "summary": "Validate a configuration"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sonarqube/configuration/{alias}",
+      "operation_id": "SonarQubeRemoveConfiguration",
+      "summary": "Delete a configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sonarqube/configuration/{alias}",
+      "operation_id": "SonarQubeGetConfiguration",
+      "summary": "Retrieve a configuration"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/sonarqube/configuration/{alias}",
+      "operation_id": "SonarQubeUpdateConfiguration",
+      "summary": "Update a configuration"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/sonarqube/configurations",
+      "operation_id": "SonarQubeRemoveAllConfigurations",
+      "summary": "Delete all configurations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sonarqube/configurations",
+      "operation_id": "SonarQubeListConfigurations",
+      "summary": "Retrieve configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sonarqube/configurations",
+      "operation_id": "SonarQubeSaveConfigurations",
+      "summary": "Add multiple configurations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sonarqube/default-configuration",
+      "operation_id": "SonarQubeGetDefaultConfiguration",
+      "summary": "Retrieve default configuration"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/sonarqube/configuration",
+      "method": "POST",
+      "operation_id": "SonarQubeSaveConfiguration",
+      "summary": "Add a single configuration",
+      "details": {
+        "operationId": "SonarQubeSaveConfiguration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SonarqubeConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseSonarqubeConfiguration"
+                }
+              }
+            },
+            "description": "Successfully added configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add a single configuration",
+        "tags": [
+          "[Integrations] SonarQube"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/sonarqube/configuration/validate",
+      "method": "POST",
+      "operation_id": "SonarQubeValidateAllConfigurations",
+      "summary": "Validate all configurations",
+      "details": {
+        "operationId": "SonarQubeValidateAllConfigurations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleIntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated all configurations"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate all configurations",
+        "tags": [
+          "[Integrations] SonarQube"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/sonarqube/configuration/validate/{alias}",
+      "method": "POST",
+      "operation_id": "SonarQubeValidateConfiguration",
+      "summary": "Validate a configuration",
+      "details": {
+        "operationId": "SonarQubeValidateConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated configuration"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate a configuration",
+        "tags": [
+          "[Integrations] SonarQube"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/sonarqube/configuration/{alias}",
+      "method": "DELETE",
+      "operation_id": "SonarQubeRemoveConfiguration",
+      "summary": "Delete a configuration",
+      "details": {
+        "operationId": "SonarQubeRemoveConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseSonarqubeConfiguration"
+                }
+              }
+            },
+            "description": "Successfully deleted configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete a configuration",
+        "tags": [
+          "[Integrations] SonarQube"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/sonarqube/configuration/{alias}",
+      "method": "GET",
+      "operation_id": "SonarQubeGetConfiguration",
+      "summary": "Retrieve a configuration",
+      "details": {
+        "operationId": "SonarQubeGetConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SonarqubeConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve a configuration",
+        "tags": [
+          "[Integrations] SonarQube"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/sonarqube/configuration/{alias}",
+      "method": "PUT",
+      "operation_id": "SonarQubeUpdateConfiguration",
+      "summary": "Update a configuration",
+      "details": {
+        "description": "WARNING: Updating aliases for configurations or changing the default configuration could cause entity YAMLs that use this integration to break.",
+        "operationId": "SonarQubeUpdateConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SonarqubeUpdateConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseSonarqubeConfiguration"
+                }
+              }
+            },
+            "description": "Successfully updated configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update a configuration",
+        "tags": [
+          "[Integrations] SonarQube"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/sonarqube/configurations",
+      "method": "DELETE",
+      "operation_id": "SonarQubeRemoveAllConfigurations",
+      "summary": "Delete all configurations",
+      "details": {
+        "operationId": "SonarQubeRemoveAllConfigurations",
+        "responses": {
+          "200": {
+            "description": "Successfully deleted all configurations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete all configurations",
+        "tags": [
+          "[Integrations] SonarQube"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/sonarqube/configurations",
+      "method": "GET",
+      "operation_id": "SonarQubeListConfigurations",
+      "summary": "Retrieve configurations",
+      "details": {
+        "operationId": "SonarQubeListConfigurations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseSonarqubeConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found configurations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve configurations",
+        "tags": [
+          "[Integrations] SonarQube"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/sonarqube/configurations",
+      "method": "POST",
+      "operation_id": "SonarQubeSaveConfigurations",
+      "summary": "Add multiple configurations",
+      "details": {
+        "operationId": "SonarQubeSaveConfigurations",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigurationsRequestSonarqubeConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleConfigurationsResponseSonarqubeConfiguration"
+                }
+              }
+            },
+            "description": "Successfully added configurations"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add multiple configurations",
+        "tags": [
+          "[Integrations] SonarQube"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/sonarqube/default-configuration",
+      "method": "GET",
+      "operation_id": "SonarQubeGetDefaultConfiguration",
+      "summary": "Retrieve default configuration",
+      "details": {
+        "operationId": "SonarQubeGetDefaultConfiguration",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SonarqubeConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found default configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve default configuration",
+        "tags": [
+          "[Integrations] SonarQube"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "SonarqubeConfiguration": {
+      "required": [
+        "alias",
+        "host",
+        "isDefault",
+        "lastFour"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "lastFour": {
+          "type": "string"
+        }
+      }
+    },
+    "SonarqubeUpdateConfigurationRequest": {
+      "required": [
+        "alias",
+        "isDefault"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MultipleConfigurationsResponseSonarqubeConfiguration": {
+      "required": [
+        "configurations",
+        "skippedConfigurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SonarqubeConfiguration"
+          }
+        },
+        "skippedConfigurations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "MultipleIntegrationConfigValidation": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/IntegrationConfigValidation"
+          }
+        }
+      }
+    },
+    "ConfigurationsResponseSonarqubeConfiguration": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SonarqubeConfiguration"
+          }
+        }
+      }
+    },
+    "ConfigurationsRequestSonarqubeConfigurationRequest": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SonarqubeConfigurationRequest"
+          }
+        }
+      }
+    },
+    "IntegrationConfigValidation": {
+      "required": [
+        "isValid"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "isValid": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "SonarqubeConfigurationRequest": {
+      "required": [
+        "alias",
+        "host",
+        "isDefault",
+        "token"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

@@ -1,0 +1,775 @@
+{
+  "tag": "API Keys",
+  "endpoint_count": 5,
+  "schema_count": 9,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/key",
+      "operation_id": "listApiKey",
+      "summary": "List API keys"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/key",
+      "operation_id": "createApiKey",
+      "summary": "Create API key"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/auth/key/{cid}",
+      "operation_id": "deleteApiKey",
+      "summary": "Delete API key"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/key/{cid}",
+      "operation_id": "getApiKey",
+      "summary": "Get API key"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/auth/key/{cid}",
+      "operation_id": "updateApiKey",
+      "summary": "Update API key"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/auth/key",
+      "method": "GET",
+      "operation_id": "listApiKey",
+      "summary": "List API keys",
+      "details": {
+        "description": "List API keys\n\nThe API key used to make the request must have the `Edit API keys` permission",
+        "operationId": "listApiKey",
+        "parameters": [
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListApiKeyResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListApiKeyResponse"
+                }
+              }
+            },
+            "description": "Successfully found API keys"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List API keys",
+        "tags": [
+          "API Keys"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/auth/key",
+      "method": "POST",
+      "operation_id": "createApiKey",
+      "summary": "Create API key",
+      "details": {
+        "description": "Create new API key.\n\nThe API key used to make the request must have the `Edit API keys` permission",
+        "operationId": "createApiKey",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApiRequest"
+              }
+            },
+            "application/yaml": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApiRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateApiResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateApiResponse"
+                }
+              }
+            },
+            "description": "Successfully created API key"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create API key",
+        "tags": [
+          "API Keys"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/auth/key/{cid}",
+      "method": "DELETE",
+      "operation_id": "deleteApiKey",
+      "summary": "Delete API key",
+      "details": {
+        "description": "Delete API key\n\nThe API key used to make the request must have the `Edit API keys` permission",
+        "operationId": "deleteApiKey",
+        "parameters": [
+          {
+            "description": "The unique, auto-generated identifier for the API key",
+            "example": "ak1234567890abcdef",
+            "in": "path",
+            "name": "cid",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique, auto-generated identifier for the API key",
+              "example": "ak1234567890abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted API key"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "API key not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete API key",
+        "tags": [
+          "API Keys"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/auth/key/{cid}",
+      "method": "GET",
+      "operation_id": "getApiKey",
+      "summary": "Get API key",
+      "details": {
+        "description": "Get API key",
+        "operationId": "getApiKey",
+        "parameters": [
+          {
+            "description": "The unique, auto-generated identifier for the API key",
+            "example": "ak1234567890abcdef",
+            "in": "path",
+            "name": "cid",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique, auto-generated identifier for the API key",
+              "example": "ak1234567890abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKeyDefinition"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKeyDefinition"
+                }
+              }
+            },
+            "description": "Successfully found API key"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "API key not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Get API key",
+        "tags": [
+          "API Keys"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/auth/key/{cid}",
+      "method": "PUT",
+      "operation_id": "updateApiKey",
+      "summary": "Update API key",
+      "details": {
+        "description": "Update API key\n\nThe API key used to make the request must have the `Edit API keys` permission",
+        "operationId": "updateApiKey",
+        "parameters": [
+          {
+            "description": "The unique, auto-generated identifier for the API key",
+            "example": "ak1234567890abcdef",
+            "in": "path",
+            "name": "cid",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The unique, auto-generated identifier for the API key",
+              "example": "ak1234567890abcdef"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateApiRequest"
+              }
+            },
+            "application/yaml": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateApiRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKeyDefinition"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKeyDefinition"
+                }
+              }
+            },
+            "description": "Successfully updated API key"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "API key not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update API key",
+        "tags": [
+          "API Keys"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "ApiKeyRole": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of the role",
+          "enum": [
+            "DEFAULT",
+            "CUSTOM"
+          ]
+        }
+      },
+      "description": "Roles assigned to the API key",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/DEFAULT"
+        },
+        {
+          "$ref": "#/components/schemas/CUSTOM"
+        }
+      ]
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "ListApiKeyResponse": {
+      "required": [
+        "apiKeys",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "apiKeys": {
+          "type": "array",
+          "description": "List of API keys",
+          "items": {
+            "$ref": "#/components/schemas/ApiKeyDefinition"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "CreateApiRequest": {
+      "required": [
+        "name",
+        "roles"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of the API key",
+          "example": "API Key used for entities scanner script"
+        },
+        "expirationDate": {
+          "type": "string",
+          "description": "Expiration date of the API key. Format: ISO8601 with timezone offset",
+          "format": "date-time"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the API key",
+          "example": "Entities scanner"
+        },
+        "roles": {
+          "type": "array",
+          "description": "Roles assigned to the API key",
+          "items": {
+            "$ref": "#/components/schemas/ApiKeyRole"
+          }
+        }
+      }
+    },
+    "DEFAULT": {
+      "required": [
+        "role",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ApiKeyRole"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "role": {
+              "type": "string",
+              "description": "The role of the API key",
+              "enum": [
+                "READ_ONLY",
+                "USER",
+                "ADMIN"
+              ]
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "UpdateApiRequest": {
+      "required": [
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of the API key",
+          "example": "API Key used for entities scanner script"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the API key",
+          "example": "Entities scanner"
+        }
+      }
+    },
+    "CreateApiResponse": {
+      "required": [
+        "apiKey",
+        "roles"
+      ],
+      "type": "object",
+      "properties": {
+        "apiKey": {
+          "type": "string",
+          "description": "Value of the API key created. **You will not be able to see this key again**",
+          "example": "3WpQ3WpQ3WpQ3WpQ"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the API key",
+          "example": "API Key used for entities scanner script"
+        },
+        "expirationDate": {
+          "type": "string",
+          "description": "Expiration date of the API key",
+          "format": "date-time"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the API key",
+          "example": "Entities scanner"
+        },
+        "roles": {
+          "type": "array",
+          "description": "Roles assigned to the API key",
+          "items": {
+            "$ref": "#/components/schemas/ApiKeyRole"
+          }
+        }
+      }
+    },
+    "CUSTOM": {
+      "required": [
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ApiKeyRole"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tag": {
+              "type": "string",
+              "description": "Tag of the [custom role](https://docs.cortex.io/docs/walkthroughs/workspace-settings/permissioning/custom-roles)"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "ApiKeyDefinition": {
+      "required": [
+        "cid",
+        "createdDate",
+        "last4",
+        "roles"
+      ],
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string",
+          "description": "ID of the API key",
+          "example": "ak1234567890abcdef"
+        },
+        "createdDate": {
+          "type": "string",
+          "description": "Creation date of the API key",
+          "format": "date-time",
+          "example": "2025-01-15T22:47:30Z"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the API key",
+          "example": "API Key used for entities scanner script"
+        },
+        "expirationDate": {
+          "type": "string",
+          "description": "Expiration date of the API key",
+          "format": "date-time"
+        },
+        "last4": {
+          "type": "string",
+          "description": "Last 4 characters of the API key",
+          "example": "0kAg"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the API key",
+          "example": "Entities scanner"
+        },
+        "roles": {
+          "type": "array",
+          "description": "Roles assigned to the API key",
+          "items": {
+            "$ref": "#/components/schemas/ApiKeyRole"
+          }
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

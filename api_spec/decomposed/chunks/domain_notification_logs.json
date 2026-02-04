@@ -1,0 +1,981 @@
+{
+  "tag": "Notification Logs",
+  "endpoint_count": 2,
+  "schema_count": 6,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/notifications/logs",
+      "operation_id": "listNotificationLogs",
+      "summary": "Retrieve notification logs"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/notifications/logs/run",
+      "operation_id": "listNotificationRuns",
+      "summary": "Retrieve notification runs"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/notifications/logs",
+      "method": "GET",
+      "operation_id": "listNotificationLogs",
+      "summary": "Retrieve notification logs",
+      "details": {
+        "description": "Retrieve notification logs based on the provided filters. API key must have the `View Notification logs` permission.",
+        "operationId": "listNotificationLogs",
+        "parameters": [
+          {
+            "description": "The unique identifier of the notification run that this log is associated with.",
+            "in": "query",
+            "name": "notificationRunIds",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          {
+            "description": "The type of notification.",
+            "in": "query",
+            "name": "notificationTypes",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INITIATIVE_CREATION",
+                  "INITIATIVE_CUSTOM_SCHEDULE",
+                  "INITIATIVE_N_DAYS_LEFT",
+                  "SERVICE_REEVALUATED",
+                  "WEEKLY_REPORT",
+                  "BROKEN_OPEN_API_SPEC",
+                  "ENTITLEMENT_EXPIRATION",
+                  "ONCALL_ASSISTANT",
+                  "ONBOARDING_MESSAGE",
+                  "NOTIFY_INVALID_INTEGRATION",
+                  "ONCALL_PERSON_CHANGED",
+                  "ONCALL_STARTS_IN_N_DAYS",
+                  "TEAM_MEMBER_INVITATION",
+                  "PENDING_RULE_EXEMPTION",
+                  "TOKEN_EXPIRES_IN_N_DAYS",
+                  "SCHEDULED_SCORECARD_RULE_CREATION",
+                  "SCORECARD_RULE_ACTIVATES_IN_N_DAYS",
+                  "WORKFLOW_STATUS_UPDATE",
+                  "WORKFLOW_APPROVAL_PENDING",
+                  "VERIFICATION_PERIOD_STARTED",
+                  "VERIFICATION_PERIOD_REMINDER",
+                  "AI_ASSISTANT_WELCOME_MESSAGE",
+                  "ENTITY_SCORE_DROPPED",
+                  "ONBOARDING_WIZARD_STATE_COMPLETED"
+                ]
+              }
+            }
+          },
+          {
+            "description": "The status of the notification.",
+            "in": "query",
+            "name": "statuses",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "READY",
+                  "IGNORED",
+                  "FAILED",
+                  "DELIVERED"
+                ]
+              }
+            }
+          },
+          {
+            "description": "The type of the notification recipient.",
+            "in": "query",
+            "name": "recipientTypes",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "USER",
+                  "TEAM",
+                  "ENTITY"
+                ]
+              }
+            }
+          },
+          {
+            "description": "The email address that this notification was sent to.",
+            "in": "query",
+            "name": "recipientEmails",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "description": "The unique identifiers of the entities that the notifications were sent to.",
+            "in": "query",
+            "name": "recipientEntityIds",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          {
+            "description": "The channel in Slack or MS Teams where the notification was sent.",
+            "in": "query",
+            "name": "recipientChannels",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "description": "The medium used to send the notification.",
+            "in": "query",
+            "name": "mediums",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "SLACK",
+                  "MICROSOFT_TEAMS",
+                  "EMAIL",
+                  "WEBHOOK"
+                ]
+              }
+            }
+          },
+          {
+            "description": "The reason why a notification was ignored.",
+            "in": "query",
+            "name": "ignoredReasons",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "USER_UNSUBSCRIBED",
+                  "WORKSPACE_DISABLED",
+                  "CHANNEL_DISABLED",
+                  "DUPLICATE",
+                  "CORTEX_EMPLOYEE",
+                  "NON_CORTEX_USERS_DISABLED",
+                  "UNSUPPORTED"
+                ]
+              }
+            }
+          },
+          {
+            "description": "The reason why a notification failed to send.",
+            "in": "query",
+            "name": "failedReasons",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CHANNEL_NOT_FOUND",
+                  "MEMBER_EMAILS_NOT_FOUND",
+                  "MISSING_CONTENT",
+                  "CLIENT_ERROR",
+                  "BACKSTAGE_BASE_URL_MISSING",
+                  "NO_SEATS_LEFT"
+                ]
+              }
+            }
+          },
+          {
+            "description": "The ISO date and time to start the search from.",
+            "example": "2021-01-01T00:00:00",
+            "in": "query",
+            "name": "fromDate",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "description": "The ISO date and time to end the search at.",
+            "example": "2021-01-01T00:00:00",
+            "in": "query",
+            "name": "untilDate",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "description": "Sort the results ascending or descending.",
+            "in": "query",
+            "name": "orderBy",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "DESC",
+              "enum": [
+                "ASC",
+                "DESC"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationLogResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved notification logs"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve notification logs",
+        "tags": [
+          "Notification Logs"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/notifications/logs/run",
+      "method": "GET",
+      "operation_id": "listNotificationRuns",
+      "summary": "Retrieve notification runs",
+      "details": {
+        "description": "Retrieve notification runs based on the provided filters. API key must have the `View Notification logs` permission.",
+        "operationId": "listNotificationRuns",
+        "parameters": [
+          {
+            "description": "The type of notification.",
+            "in": "query",
+            "name": "notificationTypes",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INITIATIVE_CREATION",
+                  "INITIATIVE_CUSTOM_SCHEDULE",
+                  "INITIATIVE_N_DAYS_LEFT",
+                  "SERVICE_REEVALUATED",
+                  "WEEKLY_REPORT",
+                  "BROKEN_OPEN_API_SPEC",
+                  "ENTITLEMENT_EXPIRATION",
+                  "ONCALL_ASSISTANT",
+                  "ONBOARDING_MESSAGE",
+                  "NOTIFY_INVALID_INTEGRATION",
+                  "ONCALL_PERSON_CHANGED",
+                  "ONCALL_STARTS_IN_N_DAYS",
+                  "TEAM_MEMBER_INVITATION",
+                  "PENDING_RULE_EXEMPTION",
+                  "TOKEN_EXPIRES_IN_N_DAYS",
+                  "SCHEDULED_SCORECARD_RULE_CREATION",
+                  "SCORECARD_RULE_ACTIVATES_IN_N_DAYS",
+                  "WORKFLOW_STATUS_UPDATE",
+                  "WORKFLOW_APPROVAL_PENDING",
+                  "VERIFICATION_PERIOD_STARTED",
+                  "VERIFICATION_PERIOD_REMINDER",
+                  "AI_ASSISTANT_WELCOME_MESSAGE",
+                  "ENTITY_SCORE_DROPPED",
+                  "ONBOARDING_WIZARD_STATE_COMPLETED"
+                ]
+              }
+            }
+          },
+          {
+            "description": "The status of the notification.",
+            "in": "query",
+            "name": "statuses",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CREATED",
+                  "FAILED",
+                  "IGNORED",
+                  "COMPLETED",
+                  "COMPLETED_WITH_ERRORS"
+                ]
+              }
+            }
+          },
+          {
+            "description": "The medium used to send the notification.",
+            "in": "query",
+            "name": "mediums",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "SLACK",
+                  "MICROSOFT_TEAMS",
+                  "EMAIL",
+                  "WEBHOOK"
+                ]
+              }
+            }
+          },
+          {
+            "description": "The reason why a notification run was ignored.",
+            "in": "query",
+            "name": "ignoredReasons",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "SCORECARD_DISABLED",
+                  "WORKSPACE_DISABLED",
+                  "NO_RECIPIENTS"
+                ]
+              }
+            }
+          },
+          {
+            "description": "The reason why a notification run failed.",
+            "in": "query",
+            "name": "failedReasons",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "PACKET_GENERATOR_ERROR",
+                  "CONTEXT_RESOLUTION_ERROR",
+                  "INTERNAL_ERROR"
+                ]
+              }
+            }
+          },
+          {
+            "description": "A search query to filter the results.",
+            "in": "query",
+            "name": "searchQuery"
+          },
+          {
+            "description": "Whether to include the objects associated with the notification run.",
+            "in": "query",
+            "name": "includeObjects",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "The ISO date and time to start the search from.",
+            "example": "2021-01-01T00:00:00",
+            "in": "query",
+            "name": "fromDate",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "description": "The ISO date and time to end the search at.",
+            "example": "2021-01-01T00:00:00",
+            "in": "query",
+            "name": "untilDate",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "in": "query",
+            "name": "deliveredOnly",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "description": "Sort the results ascending or descending.",
+            "in": "query",
+            "name": "orderBy",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "DESC",
+              "enum": [
+                "ASC",
+                "DESC"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationRunResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved notification runs"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve notification runs",
+        "tags": [
+          "Notification Logs"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "NotificationObject": {
+      "required": [
+        "id",
+        "name",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string",
+          "description": "Unique, immutable, 18-character auto-generated identifier. Applicable only for entities.",
+          "example": "en2da8159dbeefb974"
+        },
+        "id": {
+          "type": "integer",
+          "description": "The unique internal identifier of the notification object.",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the notification object."
+        },
+        "tag": {
+          "type": "string",
+          "description": "Unique identifier, found in the UI. Applicable for entities and scorecards.",
+          "example": "production-readiness-scorecard"
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of the notification object.",
+          "enum": [
+            "ENTITY",
+            "SCORECARD",
+            "INITIATIVE"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "description": "The URL of the notification object's home page in Cortex."
+        }
+      },
+      "description": "The objects (Entities, Scorecards and Initiatives) associated with this run."
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "NotificationRun": {
+      "required": [
+        "deliveredCount",
+        "id",
+        "medium",
+        "notificationType",
+        "seqNo",
+        "status",
+        "summary"
+      ],
+      "type": "object",
+      "properties": {
+        "dateCreated": {
+          "type": "string",
+          "description": "The date and time that this notification run was created.",
+          "format": "date-time"
+        },
+        "dateUpdated": {
+          "type": "string",
+          "description": "The date and time that this notification run was updated.",
+          "format": "date-time"
+        },
+        "deliveredCount": {
+          "type": "integer",
+          "description": "The number of notifications that were delivered during this run.",
+          "format": "int64"
+        },
+        "errorMessage": {
+          "type": "string",
+          "description": "An additional error message."
+        },
+        "failedReason": {
+          "type": "string",
+          "description": "The reason why this notification run failed.",
+          "enum": [
+            "PACKET_GENERATOR_ERROR",
+            "CONTEXT_RESOLUTION_ERROR",
+            "INTERNAL_ERROR"
+          ]
+        },
+        "id": {
+          "type": "integer",
+          "description": "The unique identifier of the notification run.",
+          "format": "int64",
+          "example": 1
+        },
+        "ignoredReason": {
+          "type": "string",
+          "description": "The reason why this notification run was ignored.",
+          "enum": [
+            "SCORECARD_DISABLED",
+            "WORKSPACE_DISABLED",
+            "NO_RECIPIENTS"
+          ]
+        },
+        "medium": {
+          "type": "string",
+          "description": "The medium used to send the notification.",
+          "enum": [
+            "SLACK",
+            "MICROSOFT_TEAMS",
+            "EMAIL",
+            "WEBHOOK"
+          ]
+        },
+        "notificationObjects": {
+          "type": "array",
+          "description": "The objects (Entities, Scorecards and Initiatives) associated with this run.",
+          "items": {
+            "$ref": "#/components/schemas/NotificationObject"
+          }
+        },
+        "notificationType": {
+          "type": "string",
+          "description": "The type of the notification.",
+          "enum": [
+            "INITIATIVE_CREATION",
+            "INITIATIVE_CUSTOM_SCHEDULE",
+            "INITIATIVE_N_DAYS_LEFT",
+            "SERVICE_REEVALUATED",
+            "WEEKLY_REPORT",
+            "BROKEN_OPEN_API_SPEC",
+            "ENTITLEMENT_EXPIRATION",
+            "ONCALL_ASSISTANT",
+            "ONBOARDING_MESSAGE",
+            "NOTIFY_INVALID_INTEGRATION",
+            "ONCALL_PERSON_CHANGED",
+            "ONCALL_STARTS_IN_N_DAYS",
+            "TEAM_MEMBER_INVITATION",
+            "PENDING_RULE_EXEMPTION",
+            "TOKEN_EXPIRES_IN_N_DAYS",
+            "SCHEDULED_SCORECARD_RULE_CREATION",
+            "SCORECARD_RULE_ACTIVATES_IN_N_DAYS",
+            "WORKFLOW_STATUS_UPDATE",
+            "WORKFLOW_APPROVAL_PENDING",
+            "VERIFICATION_PERIOD_STARTED",
+            "VERIFICATION_PERIOD_REMINDER",
+            "AI_ASSISTANT_WELCOME_MESSAGE",
+            "ENTITY_SCORE_DROPPED",
+            "ONBOARDING_WIZARD_STATE_COMPLETED"
+          ]
+        },
+        "originalRunId": {
+          "type": "integer",
+          "description": "The unique identifier of the original run that this run was re-run from.",
+          "format": "int64"
+        },
+        "seqNo": {
+          "type": "integer",
+          "description": "The order of the run in the sequence of re-runs. 0 if it's the original run.",
+          "format": "int32"
+        },
+        "status": {
+          "type": "string",
+          "description": "The status of the notification run.",
+          "enum": [
+            "CREATED",
+            "FAILED",
+            "IGNORED",
+            "COMPLETED",
+            "COMPLETED_WITH_ERRORS"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "description": "The summary of the notification run."
+        }
+      }
+    },
+    "NotificationLog": {
+      "required": [
+        "id",
+        "medium",
+        "recipientType",
+        "runId",
+        "status",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "dateCreated": {
+          "type": "string",
+          "description": "The date and time that this notification was created.",
+          "format": "date-time"
+        },
+        "dateDelivered": {
+          "type": "string",
+          "description": "The date and time that this notification was delivered.",
+          "format": "date-time"
+        },
+        "dateUpdated": {
+          "type": "string",
+          "description": "The date and time that this notification was updated.",
+          "format": "date-time"
+        },
+        "errorMessage": {
+          "type": "string",
+          "description": "An additional error message."
+        },
+        "failedReason": {
+          "type": "string",
+          "description": "The reason why this notification failed.",
+          "enum": [
+            "CHANNEL_NOT_FOUND",
+            "MEMBER_EMAILS_NOT_FOUND",
+            "MISSING_CONTENT",
+            "CLIENT_ERROR",
+            "BACKSTAGE_BASE_URL_MISSING",
+            "NO_SEATS_LEFT"
+          ]
+        },
+        "id": {
+          "type": "integer",
+          "description": "The unique identifier of the notification log.",
+          "format": "int64"
+        },
+        "ignoredReason": {
+          "type": "string",
+          "description": "The reason why this notification was ignored.",
+          "enum": [
+            "USER_UNSUBSCRIBED",
+            "WORKSPACE_DISABLED",
+            "CHANNEL_DISABLED",
+            "DUPLICATE",
+            "CORTEX_EMPLOYEE",
+            "NON_CORTEX_USERS_DISABLED",
+            "UNSUPPORTED"
+          ]
+        },
+        "medium": {
+          "type": "string",
+          "description": "The medium used to send the notification.",
+          "enum": [
+            "SLACK",
+            "MICROSOFT_TEAMS",
+            "EMAIL",
+            "WEBHOOK"
+          ]
+        },
+        "recipientChannel": {
+          "type": "string",
+          "description": "The channel in Slack or MS Teams that this notification was sent to.",
+          "example": "#general"
+        },
+        "recipientEmail": {
+          "type": "string",
+          "description": "The email address that this notification was sent to."
+        },
+        "recipientEntityId": {
+          "type": "integer",
+          "description": "The unique identifier of the entity that this notification was sent to.",
+          "format": "int64"
+        },
+        "recipientType": {
+          "type": "string",
+          "description": "The type of the notification recipient.",
+          "enum": [
+            "USER",
+            "TEAM",
+            "ENTITY"
+          ]
+        },
+        "recipientUserId": {
+          "type": "integer",
+          "description": "The unique identifier of the Cortex user that this notification was sent to.",
+          "format": "int64"
+        },
+        "runId": {
+          "type": "integer",
+          "description": "The unique identifier of the notification run that this log is associated with.",
+          "format": "int64"
+        },
+        "status": {
+          "type": "string",
+          "description": "The status of the notification log.",
+          "enum": [
+            "READY",
+            "IGNORED",
+            "FAILED",
+            "DELIVERED"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of the notification.",
+          "enum": [
+            "INITIATIVE_CREATION",
+            "INITIATIVE_CUSTOM_SCHEDULE",
+            "INITIATIVE_N_DAYS_LEFT",
+            "SERVICE_REEVALUATED",
+            "WEEKLY_REPORT",
+            "BROKEN_OPEN_API_SPEC",
+            "ENTITLEMENT_EXPIRATION",
+            "ONCALL_ASSISTANT",
+            "ONBOARDING_MESSAGE",
+            "NOTIFY_INVALID_INTEGRATION",
+            "ONCALL_PERSON_CHANGED",
+            "ONCALL_STARTS_IN_N_DAYS",
+            "TEAM_MEMBER_INVITATION",
+            "PENDING_RULE_EXEMPTION",
+            "TOKEN_EXPIRES_IN_N_DAYS",
+            "SCHEDULED_SCORECARD_RULE_CREATION",
+            "SCORECARD_RULE_ACTIVATES_IN_N_DAYS",
+            "WORKFLOW_STATUS_UPDATE",
+            "WORKFLOW_APPROVAL_PENDING",
+            "VERIFICATION_PERIOD_STARTED",
+            "VERIFICATION_PERIOD_REMINDER",
+            "AI_ASSISTANT_WELCOME_MESSAGE",
+            "ENTITY_SCORE_DROPPED",
+            "ONBOARDING_WIZARD_STATE_COMPLETED"
+          ]
+        }
+      }
+    },
+    "NotificationLogResponse": {
+      "required": [
+        "logs",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/NotificationLog"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "NotificationRunResponse": {
+      "required": [
+        "page",
+        "runs",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "runs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/NotificationRun"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

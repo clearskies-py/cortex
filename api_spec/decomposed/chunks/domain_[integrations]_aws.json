@@ -1,0 +1,826 @@
+{
+  "tag": "[Integrations] AWS",
+  "endpoint_count": 10,
+  "schema_count": 12,
+  "endpoints_summary": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/aws/configurations",
+      "operation_id": "AWSRemoveAllConfigurations",
+      "summary": "Delete all configurations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/aws/configurations",
+      "operation_id": "AWSGetAllConfigurations",
+      "summary": "Retrieve configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/aws/configurations",
+      "operation_id": "AWSAddSingleConfiguration",
+      "summary": "Add a single configuration"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/aws/configurations",
+      "operation_id": "AWSReplaceAllConfigurations",
+      "summary": "Update configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/aws/configurations/all/validate",
+      "operation_id": "AWSValidateAllConfigurations",
+      "summary": "Validate all configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/aws/configurations/validate/{accountId}",
+      "operation_id": "AWSValidateConfiguration",
+      "summary": "Validate a configuration"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/aws/configurations/{accountId}",
+      "operation_id": "AWSRemoveSingleConfiguration",
+      "summary": "Delete a configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/aws/configurations/{accountId}",
+      "operation_id": "AWSGetConfiguration",
+      "summary": "Retrieve a configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/aws/types",
+      "operation_id": "AWSGetAwsCloudControlTypes",
+      "summary": "List AWS types"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/aws/types",
+      "operation_id": "AWSSetConfiguredAwsCloudControlTypes",
+      "summary": "Update configured AWS types"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/aws/configurations",
+      "method": "DELETE",
+      "operation_id": "AWSRemoveAllConfigurations",
+      "summary": "Delete all configurations",
+      "details": {
+        "operationId": "AWSRemoveAllConfigurations",
+        "responses": {
+          "200": {
+            "description": "Successfully deleted configurations"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete all configurations",
+        "tags": [
+          "[Integrations] AWS"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/aws/configurations",
+      "method": "GET",
+      "operation_id": "AWSGetAllConfigurations",
+      "summary": "Retrieve configurations",
+      "details": {
+        "operationId": "AWSGetAllConfigurations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkAwsConfigurationsResponse"
+                }
+              }
+            },
+            "description": "Successfully found configurations"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve configurations",
+        "tags": [
+          "[Integrations] AWS"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/aws/configurations",
+      "method": "POST",
+      "operation_id": "AWSAddSingleConfiguration",
+      "summary": "Add a single configuration",
+      "details": {
+        "operationId": "AWSAddSingleConfiguration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SingleAwsConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleAwsConfigurationResponse"
+                }
+              }
+            },
+            "description": "Successfully added configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add a single configuration",
+        "tags": [
+          "[Integrations] AWS"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/aws/configurations",
+      "method": "PUT",
+      "operation_id": "AWSReplaceAllConfigurations",
+      "summary": "Update configurations",
+      "details": {
+        "operationId": "AWSReplaceAllConfigurations",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkAwsConfigurationsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkAwsConfigurationsResponse"
+                }
+              }
+            },
+            "description": "Successfully replaced configurations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update configurations",
+        "tags": [
+          "[Integrations] AWS"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/aws/configurations/all/validate",
+      "method": "POST",
+      "operation_id": "AWSValidateAllConfigurations",
+      "summary": "Validate all configurations",
+      "details": {
+        "operationId": "AWSValidateAllConfigurations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleIntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated all configurations"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate all configurations",
+        "tags": [
+          "[Integrations] AWS"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/aws/configurations/validate/{accountId}",
+      "method": "POST",
+      "operation_id": "AWSValidateConfiguration",
+      "summary": "Validate a configuration",
+      "details": {
+        "operationId": "AWSValidateConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated configuration"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate a configuration",
+        "tags": [
+          "[Integrations] AWS"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/aws/configurations/{accountId}",
+      "method": "DELETE",
+      "operation_id": "AWSRemoveSingleConfiguration",
+      "summary": "Delete a configuration",
+      "details": {
+        "operationId": "AWSRemoveSingleConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted configuration"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete a configuration",
+        "tags": [
+          "[Integrations] AWS"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/aws/configurations/{accountId}",
+      "method": "GET",
+      "operation_id": "AWSGetConfiguration",
+      "summary": "Retrieve a configuration",
+      "details": {
+        "operationId": "AWSGetConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleAwsConfigurationResponse"
+                }
+              }
+            },
+            "description": "Successfully found configuration"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve a configuration",
+        "tags": [
+          "[Integrations] AWS"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/aws/types",
+      "method": "GET",
+      "operation_id": "AWSGetAwsCloudControlTypes",
+      "summary": "List AWS types",
+      "details": {
+        "operationId": "AWSGetAwsCloudControlTypes",
+        "parameters": [
+          {
+            "description": "When true, includes all AWS types supported",
+            "in": "query",
+            "name": "includeDisabled",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AwsCloudControlTypeResponse"
+                }
+              }
+            },
+            "description": "Successfully found AWS types"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "AWS types not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List AWS types",
+        "tags": [
+          "[Integrations] AWS"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/aws/types",
+      "method": "PUT",
+      "operation_id": "AWSSetConfiguredAwsCloudControlTypes",
+      "summary": "Update configured AWS types",
+      "details": {
+        "operationId": "AWSSetConfiguredAwsCloudControlTypes",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AwsCloudControlTypesConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AwsCloudControlTypesResponse"
+                }
+              }
+            },
+            "description": "Successfully replaced AWS types"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update configured AWS types",
+        "tags": [
+          "[Integrations] AWS"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "AvailableCloudControlTypeResponse": {
+      "required": [
+        "enabled",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether AWS type is configured to be discovered and imported into the catalogs"
+        },
+        "type": {
+          "type": "string",
+          "description": "AWS type",
+          "example": "AWS::S3::Bucket"
+        }
+      },
+      "description": "List of AWS types and whether they're configured to be discovered and imported into the catalogs"
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "BulkAwsConfigurationsResponse": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SingleAwsConfigurationResponse"
+          }
+        }
+      }
+    },
+    "SingleAwsConfigurationResponse": {
+      "required": [
+        "accountId",
+        "role"
+      ],
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "description": "The account ID for the AWS account"
+        },
+        "accountName": {
+          "type": "string",
+          "description": "The account alias for the AWS account"
+        },
+        "role": {
+          "type": "string",
+          "description": "The IAM role Cortex would be assuming"
+        }
+      }
+    },
+    "SingleAwsConfigurationRequest": {
+      "required": [
+        "accountId",
+        "role"
+      ],
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "description": "The account ID for the AWS account"
+        },
+        "role": {
+          "type": "string",
+          "description": "The IAM role Cortex would be assuming"
+        }
+      }
+    },
+    "MultipleIntegrationConfigValidation": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/IntegrationConfigValidation"
+          }
+        }
+      }
+    },
+    "AwsCloudControlTypeConfigurationRequest": {
+      "required": [
+        "enabled",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether AWS type is configured to be discovered and imported into the catalogs"
+        },
+        "type": {
+          "type": "string",
+          "description": "AWS type",
+          "example": "AWS::S3::Bucket"
+        }
+      },
+      "description": "List of AWS types and whether they're configured to be discovered and imported into the catalogs"
+    },
+    "BulkAwsConfigurationsRequest": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SingleAwsConfigurationRequest"
+          }
+        }
+      }
+    },
+    "IntegrationConfigValidation": {
+      "required": [
+        "isValid"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "isValid": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "AwsCloudControlTypesConfigurationRequest": {
+      "required": [
+        "types"
+      ],
+      "type": "object",
+      "properties": {
+        "types": {
+          "type": "array",
+          "description": "List of AWS types and whether they're configured to be discovered and imported into the catalogs",
+          "items": {
+            "$ref": "#/components/schemas/AwsCloudControlTypeConfigurationRequest"
+          }
+        }
+      }
+    },
+    "AwsCloudControlTypesResponse": {
+      "required": [
+        "types"
+      ],
+      "type": "object",
+      "properties": {
+        "types": {
+          "type": "array",
+          "description": "List of AWS types and whether they're configured to be discovered and imported into the catalogs",
+          "items": {
+            "$ref": "#/components/schemas/AvailableCloudControlTypeResponse"
+          }
+        }
+      }
+    },
+    "AwsCloudControlTypeResponse": {
+      "required": [
+        "hasMore",
+        "page",
+        "total",
+        "totalPages",
+        "types"
+      ],
+      "type": "object",
+      "properties": {
+        "hasMore": {
+          "type": "boolean",
+          "description": "If there are more pages"
+        },
+        "page": {
+          "type": "integer",
+          "description": "Number of page",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of AWS Resources types",
+          "format": "int64"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        },
+        "types": {
+          "type": "array",
+          "description": "List of AWS types types and whether they're configured to be discovered and imported into the catalogs",
+          "items": {
+            "$ref": "#/components/schemas/AvailableCloudControlTypeResponse"
+          }
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

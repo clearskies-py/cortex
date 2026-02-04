@@ -1,0 +1,258 @@
+{
+  "tag": "Docs",
+  "endpoint_count": 3,
+  "schema_count": 2,
+  "endpoints_summary": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{tagOrId}/documentation/openapi",
+      "operation_id": "deleteOpenApiDocForEntity",
+      "summary": "Delete OpenAPI docs for entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/documentation/openapi",
+      "operation_id": "getOpenApiDocForEntity",
+      "summary": "Retrieve OpenAPI docs for entity"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/catalog/{tagOrId}/documentation/openapi",
+      "operation_id": "updateOpenApiDocForEntity",
+      "summary": "Update OpenAPI docs for entity"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/catalog/{tagOrId}/documentation/openapi",
+      "method": "DELETE",
+      "operation_id": "deleteOpenApiDocForEntity",
+      "summary": "Delete OpenAPI docs for entity",
+      "details": {
+        "operationId": "deleteOpenApiDocForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted documentation"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete OpenAPI docs for entity",
+        "tags": [
+          "Docs"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/documentation/openapi",
+      "method": "GET",
+      "operation_id": "getOpenApiDocForEntity",
+      "summary": "Retrieve OpenAPI docs for entity",
+      "details": {
+        "operationId": "getOpenApiDocForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "description": "Name of the OpenAPI spec to return. If you have multiple OpenAPI specs configured for your entity as `x-cortex-links`, use this parameter to ensure the correct spec is returned. If this parameter is not specified, we will return the first OpenAPI spec found.",
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAPISpecification"
+                }
+              }
+            },
+            "description": "Successfully found documentation"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Documentation not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve OpenAPI docs for entity",
+        "tags": [
+          "Docs"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/documentation/openapi",
+      "method": "PUT",
+      "operation_id": "updateOpenApiDocForEntity",
+      "summary": "Update OpenAPI docs for entity",
+      "details": {
+        "operationId": "updateOpenApiDocForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenAPISpecification"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAPISpecification"
+                }
+              }
+            },
+            "description": "Successfully updated documentation"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update OpenAPI docs for entity",
+        "tags": [
+          "Docs"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "OpenAPISpecification": {
+      "required": [
+        "spec"
+      ],
+      "type": "object",
+      "properties": {
+        "spec": {
+          "type": "string",
+          "description": "Stringified JSON representation of the OpenAPI spec"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

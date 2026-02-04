@@ -1,0 +1,815 @@
+{
+  "tag": "[Integrations] New Relic",
+  "endpoint_count": 10,
+  "schema_count": 9,
+  "endpoints_summary": [
+    {
+      "method": "POST",
+      "path": "/api/v1/newrelic/configuration",
+      "operation_id": "NewRelicSaveConfiguration",
+      "summary": "Add a single configuration"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/newrelic/configuration/validate",
+      "operation_id": "NewRelicValidateAllConfigurations",
+      "summary": "Validate all configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/newrelic/configuration/validate/{alias}",
+      "operation_id": "NewRelicValidateConfiguration",
+      "summary": "Validate a configuration"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/newrelic/configuration/{alias}",
+      "operation_id": "NewRelicRemoveConfiguration",
+      "summary": "Delete a configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/newrelic/configuration/{alias}",
+      "operation_id": "NewRelicGetConfiguration",
+      "summary": "Retrieve a configuration"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/newrelic/configuration/{alias}",
+      "operation_id": "NewRelicUpdateConfiguration",
+      "summary": "Update a configuration"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/newrelic/configurations",
+      "operation_id": "NewRelicRemoveAllConfigurations",
+      "summary": "Delete all configurations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/newrelic/configurations",
+      "operation_id": "NewRelicListConfigurations",
+      "summary": "Retrieve configurations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/newrelic/configurations",
+      "operation_id": "NewRelicSaveConfigurations",
+      "summary": "Add multiple configurations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/newrelic/default-configuration",
+      "operation_id": "NewRelicGetDefaultConfiguration",
+      "summary": "Retrieve default configuration"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/newrelic/configuration",
+      "method": "POST",
+      "operation_id": "NewRelicSaveConfiguration",
+      "summary": "Add a single configuration",
+      "details": {
+        "operationId": "NewRelicSaveConfiguration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewrelicConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseNewrelicConfiguration"
+                }
+              }
+            },
+            "description": "Successfully added configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add a single configuration",
+        "tags": [
+          "[Integrations] New Relic"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/newrelic/configuration/validate",
+      "method": "POST",
+      "operation_id": "NewRelicValidateAllConfigurations",
+      "summary": "Validate all configurations",
+      "details": {
+        "operationId": "NewRelicValidateAllConfigurations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleIntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated all configurations"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate all configurations",
+        "tags": [
+          "[Integrations] New Relic"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/newrelic/configuration/validate/{alias}",
+      "method": "POST",
+      "operation_id": "NewRelicValidateConfiguration",
+      "summary": "Validate a configuration",
+      "details": {
+        "operationId": "NewRelicValidateConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationConfigValidation"
+                }
+              }
+            },
+            "description": "Successfully validated configuration"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Validate a configuration",
+        "tags": [
+          "[Integrations] New Relic"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/newrelic/configuration/{alias}",
+      "method": "DELETE",
+      "operation_id": "NewRelicRemoveConfiguration",
+      "summary": "Delete a configuration",
+      "details": {
+        "operationId": "NewRelicRemoveConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseNewrelicConfiguration"
+                }
+              }
+            },
+            "description": "Successfully deleted configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete a configuration",
+        "tags": [
+          "[Integrations] New Relic"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/newrelic/configuration/{alias}",
+      "method": "GET",
+      "operation_id": "NewRelicGetConfiguration",
+      "summary": "Retrieve a configuration",
+      "details": {
+        "operationId": "NewRelicGetConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewrelicConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve a configuration",
+        "tags": [
+          "[Integrations] New Relic"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/newrelic/configuration/{alias}",
+      "method": "PUT",
+      "operation_id": "NewRelicUpdateConfiguration",
+      "summary": "Update a configuration",
+      "details": {
+        "description": "WARNING: Updating aliases for configurations or changing the default configuration could cause entity YAMLs that use this integration to break.",
+        "operationId": "NewRelicUpdateConfiguration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alias",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewrelicUpdateConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseNewrelicConfiguration"
+                }
+              }
+            },
+            "description": "Successfully updated configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Configuration not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Update a configuration",
+        "tags": [
+          "[Integrations] New Relic"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/newrelic/configurations",
+      "method": "DELETE",
+      "operation_id": "NewRelicRemoveAllConfigurations",
+      "summary": "Delete all configurations",
+      "details": {
+        "operationId": "NewRelicRemoveAllConfigurations",
+        "responses": {
+          "200": {
+            "description": "Successfully deleted all configurations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete all configurations",
+        "tags": [
+          "[Integrations] New Relic"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/newrelic/configurations",
+      "method": "GET",
+      "operation_id": "NewRelicListConfigurations",
+      "summary": "Retrieve configurations",
+      "details": {
+        "operationId": "NewRelicListConfigurations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationsResponseNewrelicConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found configurations"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve configurations",
+        "tags": [
+          "[Integrations] New Relic"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/newrelic/configurations",
+      "method": "POST",
+      "operation_id": "NewRelicSaveConfigurations",
+      "summary": "Add multiple configurations",
+      "details": {
+        "operationId": "NewRelicSaveConfigurations",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigurationsRequestNewrelicConfigurationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleConfigurationsResponseNewrelicConfiguration"
+                }
+              }
+            },
+            "description": "Successfully added configurations"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Add multiple configurations",
+        "tags": [
+          "[Integrations] New Relic"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/newrelic/default-configuration",
+      "method": "GET",
+      "operation_id": "NewRelicGetDefaultConfiguration",
+      "summary": "Retrieve default configuration",
+      "details": {
+        "operationId": "NewRelicGetDefaultConfiguration",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewrelicConfiguration"
+                }
+              }
+            },
+            "description": "Successfully found default configuration"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve default configuration",
+        "tags": [
+          "[Integrations] New Relic"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "NewrelicConfigurationRequest": {
+      "required": [
+        "accountId",
+        "alias",
+        "isDefault",
+        "personalKey",
+        "region"
+      ],
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "alias": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "personalKey": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string",
+          "enum": [
+            "US",
+            "EU"
+          ]
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "NewrelicConfiguration": {
+      "required": [
+        "alias",
+        "isDefault",
+        "lastFour",
+        "region"
+      ],
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "alias": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "lastFour": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string",
+          "enum": [
+            "US",
+            "EU"
+          ]
+        }
+      }
+    },
+    "NewrelicUpdateConfigurationRequest": {
+      "required": [
+        "alias",
+        "isDefault"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MultipleIntegrationConfigValidation": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/IntegrationConfigValidation"
+          }
+        }
+      }
+    },
+    "ConfigurationsRequestNewrelicConfigurationRequest": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/NewrelicConfigurationRequest"
+          }
+        }
+      }
+    },
+    "IntegrationConfigValidation": {
+      "required": [
+        "isValid"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        },
+        "isValid": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "MultipleConfigurationsResponseNewrelicConfiguration": {
+      "required": [
+        "configurations",
+        "skippedConfigurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/NewrelicConfiguration"
+          }
+        },
+        "skippedConfigurations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ConfigurationsResponseNewrelicConfiguration": {
+      "required": [
+        "configurations"
+      ],
+      "type": "object",
+      "properties": {
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/NewrelicConfiguration"
+          }
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

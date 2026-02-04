@@ -1,0 +1,361 @@
+{
+  "tag": "GitOps Logs",
+  "endpoint_count": 1,
+  "schema_count": 8,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/gitops-logs",
+      "operation_id": "listGitOpsLogs",
+      "summary": "Retrieve GitOps logs"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/gitops-logs",
+      "method": "GET",
+      "operation_id": "listGitOpsLogs",
+      "summary": "Retrieve GitOps logs",
+      "details": {
+        "description": "API key must have the `View GitOps logs` permission.",
+        "operationId": "listGitOpsLogs",
+        "parameters": [
+          {
+            "description": "File name the within repository",
+            "in": "query",
+            "name": "file",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Repository name as defined in your Git provider",
+            "in": "query",
+            "name": "repository",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Commit SHA",
+            "in": "query",
+            "name": "sha",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by error only",
+            "in": "query",
+            "name": "errorOnly",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Filter by operation",
+            "in": "query",
+            "name": "operation",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CREATED",
+                "UPDATED",
+                "ARCHIVED",
+                "NO_CHANGE"
+              ]
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "in": "query",
+            "name": "fileName",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Unique tag for the Scorecard.",
+            "in": "query",
+            "name": "scorecardTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "workflowTag",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The entity tag (`x-cortex-tag`) that identifies the entity.",
+            "in": "query",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The entity tag (`x-cortex-tag`) that identifies the entity."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GitOpsLogPaginatedResponse"
+                }
+              }
+            },
+            "description": "Retrieve GitOps logs based on given criteria"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve GitOps logs",
+        "tags": [
+          "GitOps Logs"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "GitOpsLogScorecardChange": {
+      "required": [
+        "name",
+        "operation",
+        "tag"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string",
+          "enum": [
+            "CREATED",
+            "UPDATED",
+            "ARCHIVED",
+            "NO_CHANGE"
+          ]
+        },
+        "tag": {
+          "type": "string"
+        }
+      }
+    },
+    "GitOpsLogEntityChange": {
+      "required": [
+        "name",
+        "operation",
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string",
+          "enum": [
+            "CREATED",
+            "UPDATED",
+            "ARCHIVED",
+            "NO_CHANGE"
+          ]
+        },
+        "tag": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "GitOpsLogWorkflowChange": {
+      "required": [
+        "name",
+        "operation",
+        "tag"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string",
+          "enum": [
+            "CREATED",
+            "UPDATED",
+            "ARCHIVED",
+            "NO_CHANGE"
+          ]
+        },
+        "tag": {
+          "type": "string"
+        }
+      }
+    },
+    "GitOpsLogRepositoryResponse": {
+      "required": [
+        "provider",
+        "repositoryName"
+      ],
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "description": "Git provider (GitHub, GitLab, etc.)",
+          "enum": [
+            "AZURE_DEVOPS",
+            "BITBUCKET",
+            "GITHUB",
+            "GITLAB"
+          ]
+        },
+        "repositoryName": {
+          "type": "string",
+          "description": "Repository name as defined in your Git provider",
+          "example": "cortexapps/catalog"
+        }
+      }
+    },
+    "GitOpsLogResponse": {
+      "required": [
+        "commit",
+        "dateCreated",
+        "files",
+        "repository"
+      ],
+      "type": "object",
+      "properties": {
+        "commit": {
+          "type": "string"
+        },
+        "dateCreated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/GitOpsLogFileResponse"
+          }
+        },
+        "repository": {
+          "$ref": "#/components/schemas/GitOpsLogRepositoryResponse"
+        }
+      }
+    },
+    "GitOpsLogFileResponse": {
+      "required": [
+        "fileName",
+        "isPackageFile"
+      ],
+      "type": "object",
+      "properties": {
+        "entity": {
+          "$ref": "#/components/schemas/GitOpsLogEntityChange"
+        },
+        "error": {
+          "$ref": "#/components/schemas/GitOpsLogFileErrorResponse"
+        },
+        "fileName": {
+          "type": "string"
+        },
+        "isPackageFile": {
+          "type": "boolean"
+        },
+        "scorecard": {
+          "$ref": "#/components/schemas/GitOpsLogScorecardChange"
+        },
+        "workflow": {
+          "$ref": "#/components/schemas/GitOpsLogWorkflowChange"
+        }
+      }
+    },
+    "GitOpsLogPaginatedResponse": {
+      "required": [
+        "logs",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/GitOpsLogResponse"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "GitOpsLogFileErrorResponse": {
+      "required": [
+        "errorType",
+        "message"
+      ],
+      "type": "object",
+      "properties": {
+        "errorType": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

@@ -1,0 +1,2221 @@
+{
+  "tag": "Catalog Entities",
+  "endpoint_count": 13,
+  "schema_count": 32,
+  "endpoints_summary": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog",
+      "operation_id": "deleteEntitiesByType",
+      "summary": "Delete entities by type"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog",
+      "operation_id": "listAllEntities",
+      "summary": "List entities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/batch/{type}",
+      "operation_id": "getEntitiesByBatchIdentifier",
+      "summary": "Get entities by batch identifier"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/descriptors",
+      "operation_id": "listEntityDescriptors",
+      "summary": "List entity descriptors"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/catalog/{tagOrId}",
+      "operation_id": "deleteEntity",
+      "summary": "Delete entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}",
+      "operation_id": "getEntityDetails",
+      "summary": "Retrieve entity details"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/catalog/{tagOrId}/archive",
+      "operation_id": "archiveEntity",
+      "summary": "Archive an entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/gitops-logs",
+      "operation_id": "latestGitOpsLogForEntity",
+      "summary": "Retrieve most recent GitOps log for entity"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/openapi",
+      "operation_id": "getEntityDescriptor",
+      "summary": "Retrieve entity descriptor"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/catalog/{tagOrId}/scorecards",
+      "operation_id": "listScorecardScoresForEntity",
+      "summary": "Retrieve entity Scorecard scores"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/catalog/{tagOrId}/unarchive",
+      "operation_id": "unarchiveEntity",
+      "summary": "Unarchive an entity"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/open-api",
+      "operation_id": "createOrPatchEntity",
+      "summary": "Create or patch entity"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/open-api",
+      "operation_id": "createOrUpdateEntity",
+      "summary": "Create or update entity"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/catalog",
+      "method": "DELETE",
+      "operation_id": "deleteEntitiesByType",
+      "summary": "Delete entities by type",
+      "details": {
+        "description": "Note: Dangerous operation that will delete all entities that are of the given type",
+        "operationId": "deleteEntitiesByType",
+        "parameters": [
+          {
+            "description": "A list of entity types or IDs delete",
+            "in": "query",
+            "name": "types",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted entities"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid filters"
+          },
+          "405": {
+            "description": "Entity delete is not allowed"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete entities by type",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-description": "Delete all entities of specific types. If the client is trying to fetch data for teams, use 'type': 'team' in these APIs. Disabled for MCP access due to the destructive nature of bulk operations that could remove critical infrastructure components.",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog",
+      "method": "GET",
+      "operation_id": "listAllEntities",
+      "summary": "List entities",
+      "details": {
+        "description": "List all entities across the Service, Resource and Domain Catalogs.\n\nThis API returns summary data for each entity, so refer to the retrieve entity method to lookup more details for a single entity.",
+        "operationId": "listAllEntities",
+        "parameters": [
+          {
+            "description": "Filter based on groups, which correspond to the `x-cortex-groups` field in the Catalog Descriptor. Accepts a comma-delimited list of groups",
+            "in": "query",
+            "name": "groups",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            }
+          },
+          {
+            "description": "Filter based on owner group names, which correspond to the `x-cortex-owners` field in the Catalog Descriptor. Accepts a comma-delimited list of owner group names",
+            "in": "query",
+            "name": "owners",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            }
+          },
+          {
+            "description": "Depth of the parent / children hierarchy nodes. Can be 'full' or a valid integer",
+            "in": "query",
+            "name": "hierarchyDepth",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "full"
+            }
+          },
+          {
+            "description": "Supports only GitHub repositories in the `org/repo` format",
+            "example": "cortexapps%2Fbackend,cortexapps%2Ffrontend",
+            "in": "query",
+            "name": "gitRepositories",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            }
+          },
+          {
+            "description": "List of sub fields to include for hierarchies. Only supports 'groups'",
+            "example": "groups",
+            "in": "query",
+            "name": "includeHierarchyFields",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "description": "Filter the response to specific types of entities. By default, this includes services, resources, and domains. Corresponds to the `x-cortex-type` field in the entity descriptor.",
+            "example": "service,rds,s3,domain",
+            "in": "query",
+            "name": "types",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            }
+          },
+          {
+            "description": "Filter based on a [search query](https://docs.cortex.io/settings/search). This will search across entity properties. If provided, results will be sorted by relevance.",
+            "in": "query",
+            "name": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "description": "Whether to include archived entities in the response",
+            "in": "query",
+            "name": "includeArchived",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "Whether to include custom data for each entity in the response",
+            "in": "query",
+            "name": "includeMetadata",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "Whether to include links for each entity in the response",
+            "in": "query",
+            "name": "includeLinks",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "Whether to include Slack channels for each entity in the response",
+            "in": "query",
+            "name": "includeSlackChannels",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Whether to include ownership information for each entity in the response",
+            "in": "query",
+            "name": "includeOwners",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "List of sub fields to include for different types",
+            "example": "team:members",
+            "in": "query",
+            "name": "includeNestedFields",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCatalogEntities"
+                }
+              }
+            },
+            "description": "Successfully found entities"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid filters"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List entities",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-description": "List and filter catalog entities with support for pagination, search, and various filters including groups, types, owners, and git repositories. If the client is trying to fetch data for teams, use 'type': 'team' in these APIs.",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/batch/{type}",
+      "method": "GET",
+      "operation_id": "getEntitiesByBatchIdentifier",
+      "summary": "Get entities by batch identifier",
+      "details": {
+        "description": "Gets a list of entities based on type and batch key plus identifier",
+        "operationId": "getEntitiesByBatchIdentifier",
+        "parameters": [
+          {
+            "description": "The type name of the batches to retrieve. This corresponds to the `x-cortex-type` field in the entity descriptor.",
+            "in": "path",
+            "name": "type",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The batch key to filter entities by. This is a custom field set as entity metadata `__cortex_batch.key`",
+            "in": "query",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The batch version. This is a custom field set as entity metadata `__cortex_batch.identifier`, required if `compare` is specified",
+            "in": "query",
+            "name": "version",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The type over comparison to perform. Ignored unless `version` parameter must also be provided.  Values can be `eq`, `ne`.",
+            "in": "query",
+            "name": "compare",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "includeArchived",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityCIDListResponse"
+                }
+              }
+            },
+            "description": "List of entity identifiers matching the batch key and type, based on the specified compare parameter."
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Get entities by batch identifier",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/descriptors",
+      "method": "GET",
+      "operation_id": "listEntityDescriptors",
+      "summary": "List entity descriptors",
+      "details": {
+        "description": "List entity descriptors\n\nThe descriptors do not include objects (e.g. custom data, dependencies, etc) defined via the API",
+        "operationId": "listEntityDescriptors",
+        "parameters": [
+          {
+            "description": "When true, returns the YAML representation of the descriptors",
+            "in": "query",
+            "name": "yaml",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Filter the response to specific types of entities. By default, this includes services, resources, and domains. Corresponds to the `x-cortex-type` field in the entity descriptor.",
+            "example": "service,rds,s3,domain",
+            "in": "query",
+            "name": "types",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "description": "Number of entities to return per page",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "description": "Page number to return, 0 indexed",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/YamlDescriptorsListResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/JsonDescriptorsListResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Successfully retrieved entity descriptors"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List entity descriptors",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-description": "Cortex Catalog API - Access and manage your service catalog, teams, domains, and resources",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}",
+      "method": "DELETE",
+      "operation_id": "deleteEntity",
+      "summary": "Delete entity",
+      "details": {
+        "operationId": "deleteEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted entity"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "405": {
+            "description": "Entity delete is not allowed"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete entity",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-description": "Delete an entity from the catalog. This operation is disabled for MCP access due to its destructive nature.",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}",
+      "method": "GET",
+      "operation_id": "getEntityDetails",
+      "summary": "Retrieve entity details",
+      "details": {
+        "operationId": "getEntityDetails",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          },
+          {
+            "description": "Depth of the parent / children hierarchy nodes. Can be 'full' or a valid integer",
+            "in": "query",
+            "name": "hierarchyDepth",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "full"
+            }
+          },
+          {
+            "description": "List of sub fields to include for hierarchies. Only supports 'groups'",
+            "example": "groups",
+            "in": "query",
+            "name": "includeHierarchyFields",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "description": "Include ownership information, default is true",
+            "in": "query",
+            "name": "includeOwners",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailsResponse"
+                }
+              }
+            },
+            "description": "Successfully found entity"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve entity details",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-description": "Retrieve comprehensive details about a specific entity including its metadata, ownership, hierarchies, and relationships. This is the primary method for getting complete information about services, teams, or domains.",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/archive",
+      "method": "PUT",
+      "operation_id": "archiveEntity",
+      "summary": "Archive an entity",
+      "details": {
+        "operationId": "archiveEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailsResponse"
+                }
+              }
+            },
+            "description": "Successfully archived entity"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Archive an entity",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-description": "Archive an entity. Disabled for MCP access to prevent accidental archival of critical services that could impact system visibility",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/gitops-logs",
+      "method": "GET",
+      "operation_id": "latestGitOpsLogForEntity",
+      "summary": "Retrieve most recent GitOps log for entity",
+      "details": {
+        "operationId": "latestGitOpsLogForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GitOpsLogEntityResponse"
+                  }
+                }
+              }
+            },
+            "description": "Retrieve most recent GitOps log for entity"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity GitOps log not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve most recent GitOps log for entity",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/openapi",
+      "method": "GET",
+      "operation_id": "getEntityDescriptor",
+      "summary": "Retrieve entity descriptor",
+      "details": {
+        "description": "Retrieve entity descriptor\n\nThe descriptor does not include objects (e.g. custom data, dependencies, etc) defined via the API",
+        "operationId": "getEntityDescriptor",
+        "parameters": [
+          {
+            "description": "When true, returns the YAML representation of the descriptor",
+            "in": "query",
+            "name": "yaml",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/components/schemas/JsonNode"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Successfully found entity descriptor"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve entity descriptor",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-description": "Cortex Catalog API - Access and manage your service catalog, teams, domains, and resources",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/scorecards",
+      "method": "GET",
+      "operation_id": "listScorecardScoresForEntity",
+      "summary": "Retrieve entity Scorecard scores",
+      "details": {
+        "operationId": "listScorecardScoresForEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ScorecardScore"
+                  }
+                }
+              }
+            },
+            "description": "All entity Scorecard scores"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve entity Scorecard scores",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/catalog/{tagOrId}/unarchive",
+      "method": "PUT",
+      "operation_id": "unarchiveEntity",
+      "summary": "Unarchive an entity",
+      "details": {
+        "operationId": "unarchiveEntity",
+        "parameters": [
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailsResponse"
+                }
+              }
+            },
+            "description": "Successfully unarchived entity"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Unarchive an entity",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-description": "Unarchive an entity. Disabled for MCP access to maintain consistent entity lifecycle management",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/open-api",
+      "method": "PATCH",
+      "operation_id": "createOrPatchEntity",
+      "summary": "Create or patch entity",
+      "details": {
+        "description": "Creates or updates an entity using OpenAPI. If the YAML refers to an entity that already exists (as referenced by the `x-cortex-tag`), this API will merge the specified changes into the existing entity.",
+        "operationId": "createOrPatchEntity",
+        "parameters": [
+          {
+            "description": "When true, this endpoint only validates the descriptor contents and returns any errors or warnings.",
+            "in": "query",
+            "name": "dryRun",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Delete keys with this value from the merged yaml, e.g. `__delete__`, if any values match this, they will not be included in merged YAML. For example `my_value: __delete__` will remove `my_value` from the merged YAML.",
+            "in": "query",
+            "name": "deleteMarkerValue",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Default merge behavior is to replace arrays, set this to true to append arrays instead. For simple types, duplicate values will be removed from the merged array.",
+            "in": "query",
+            "name": "appendArrays",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Default behavior is to upsert the entity, set `failIfEntityDoesNotExist=true` to fail (404) if the entity specified in `x-cortex-tag` does not exist.",
+            "in": "query",
+            "name": "failIfEntityDoesNotExist",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/openapi;charset=UTF-8": {}
+          },
+          "description": "Raw text of the YAML  \n See examples of cortex.yaml files for each entity type [here](https://docs.cortex.io/docs/reference/basics/entities#example-cortexyaml-for-service-entity)"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiResponse"
+                }
+              }
+            },
+            "description": "Indicates that the entity body was accepted, and the referenced `x-cortex-tag` existed and patched successfully"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiResponse"
+                }
+              }
+            },
+            "description": "Indicates that the entity body was accepted, and the referenced `x-cortex-tag` did not exist and was created successfully"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiResponse"
+                }
+              }
+            },
+            "description": "Invalid YAML (major errors or incorrectly formatted YAML)"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiResponse"
+                }
+              }
+            },
+            "description": "Specified entity does not exist (when failIfDoesNotExist is set to true)"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create or patch entity",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/open-api",
+      "method": "POST",
+      "operation_id": "createOrUpdateEntity",
+      "summary": "Create or update entity",
+      "details": {
+        "description": "Create a catalog entity using a descriptor YAML. By default (UPSERT mode), if the entity already exists (as referenced by the `x-cortex-tag`), this API will update the existing entity. In CREATE mode, the API will fail if the entity already exists.",
+        "operationId": "createOrUpdateEntity",
+        "parameters": [
+          {
+            "description": "When true, this endpoint only validates the descriptor contents and returns any errors or warnings.",
+            "in": "query",
+            "name": "dryRun",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Add a comment with validation errors on the pull request with the given ID",
+            "in": "query",
+            "name": "githubPullRequest",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "description": "Mode of operation: UPSERT (default) creates or updates existing entity, CREATE fails if entity already exists.",
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "UPSERT",
+                "CREATE"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/openapi;charset=UTF-8": {}
+          },
+          "description": "Raw text of the YAML  \n See examples of cortex.yaml files for each entity type [here](https://docs.cortex.io/docs/reference/basics/entities#example-cortexyaml-for-service-entity)"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiResponse"
+                }
+              }
+            },
+            "description": "Indicates that the entity was accepted and processed successfully"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiResponse"
+                }
+              }
+            },
+            "description": "Invalid YAML (major errors or incorrectly formatted YAML)"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create or update entity",
+        "tags": [
+          "Catalog Entities"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "TeamMemberSource": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "externalGroupId": {
+          "type": "string"
+        },
+        "externalId": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "ACTIVE_DIRECTORY",
+            "BAMBOO_HR",
+            "GITHUB",
+            "GITLAB",
+            "GOOGLE",
+            "OKTA",
+            "OPSGENIE",
+            "WORKDAY",
+            "SERVICE_NOW"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "ENTITY_DEFINED",
+            "IDP_GROUP"
+          ]
+        }
+      }
+    },
+    "OpenApiResponse": {
+      "required": [
+        "ok",
+        "violations"
+      ],
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "violations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ViolationDTO"
+          }
+        }
+      }
+    },
+    "Metadata": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "The custom data key, referred to in CQL as custom(\"key\")"
+        },
+        "value": {
+          "$ref": "#/components/schemas/JsonNode"
+        }
+      },
+      "description": "Custom data key/values associated with the entity."
+    },
+    "EntityHierarchyDetails": {
+      "required": [
+        "children",
+        "parents"
+      ],
+      "type": "object",
+      "properties": {
+        "children": {
+          "uniqueItems": true,
+          "type": "array",
+          "description": "Nested children chain for the specific entity.",
+          "items": {
+            "$ref": "#/components/schemas/HierarchyChildNode"
+          }
+        },
+        "parents": {
+          "uniqueItems": true,
+          "type": "array",
+          "description": "Nested parent chain for the specific entity.",
+          "items": {
+            "$ref": "#/components/schemas/HierarchyParentNode"
+          }
+        }
+      },
+      "description": "Hierarchy details for the entity. Includes both the parent & the children chains."
+    },
+    "DetailsResponse": {
+      "required": [
+        "groups",
+        "hierarchy",
+        "id",
+        "isArchived",
+        "lastUpdated",
+        "links",
+        "metadata",
+        "name",
+        "ownership",
+        "slackChannels",
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "definition": {
+          "$ref": "#/components/schemas/JsonNode"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the entity visible in the Service, Resource, or Domain Catalog. Markdown is supported."
+        },
+        "git": {
+          "$ref": "#/components/schemas/GitDetails"
+        },
+        "groups": {
+          "type": "array",
+          "description": "Corresponds to the x-cortex-groups field in the Catalog Descriptor",
+          "items": {
+            "type": "string",
+            "description": "Corresponds to the x-cortex-groups field in the Catalog Descriptor"
+          }
+        },
+        "hierarchy": {
+          "$ref": "#/components/schemas/EntityHierarchyDetails"
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique, immutable, 18-character auto-generated identifier for the entity.",
+          "example": "en2da8159dbeefb974"
+        },
+        "isArchived": {
+          "type": "boolean"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "Last updated ISO timestamp",
+          "format": "date-time"
+        },
+        "links": {
+          "type": "array",
+          "description": "Relevant links for the entity. Corresponds to the x-cortex-links field in the entity descriptor",
+          "items": {
+            "$ref": "#/components/schemas/Link"
+          }
+        },
+        "metadata": {
+          "type": "array",
+          "description": "Custom data key/values associated with the entity",
+          "items": {
+            "$ref": "#/components/schemas/Metadata"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name for the entity",
+          "example": "My Favorite Entity"
+        },
+        "ownersV2": {
+          "$ref": "#/components/schemas/OwnersDetails"
+        },
+        "ownership": {
+          "$ref": "#/components/schemas/Owners"
+        },
+        "slackChannels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SlackChannelDetails"
+          }
+        },
+        "tag": {
+          "type": "string",
+          "description": "Unique identifier for the entity. Corresponds to the x-cortex-tag field in the entity descriptor.",
+          "example": "my-favorite-entity"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of the entity. Corresponds to the x-cortex-type field in the entity descriptor or 'service' for services.",
+          "example": "service"
+        }
+      }
+    },
+    "IndividualOwnerDetails": {
+      "required": [
+        "email"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of the email owner",
+          "example": "Product manager"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "TeamMember": {
+      "required": [
+        "roles",
+        "sources"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of the team member",
+          "example": "Product manager"
+        },
+        "email": {
+          "type": "string",
+          "description": "Email of the team member",
+          "example": "aditya.bansal@cortex.io"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the team member",
+          "example": "Aditya Bansal"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Role"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/TeamMemberSource"
+          }
+        }
+      },
+      "description": "Team member information"
+    },
+    "JsonDescriptorsListResponse": {
+      "required": [
+        "descriptors",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "descriptors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/JsonNode"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "SlackChannel": {
+      "required": [
+        "channel"
+      ],
+      "type": "object",
+      "properties": {
+        "channel": {
+          "type": "string",
+          "description": "The Slack channel identifier without the preceding #"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of this owner defined in the Catalog Descriptor. Not to be confused with the description of the team in the Team pages."
+        },
+        "inheritance": {
+          "type": "string",
+          "description": "Inheritance type, only defined for domain entities",
+          "enum": [
+            "APPEND",
+            "FALLBACK",
+            "NONE"
+          ]
+        },
+        "notificationsEnabled": {
+          "type": "boolean",
+          "description": "Refers to the corresponding field in the Catalog Descriptor. This is meant to be used for your automation purposes and does not actually impact the notification behavior in Cortex."
+        }
+      },
+      "description": "Use the top-level `slackChannels` field instead of the one nested inside `ownership`",
+      "deprecated": true
+    },
+    "Owners": {
+      "required": [
+        "emails",
+        "groups",
+        "slackChannels"
+      ],
+      "type": "object",
+      "properties": {
+        "emails": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Email"
+          }
+        },
+        "groups": {
+          "type": "array",
+          "description": "List of IdP or Cortex Teams (not to be confused with the x-cortex-groups).",
+          "items": {
+            "$ref": "#/components/schemas/OwnerGroup"
+          }
+        },
+        "slackChannels": {
+          "type": "array",
+          "description": "Use the top-level `slackChannels` field instead of the one nested inside `ownership`",
+          "deprecated": true,
+          "items": {
+            "$ref": "#/components/schemas/SlackChannel"
+          }
+        }
+      }
+    },
+    "OwnerGroup": {
+      "required": [
+        "groupName"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of this owner defined in the Catalog Descriptor. Not to be confused with the description of the team in the Team pages."
+        },
+        "groupName": {
+          "type": "string",
+          "description": "The slug for the group as defined in the ownership provider. For example, the org/team for GitHub teams or the team tag for Cortex Teams",
+          "example": "cortexapps/engineering"
+        },
+        "inheritance": {
+          "type": "string",
+          "description": "Inheritance type, only defined for domain entities",
+          "enum": [
+            "APPEND",
+            "FALLBACK",
+            "NONE"
+          ]
+        },
+        "provider": {
+          "type": "string",
+          "description": "If defined, indicates the ownership provider the team slug references",
+          "enum": [
+            "ACTIVE_DIRECTORY",
+            "BAMBOO_HR",
+            "CORTEX",
+            "GITHUB",
+            "GITLAB",
+            "GOOGLE",
+            "OKTA",
+            "OPSGENIE",
+            "WORKDAY",
+            "SERVICE_NOW"
+          ]
+        }
+      },
+      "description": "List of IdP or Cortex Teams (not to be confused with the x-cortex-groups)."
+    },
+    "JsonNode": {
+      "type": "object"
+    },
+    "HierarchyParentNode": {
+      "required": [
+        "id",
+        "name",
+        "parents",
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "definition": {
+          "$ref": "#/components/schemas/JsonNode"
+        },
+        "description": {
+          "type": "string"
+        },
+        "groups": {
+          "type": "array",
+          "description": "List of groups for this node. Only included if includeHierarchyFields contains groups",
+          "items": {
+            "type": "string",
+            "description": "List of groups for this node. Only included if includeHierarchyFields contains groups"
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "parents": {
+          "$ref": "#/components/schemas/HierarchyParentNode"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "description": "Parent at the current depth, and its parents."
+    },
+    "Link": {
+      "required": [
+        "name",
+        "type",
+        "url"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "An optional description of the link"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name for the link visible in the Catalog"
+        },
+        "type": {
+          "type": "string",
+          "description": "Corresponds to the type field in a link definition provided in the Catalog Descriptor"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "description": "Relevant links for the entity. Corresponds to the x-cortex-links field in the entity descriptor"
+    },
+    "Role": {
+      "required": [
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the role",
+          "example": "Team Leader"
+        },
+        "source": {
+          "type": "string",
+          "description": "Source of the role if pulled in through integration. This will be blank if manually defined in Cortex.",
+          "example": "WORKDAY"
+        }
+      }
+    },
+    "EntityCIDListResponse": {
+      "required": [
+        "ids",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "description": "Unique, immutable, 18-character auto-generated identifier for the entity.",
+          "example": "en2da8159dbeefb974",
+          "items": {
+            "type": "string",
+            "description": "Unique, immutable, 18-character auto-generated identifier for the entity.",
+            "example": "en2da8159dbeefb974"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "EntityDetailsSummary": {
+      "required": [
+        "groups",
+        "hierarchy",
+        "id",
+        "isArchived",
+        "lastUpdated",
+        "links",
+        "name",
+        "slackChannels",
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of the entity visible in the Service, Resource, or Domain Catalog. This may contain markdown."
+        },
+        "git": {
+          "$ref": "#/components/schemas/GitDetails"
+        },
+        "groups": {
+          "type": "array",
+          "description": "Corresponds to the x-cortex-groups field in the Catalog Descriptor",
+          "items": {
+            "type": "string",
+            "description": "Corresponds to the x-cortex-groups field in the Catalog Descriptor"
+          }
+        },
+        "hierarchy": {
+          "$ref": "#/components/schemas/EntityHierarchyDetails"
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique, immutable, 18-character auto-generated identifier for the entity.",
+          "example": "en2da8159dbeefb974"
+        },
+        "isArchived": {
+          "type": "boolean"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "Last updated ISO timestamp",
+          "format": "date-time"
+        },
+        "links": {
+          "type": "array",
+          "description": "Relevant links for the entity. Corresponds to the x-cortex-links field in the entity descriptor",
+          "items": {
+            "$ref": "#/components/schemas/Link"
+          }
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/TeamMember"
+          }
+        },
+        "metadata": {
+          "type": "array",
+          "description": "Custom data key/values associated with the entity.",
+          "items": {
+            "$ref": "#/components/schemas/Metadata"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name for the entity",
+          "example": "My Favorite Entity"
+        },
+        "owners": {
+          "$ref": "#/components/schemas/OwnersDetails"
+        },
+        "slackChannels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SlackChannelDetails"
+          }
+        },
+        "tag": {
+          "type": "string",
+          "description": "Unique identifier for the entity. Corresponds to the x-cortex-tag field in the entity descriptor.",
+          "example": "my-favorite-entity"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of the entity. Corresponds to the x-cortex-type field in the entity descriptor or 'service' for services.",
+          "example": "service"
+        }
+      }
+    },
+    "CurrentLevel": {
+      "required": [
+        "name",
+        "number"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the level",
+          "example": "Bronze"
+        },
+        "number": {
+          "type": "integer",
+          "description": "Rank of the level where 1 is the highest",
+          "format": "int32"
+        }
+      }
+    },
+    "LadderLevel": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "$ref": "#/components/schemas/CurrentLevel"
+        }
+      }
+    },
+    "HierarchyChildNode": {
+      "required": [
+        "children",
+        "id",
+        "name",
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "children": {
+          "$ref": "#/components/schemas/HierarchyChildNode"
+        },
+        "definition": {
+          "$ref": "#/components/schemas/JsonNode"
+        },
+        "description": {
+          "type": "string"
+        },
+        "groups": {
+          "type": "array",
+          "description": "List of groups for this node. Only included if includeHierarchyFields contains groups",
+          "items": {
+            "type": "string",
+            "description": "List of groups for this node. Only included if includeHierarchyFields contains groups"
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "description": "Child at the current depth, and its children."
+    },
+    "OwnersDetails": {
+      "required": [
+        "individuals",
+        "teams"
+      ],
+      "type": "object",
+      "properties": {
+        "individuals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/IndividualOwnerDetails"
+          }
+        },
+        "teams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/TeamDetails"
+          }
+        }
+      },
+      "description": "Entity owners information"
+    },
+    "GitDetails": {
+      "required": [
+        "provider",
+        "repository",
+        "repositoryUrl"
+      ],
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string",
+          "description": "Custom defined alias (this is only relevant if you have opted into multi account support)"
+        },
+        "basepath": {
+          "type": "string",
+          "description": "If the entity is in a monorepo (e.g. in a subdirectory), this field defines the subdirectory"
+        },
+        "provider": {
+          "type": "string",
+          "description": "Name of the Git provider",
+          "example": "github"
+        },
+        "repository": {
+          "type": "string",
+          "description": "Repository name as defined in your Git provider"
+        },
+        "repositoryUrl": {
+          "type": "string",
+          "description": "URL of the Git repository"
+        }
+      },
+      "description": "Metadata about the entity's git repository"
+    },
+    "ListCatalogEntities": {
+      "required": [
+        "entities",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/EntityDetailsSummary"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      },
+      "description": "List of all catalog entities, including services, resources, and domains. Use the \\\"type\\\" field to determine what type each entity is."
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "ScorecardScore": {
+      "required": [
+        "ladderLevels",
+        "score",
+        "scorePercentage",
+        "scorecardId",
+        "scorecardName",
+        "totalPossibleScore"
+      ],
+      "type": "object",
+      "properties": {
+        "ladderLevels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/LadderLevel"
+          }
+        },
+        "score": {
+          "type": "number"
+        },
+        "scorePercentage": {
+          "type": "number"
+        },
+        "scorecardId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "scorecardName": {
+          "type": "string"
+        },
+        "totalPossibleScore": {
+          "type": "number"
+        }
+      }
+    },
+    "SlackChannelDetails": {
+      "required": [
+        "name",
+        "notificationsEnabled"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of the Slack channel",
+          "example": "This is the engineering channel"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the Slack channel",
+          "example": "engineering"
+        },
+        "notificationsEnabled": {
+          "type": "boolean",
+          "description": "Whether notifications are enabled for this channel"
+        }
+      },
+      "description": "Slack channel information"
+    },
+    "Email": {
+      "required": [
+        "email"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of this owner defined in the Catalog Descriptor, not to be confused with the description of the team in the Team pages"
+        },
+        "email": {
+          "type": "string"
+        },
+        "inheritance": {
+          "type": "string",
+          "description": "Inheritance type, only defined for domain entities",
+          "enum": [
+            "APPEND",
+            "FALLBACK",
+            "NONE"
+          ]
+        }
+      }
+    },
+    "YamlDescriptorsListResponse": {
+      "required": [
+        "descriptors",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "descriptors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "GitOpsLogRepositoryResponse": {
+      "required": [
+        "provider",
+        "repositoryName"
+      ],
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "description": "Git provider (GitHub, GitLab, etc.)",
+          "enum": [
+            "AZURE_DEVOPS",
+            "BITBUCKET",
+            "GITHUB",
+            "GITLAB"
+          ]
+        },
+        "repositoryName": {
+          "type": "string",
+          "description": "Repository name as defined in your Git provider",
+          "example": "cortexapps/catalog"
+        }
+      }
+    },
+    "TeamDetails": {
+      "required": [
+        "id",
+        "isArchived",
+        "name",
+        "tag"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of the team entity",
+          "example": "This is my team"
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique, immutable, 18-character auto-generated identifier for the team entity",
+          "example": "en2da8159dbeefb974"
+        },
+        "inheritance": {
+          "type": "string",
+          "description": "Inheritance type, only defined for domain entities",
+          "enum": [
+            "APPEND",
+            "FALLBACK",
+            "NONE"
+          ]
+        },
+        "isArchived": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name for the team entity",
+          "example": "My Favorite Team"
+        },
+        "provider": {
+          "type": "string",
+          "description": "If defined, indicates the ownership provider the team slug references",
+          "enum": [
+            "ACTIVE_DIRECTORY",
+            "BAMBOO_HR",
+            "CORTEX",
+            "GITHUB",
+            "GITLAB",
+            "GOOGLE",
+            "OKTA",
+            "OPSGENIE",
+            "WORKDAY",
+            "SERVICE_NOW"
+          ]
+        },
+        "tag": {
+          "type": "string",
+          "description": "Unique identifier for the team entity. Corresponds to the x-cortex-tag field in the entity descriptor",
+          "example": "my-favorite-team-entity"
+        }
+      }
+    },
+    "ViolationDTO": {
+      "required": [
+        "paths"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "endLine": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pointer": {
+          "type": "string"
+        },
+        "ruleLink": {
+          "type": "string"
+        },
+        "startLine": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "title": {
+          "type": "string"
+        },
+        "violationType": {
+          "type": "string",
+          "enum": [
+            "MUST",
+            "SHOULD",
+            "MAY",
+            "HINT"
+          ]
+        }
+      }
+    },
+    "GitOpsLogEntityResponse": {
+      "required": [
+        "commit",
+        "dateCreated",
+        "fileName",
+        "repository"
+      ],
+      "type": "object",
+      "properties": {
+        "commit": {
+          "type": "string"
+        },
+        "dateCreated": {
+          "type": "string",
+          "description": "Date when the GitOps log was created",
+          "format": "date-time"
+        },
+        "fileName": {
+          "type": "string",
+          "description": "Relative path of the cortex.yaml file",
+          "example": ".cortex/catalog/brain-backend.yaml"
+        },
+        "repository": {
+          "$ref": "#/components/schemas/GitOpsLogRepositoryResponse"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

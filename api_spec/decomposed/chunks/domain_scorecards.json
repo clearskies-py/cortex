@@ -1,0 +1,1812 @@
+{
+  "tag": "Scorecards",
+  "endpoint_count": 13,
+  "schema_count": 35,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/scorecards",
+      "operation_id": "listScorecards",
+      "summary": "List Scorecards"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/scorecards/descriptor",
+      "operation_id": "createOrUpdateScorecard",
+      "summary": "Create or update Scorecard"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/scorecards/{scorecardTag}/entity/{tagOrId}/badge",
+      "operation_id": "getBadgeMarkdown",
+      "summary": "Retrieve Scorecard shields.io badge"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/scorecards/{tag}",
+      "operation_id": "deleteScorecard",
+      "summary": "Delete Scorecard"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/scorecards/{tag}",
+      "operation_id": "getScorecard",
+      "summary": "Retrieve Scorecard"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/scorecards/{tag}/descriptor",
+      "operation_id": "getScorecardDescriptor",
+      "summary": "Retrieve Scorecard descriptor"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/scorecards/{tag}/entity/{entityTag}/exemption",
+      "operation_id": "requestScorecardRuleExemption",
+      "summary": "Request Scorecard rule exemption"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/scorecards/{tag}/entity/{entityTag}/exemption/approve",
+      "operation_id": "approveScorecardRuleExemption",
+      "summary": "Approve Scorecard rule exemption"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/scorecards/{tag}/entity/{entityTag}/exemption/deny",
+      "operation_id": "denyScorecardRuleExemption",
+      "summary": "Deny Scorecard rule exemption"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/scorecards/{tag}/entity/{entityTag}/exemption/revoke",
+      "operation_id": "revokeScorecardRuleExemption",
+      "summary": "Revoke Scorecard rule exemption"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/scorecards/{tag}/entity/{entityTag}/scores",
+      "operation_id": "refreshScorecardScoreForEntity",
+      "summary": "Evaluate entity scorecard score"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/scorecards/{tag}/next-steps",
+      "operation_id": "getScorecardNextStepsForEntity",
+      "summary": "Retrieve next steps for entity in Scorecard"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/scorecards/{tag}/scores",
+      "operation_id": "listScorecardScores",
+      "summary": "Retrieve Scorecard scores"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/scorecards",
+      "method": "GET",
+      "operation_id": "listScorecards",
+      "summary": "List Scorecards",
+      "details": {
+        "description": "Returns scorecards matching optional search criteria. If search criteria is specified we will use search logic, which will not find Scorecards that have yet to be evaluated",
+        "operationId": "listScorecards",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "showDrafts",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Filter based on groups, which correspond to the `x-cortex-groups` field in the Catalog Descriptor. Accepts a comma-delimited list of groups",
+            "in": "query",
+            "name": "groups",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "description": "Filter based on entity (either tags or CIDs). Accepts a comma-delimited list of entity tag or CIDs, please use only one type of identifier",
+            "in": "query",
+            "name": "entities",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "description": "Entity identifier - can be a tag or CID"
+              }
+            }
+          },
+          {
+            "description": "Filter based on team (either tags or CIDs). Accepts a comma-delimited list of team tag or CIDs, please use only one type of identifier",
+            "in": "query",
+            "name": "teams",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "description": "Entity identifier - can be a tag or CID"
+              }
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedScorecardsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "List Scorecards",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-description": "List all scorecards in the organization with optional filtering. View scorecard configurations to understand quality standards, compliance requirements, and maturity models. Supports filtering by groups, entities, and teams to find relevant scorecards",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/scorecards/descriptor",
+      "method": "POST",
+      "operation_id": "createOrUpdateScorecard",
+      "summary": "Create or update Scorecard",
+      "details": {
+        "description": "Create or update a Scorecard using the descriptor YAML. The operation is determined by the existence of a Scorecard with the same `tag` as passed in the descriptor.",
+        "operationId": "createOrUpdateScorecard",
+        "parameters": [
+          {
+            "description": "When true, this endpoint only validates the descriptor contents and returns any errors or warnings.",
+            "in": "query",
+            "name": "dryRun",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/yaml;charset=UTF-8": {}
+          },
+          "description": "Raw text of the YAML  \n See an example of a yaml file for scorecards [here](https://docs.cortex.io/docs/reference/basics/scorecards#descriptor)"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScorecardDescriptorResponse"
+                }
+              }
+            },
+            "description": "Created Scorecard"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Create or update Scorecard",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-description": "Create a new scorecard. Disabled for MCP access as scorecard creation should be carefully managed through proper governance processes",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/scorecards/{scorecardTag}/entity/{tagOrId}/badge",
+      "method": "GET",
+      "operation_id": "getBadgeMarkdown",
+      "summary": "Retrieve Scorecard shields.io badge",
+      "details": {
+        "operationId": "getBadgeMarkdown",
+        "parameters": [
+          {
+            "description": "Unique tag for the Scorecard.",
+            "in": "path",
+            "name": "scorecardTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The tag (`x-cortex-tag`) or unique, auto-generated identifier for the entity.",
+            "in": "path",
+            "name": "tagOrId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Entity identifier - can be a tag or CID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScorecardShieldsBadgeMarkdown"
+                }
+              }
+            },
+            "description": "Shields.io badge"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Entity or Scorecard not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve Scorecard shields.io badge",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/scorecards/{tag}",
+      "method": "DELETE",
+      "operation_id": "deleteScorecard",
+      "summary": "Delete Scorecard",
+      "details": {
+        "operationId": "deleteScorecard",
+        "parameters": [
+          {
+            "description": "Unique tag for the Scorecard",
+            "example": "my-production-readiness-checklist",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted Scorecard"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Scorecard not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Delete Scorecard",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-description": "Delete a scorecard. Disabled for MCP access as removing scorecards affects historical tracking and compliance reporting",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/scorecards/{tag}",
+      "method": "GET",
+      "operation_id": "getScorecard",
+      "summary": "Retrieve Scorecard",
+      "details": {
+        "operationId": "getScorecard",
+        "parameters": [
+          {
+            "description": "Unique tag for the Scorecard",
+            "example": "my-production-readiness-checklist",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScorecardDescriptorResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved Scorecard"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Scorecard not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve Scorecard",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-description": "Get complete details of a scorecard including its configuration, rules, levels, weights, exemption settings, and evaluation criteria. Essential for understanding how services are evaluated and what standards they must meet",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/scorecards/{tag}/descriptor",
+      "method": "GET",
+      "operation_id": "getScorecardDescriptor",
+      "summary": "Retrieve Scorecard descriptor",
+      "details": {
+        "operationId": "getScorecardDescriptor",
+        "parameters": [
+          {
+            "description": "Unique tag for the Scorecard",
+            "example": "my-production-readiness-checklist",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successfully retrieved Scorecard descriptor"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Scorecard not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve Scorecard descriptor",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-description": "Cortex Scorecards API - Measure and track service quality, compliance, and maturity levels across your organization with customizable scorecards and rules",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/scorecards/{tag}/entity/{entityTag}/exemption",
+      "method": "POST",
+      "operation_id": "requestScorecardRuleExemption",
+      "summary": "Request Scorecard rule exemption",
+      "details": {
+        "description": "Request Scorecard rule exemption",
+        "operationId": "requestScorecardRuleExemption",
+        "parameters": [
+          {
+            "description": "Unique tag for the Scorecard",
+            "example": "my-production-readiness-checklist",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The entity tag (`x-cortex-tag`) that identifies the entity.",
+            "in": "path",
+            "name": "entityTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RuleExemptionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleExemptionDefinition"
+                }
+              }
+            },
+            "description": "Successfully requested Scorecard rule exemption"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Scorecard not found, entity not found, or rule with given identifier not found within the Scorecard"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Request Scorecard rule exemption",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/scorecards/{tag}/entity/{entityTag}/exemption/approve",
+      "method": "PUT",
+      "operation_id": "approveScorecardRuleExemption",
+      "summary": "Approve Scorecard rule exemption",
+      "details": {
+        "description": "Approve Scorecard rule exemption",
+        "operationId": "approveScorecardRuleExemption",
+        "parameters": [
+          {
+            "description": "Unique tag for the Scorecard",
+            "example": "my-production-readiness-checklist",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The entity tag (`x-cortex-tag`) that identifies the entity.",
+            "in": "path",
+            "name": "entityTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveRuleExemptionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModifiedRuleExemptionsResponse"
+                }
+              }
+            },
+            "description": "Successfully approved Scorecard rule exemptions"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "No pending exemptions to approve found"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Scorecard not found, entity not found, or rule with given identifier not found within the Scorecard"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Approve Scorecard rule exemption",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/scorecards/{tag}/entity/{entityTag}/exemption/deny",
+      "method": "PUT",
+      "operation_id": "denyScorecardRuleExemption",
+      "summary": "Deny Scorecard rule exemption",
+      "details": {
+        "description": "Deny Scorecard rule exemption",
+        "operationId": "denyScorecardRuleExemption",
+        "parameters": [
+          {
+            "description": "Unique tag for the Scorecard",
+            "example": "my-production-readiness-checklist",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The entity tag (`x-cortex-tag`) that identifies the entity.",
+            "in": "path",
+            "name": "entityTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectRuleExemptionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModifiedRuleExemptionsResponse"
+                }
+              }
+            },
+            "description": "Denied Scorecard rule exemptions"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "No pending exemptions to approve found"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Scorecard not found, entity not found, or rule with given identifier not found within the Scorecard"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Deny Scorecard rule exemption",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/scorecards/{tag}/entity/{entityTag}/exemption/revoke",
+      "method": "PUT",
+      "operation_id": "revokeScorecardRuleExemption",
+      "summary": "Revoke Scorecard rule exemption",
+      "details": {
+        "description": "Revoke Scorecard rule exemption",
+        "operationId": "revokeScorecardRuleExemption",
+        "parameters": [
+          {
+            "description": "Unique tag for the Scorecard",
+            "example": "my-production-readiness-checklist",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The entity tag (`x-cortex-tag`) that identifies the entity.",
+            "in": "path",
+            "name": "entityTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectRuleExemptionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModifiedRuleExemptionsResponse"
+                }
+              }
+            },
+            "description": "Revoked Scorecard rule exemptions"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "No approved exemptions to revoke found"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Scorecard not found, entity not found, or rule with given identifier not found within the Scorecard"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Revoke Scorecard rule exemption",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/scorecards/{tag}/entity/{entityTag}/scores",
+      "method": "POST",
+      "operation_id": "refreshScorecardScoreForEntity",
+      "summary": "Evaluate entity scorecard score",
+      "details": {
+        "description": "Triggers score evaluation for entity scorecard",
+        "operationId": "refreshScorecardScoreForEntity",
+        "parameters": [
+          {
+            "description": "Unique tag for the Scorecard",
+            "example": "my-production-readiness-checklist",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The entity tag (`x-cortex-tag`) that identifies the entity.",
+            "in": "path",
+            "name": "entityTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scorecard score evaluation triggered successfully"
+          },
+          "403": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Scorecard not found"
+          },
+          "409": {
+            "description": "Already evaluating scorecard"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "description": "Scorecard evaluation failed"
+          }
+        },
+        "summary": "Evaluate entity scorecard score",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-description": "Cortex Scorecards API - Measure and track service quality, compliance, and maturity levels across your organization with customizable scorecards and rules",
+        "x-cortex-mcp-enabled": "false"
+      }
+    },
+    {
+      "path": "/api/v1/scorecards/{tag}/next-steps",
+      "method": "GET",
+      "operation_id": "getScorecardNextStepsForEntity",
+      "summary": "Retrieve next steps for entity in Scorecard",
+      "details": {
+        "operationId": "getScorecardNextStepsForEntity",
+        "parameters": [
+          {
+            "description": "Unique tag for the Scorecard",
+            "example": "my-production-readiness-checklist",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The entity tag (`x-cortex-tag`) that identifies the entity.",
+            "in": "query",
+            "name": "entityTag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NextSteps1"
+                }
+              }
+            },
+            "description": "Any rules remaining for the entity to reach the next level in the Scorecard."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Scorecard not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve next steps for entity in Scorecard",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-description": "Get actionable next steps for an entity to improve its scorecard performance. Shows which rules need to be satisfied to reach the next maturity level, helping teams prioritize improvements and track progress toward compliance goals",
+        "x-cortex-mcp-enabled": "true"
+      }
+    },
+    {
+      "path": "/api/v1/scorecards/{tag}/scores",
+      "method": "GET",
+      "operation_id": "listScorecardScores",
+      "summary": "Retrieve Scorecard scores",
+      "details": {
+        "description": "Returns latest scores for all entities in the Scorecard",
+        "operationId": "listScorecardScores",
+        "parameters": [
+          {
+            "description": "Entity tag (x-cortex-tag)",
+            "in": "query",
+            "name": "entityTag",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Unique tag for the Scorecard",
+            "example": "my-production-readiness-checklist",
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScorecardServiceScore"
+                }
+              }
+            },
+            "description": "Scorecard scores"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Scorecard not found"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve Scorecard scores",
+        "tags": [
+          "Scorecards"
+        ],
+        "x-cortex-mcp-description": "Retrieve scores for all entities evaluated by a specific scorecard. Returns paginated results showing how each service, resource, or domain performs against the scorecard's rules, including individual rule scores and overall scorecard scores",
+        "x-cortex-mcp-enabled": "true"
+      }
+    }
+  ],
+  "schemas": {
+    "ApproveRuleExemptionRequest": {
+      "required": [
+        "ruleIdentifier"
+      ],
+      "type": "object",
+      "properties": {
+        "ruleIdentifier": {
+          "type": "string",
+          "description": "Identifier of the Scorecard rule"
+        }
+      }
+    },
+    "IndividualServiceOwner": {
+      "required": [
+        "email"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "ScorecardShieldsBadgeMarkdown": {
+      "required": [
+        "value"
+      ],
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "Filter": {
+      "type": "object",
+      "properties": {
+        "groups": {
+          "$ref": "#/components/schemas/GroupFilter"
+        },
+        "query": {
+          "type": "string",
+          "description": "CQL expression to apply as a filter"
+        },
+        "types": {
+          "$ref": "#/components/schemas/TypeFilter"
+        }
+      },
+      "description": "Filter applied to the Initiative"
+    },
+    "RuleExemptionUserActor": {
+      "required": [
+        "email",
+        "name",
+        "type"
+      ],
+      "type": "object",
+      "description": "Person who requested, approved or rejected the exemption",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExemptionActor"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email of the person who requested, approved or rejected the exemption"
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the person who requested, approved or rejected the exemption"
+            }
+          }
+        }
+      ]
+    },
+    "ScoreSummary": {
+      "required": [
+        "percentage",
+        "score",
+        "totalPossibleScore"
+      ],
+      "type": "object",
+      "properties": {
+        "percentage": {
+          "type": "number"
+        },
+        "score": {
+          "type": "number"
+        },
+        "totalPossibleScore": {
+          "type": "number"
+        }
+      }
+    },
+    "ExemptionActor": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "description": "API key or person who requested, approved, or rejected the exemption",
+      "discriminator": {
+        "mapping": {
+          "API": "#/components/schemas/RuleExemptionApiActor",
+          "USER": "#/components/schemas/RuleExemptionUserActor"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/RuleExemptionUserActor"
+        },
+        {
+          "$ref": "#/components/schemas/RuleExemptionApiActor"
+        }
+      ]
+    },
+    "Rule": {
+      "required": [
+        "expression"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "expression": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "NextSteps1": {
+      "required": [
+        "nextSteps"
+      ],
+      "type": "object",
+      "properties": {
+        "nextSteps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/NextSteps"
+          }
+        }
+      }
+    },
+    "ServiceOwners": {
+      "required": [
+        "groups",
+        "individuals"
+      ],
+      "type": "object",
+      "properties": {
+        "groups": {
+          "type": "array",
+          "description": "Not to be confused with x-cortex-groups. These are the slugs of IdP or Cortex Managed Teams",
+          "items": {
+            "type": "string",
+            "description": "Not to be confused with x-cortex-groups. These are the slugs of IdP or Cortex Managed Teams"
+          }
+        },
+        "individuals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/IndividualServiceOwner"
+          }
+        }
+      }
+    },
+    "RuleExemptionApiActor": {
+      "required": [
+        "apiKeyLast4",
+        "type"
+      ],
+      "type": "object",
+      "description": "Api key used to request, approve or reject the exemption",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExemptionActor"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "apiKeyLast4": {
+              "type": "string",
+              "description": "Last 4 digits of the API key used to approve or reject the exemption"
+            }
+          }
+        }
+      ]
+    },
+    "ScorecardResponse": {
+      "required": [
+        "exemptions",
+        "isDraft",
+        "lastUpdated",
+        "name",
+        "notifications",
+        "rules",
+        "tag"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the Scorecard"
+        },
+        "evaluation": {
+          "$ref": "#/components/schemas/EvaluationDetails"
+        },
+        "exemptions": {
+          "$ref": "#/components/schemas/ExemptionsSettings"
+        },
+        "filter": {
+          "$ref": "#/components/schemas/Filter"
+        },
+        "isDraft": {
+          "type": "boolean",
+          "description": "Whether or not the Scorecard is in draft"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "Time the Scorecard was last updated, which includes setting the next evaluation time",
+          "format": "date-time"
+        },
+        "levels": {
+          "type": "array",
+          "description": "List of levels associated with the Scorecard",
+          "items": {
+            "$ref": "#/components/schemas/LadderLevel"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name",
+          "example": "Production Readiness Scorecard"
+        },
+        "notifications": {
+          "$ref": "#/components/schemas/Notifications"
+        },
+        "rules": {
+          "type": "array",
+          "description": "List of rules that are evaluated each time the Scorecard is evaluated",
+          "items": {
+            "$ref": "#/components/schemas/ScorecardRule"
+          }
+        },
+        "tag": {
+          "type": "string",
+          "description": "Unique identifier, found in the UI",
+          "example": "production-readiness-scorecard"
+        }
+      }
+    },
+    "ScorecardDescriptorResponse": {
+      "required": [
+        "scorecard"
+      ],
+      "type": "object",
+      "properties": {
+        "scorecard": {
+          "$ref": "#/components/schemas/ScorecardResponse"
+        }
+      }
+    },
+    "RuleExemptionDefinitionWithRule": {
+      "required": [
+        "exemptionStatus",
+        "requestedBy",
+        "requestedDate",
+        "requestingReason",
+        "ruleExpression",
+        "ruleIdentifier"
+      ],
+      "type": "object",
+      "properties": {
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "exemptionStatus": {
+          "$ref": "#/components/schemas/ExemptionStatus"
+        },
+        "requestedBy": {
+          "$ref": "#/components/schemas/ExemptionActor"
+        },
+        "requestedDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "requestingReason": {
+          "type": "string"
+        },
+        "ruleExpression": {
+          "type": "string",
+          "description": "CQL representation of the rule"
+        },
+        "ruleIdentifier": {
+          "type": "string",
+          "description": "Identifier of the rule"
+        }
+      }
+    },
+    "ServiceDetails": {
+      "required": [
+        "groups",
+        "id",
+        "name",
+        "owners",
+        "tag"
+      ],
+      "type": "object",
+      "properties": {
+        "groups": {
+          "type": "array",
+          "description": "Not to be confused with owners. This refers to the x-cortex-groups field of the entity.",
+          "items": {
+            "type": "string",
+            "description": "Not to be confused with owners. This refers to the x-cortex-groups field of the entity."
+          }
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique, immutable, 18-character auto-generated identifier for the entity.",
+          "example": "en2da8159dbeefb974"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name for the entity.",
+          "example": "My Favorite Entity"
+        },
+        "owners": {
+          "$ref": "#/components/schemas/ServiceOwners"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Unique identifier for the entity. Corresponds to the x-cortex-tag field in the entity descriptor.",
+          "example": "my-favorite-entity"
+        }
+      }
+    },
+    "PaginatedScorecardsResponse": {
+      "required": [
+        "page",
+        "scorecards",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "scorecards": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ScorecardResponse"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "TypeFilter": {
+      "type": "object",
+      "properties": {
+        "exclude": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "include": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Entity types (e.g. service, domain, team) to include or exclude. Only one of `include` or `exclude` can be set"
+    },
+    "ScorecardServiceScore": {
+      "required": [
+        "scorecardId",
+        "scorecardName",
+        "scorecardTag",
+        "serviceScores"
+      ],
+      "type": "object",
+      "properties": {
+        "scorecardFilter": {
+          "$ref": "#/components/schemas/Filter"
+        },
+        "scorecardId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "scorecardName": {
+          "type": "string"
+        },
+        "scorecardTag": {
+          "type": "string"
+        },
+        "serviceScores": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ServiceScore"
+          }
+        }
+      }
+    },
+    "RuleExemptionDefinition": {
+      "required": [
+        "exemptionStatus",
+        "requestedBy",
+        "requestedDate",
+        "requestingReason"
+      ],
+      "type": "object",
+      "properties": {
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "exemptionStatus": {
+          "$ref": "#/components/schemas/ExemptionStatus"
+        },
+        "requestedBy": {
+          "$ref": "#/components/schemas/ExemptionActor"
+        },
+        "requestedDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "requestingReason": {
+          "type": "string"
+        }
+      }
+    },
+    "RuleExemptionRequest": {
+      "required": [
+        "reason",
+        "ruleIdentifier"
+      ],
+      "type": "object",
+      "properties": {
+        "days": {
+          "type": "integer",
+          "description": "Number of days how long rule should be exempt. If not set, rule will be exempt until exempt until revoked.",
+          "format": "int64",
+          "nullable": true
+        },
+        "reason": {
+          "type": "string",
+          "description": "Reason for creating exemption"
+        },
+        "ruleIdentifier": {
+          "type": "string",
+          "description": "Identifier of the Scorecard rule to request exemption for"
+        }
+      }
+    },
+    "GroupFilter": {
+      "type": "object",
+      "properties": {
+        "exclude": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "include": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Entity groups to include or exclude"
+    },
+    "CurrentLevel": {
+      "required": [
+        "name",
+        "number"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the level",
+          "example": "Bronze"
+        },
+        "number": {
+          "type": "integer",
+          "description": "Rank of the level where 1 is the highest",
+          "format": "int32"
+        }
+      }
+    },
+    "NextSteps": {
+      "required": [
+        "rulesToComplete"
+      ],
+      "type": "object",
+      "properties": {
+        "currentLevel": {
+          "$ref": "#/components/schemas/LadderLevel"
+        },
+        "nextLevel": {
+          "$ref": "#/components/schemas/LadderLevel"
+        },
+        "rulesToComplete": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Rule"
+          }
+        }
+      }
+    },
+    "LadderLevel": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "$ref": "#/components/schemas/CurrentLevel"
+        }
+      }
+    },
+    "ExemptionsSettings": {
+      "required": [
+        "autoApprove",
+        "enabled"
+      ],
+      "type": "object",
+      "properties": {
+        "autoApprove": {
+          "type": "boolean",
+          "description": "This will enable auto-approving of Scorecard rule exemptions. If not set, it defaults to false.",
+          "example": false
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "This will enable Scorecard rule exemptions. If not set, it defaults to true.",
+          "example": true
+        }
+      },
+      "description": "Exemptions settings for the Scorecard"
+    },
+    "ServiceScore": {
+      "required": [
+        "lastEvaluated",
+        "ruleExemptions",
+        "score",
+        "service"
+      ],
+      "type": "object",
+      "properties": {
+        "lastEvaluated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ruleExemptions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RuleExemptionDefinitionWithRule"
+          }
+        },
+        "score": {
+          "$ref": "#/components/schemas/ScoreDetails"
+        },
+        "service": {
+          "$ref": "#/components/schemas/ServiceDetails"
+        }
+      }
+    },
+    "ExemptionStatus": {
+      "required": [
+        "status"
+      ],
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "Date on which the exemption was approved or rejected. Null if the status is pending",
+          "format": "date-time"
+        },
+        "handledBy": {
+          "$ref": "#/components/schemas/ExemptionActor"
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the exemption. Possible values are APPROVED, REJECTED, and PENDING"
+        }
+      }
+    },
+    "EvaluationDetails": {
+      "type": "object",
+      "properties": {
+        "window": {
+          "type": "integer",
+          "description": "Number of hours between Scorecard evaluations. If the evaluation window is not set, the Scorecard is evaluated every 4 hours",
+          "format": "int64",
+          "example": 4
+        }
+      },
+      "description": "Evaluation window for how often the Scorecard is run"
+    },
+    "ModifiedRuleExemptionsResponse": {
+      "required": [
+        "exemptions"
+      ],
+      "type": "object",
+      "properties": {
+        "exemptions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RuleExemptionDefinition"
+          }
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "message",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "string"
+        },
+        "gatewayHttpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "httpStatus": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGRATION_MISSING",
+            "INTEGRATION_UNREGISTERED",
+            "INTEGRATION_UNSUPPORTED",
+            "INTEGRATION_GRAPHQL_ERROR",
+            "INTEGRATION_BAD_REQUEST",
+            "INTEGRATION_UNAUTHORIZED",
+            "INTEGRATION_FORBIDDEN",
+            "INTEGRATION_NOT_FOUND",
+            "INTEGRATION_UNPROCESSABLE_CONTENT",
+            "INTEGRATION_RATE_LIMITED",
+            "INTEGRATION_INTERNAL_ERROR",
+            "INTEGRATION_NOT_IMPLEMENTED",
+            "INTEGRATION_BAD_GATEWAY",
+            "INTEGRATION_UNAVAILABLE",
+            "INTEGRATION_GATEWAY_TIMEOUT",
+            "INTEGRATION_TIMED_OUT",
+            "INTEGRATION_CACHE_ERROR",
+            "INTEGRATION_UNHANDLED_HTTP_ERROR",
+            "INTEGRATION_UNHANDLED_EXCEPTION",
+            "INTEGRATION_UNEXPECTED_ERROR",
+            "ILLEGAL_ARGUMENT_ERROR",
+            "BAD_REQUEST",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "UNHANDLED_EXCEPTION",
+            "UNCATEGORIZED",
+            "SERVICE_CREATOR",
+            "UNKNOWN_HOST"
+          ]
+        }
+      }
+    },
+    "Notifications": {
+      "required": [
+        "enabled",
+        "scoreDropNotificationsEnabled"
+      ],
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether this Scorecard should be included in notifications. If not set, it defaults to true for non-draft Scorecards and to false for draft Scorecards",
+          "example": true
+        },
+        "scoreDropNotificationsEnabled": {
+          "type": "boolean",
+          "description": "Whether to notify when an entities' score drops after a Scorecard evaluation. If not set, it defaults to false",
+          "example": true
+        }
+      },
+      "description": "Notification settings for the Scorecard"
+    },
+    "ScorecardRule": {
+      "required": [
+        "expression"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "example": "This rule is very important because you must pass it"
+        },
+        "effectiveFrom": {
+          "type": "string",
+          "description": "Date when the rule starts being evaluated",
+          "format": "date-time",
+          "example": "2024-01-01T00:00:00Z"
+        },
+        "expression": {
+          "type": "string",
+          "description": "CQL representation of the rule",
+          "example": "custom(\"key\") = \"value\""
+        },
+        "failureMessage": {
+          "type": "string",
+          "example": "To fix this rule, visit [our internal doc][docs.cortex.io]"
+        },
+        "filter": {
+          "$ref": "#/components/schemas/Filter"
+        },
+        "identifier": {
+          "type": "string",
+          "description": "Unique identifier of the rule",
+          "example": "96db03f1-2529-3fc3-9f13-7fb4dd28f427"
+        },
+        "levelName": {
+          "type": "string",
+          "description": "Name of the level this rule is associated with, if applicable"
+        },
+        "title": {
+          "type": "string",
+          "example": "Key value must be correct"
+        },
+        "weight": {
+          "type": "number",
+          "description": "Numerical weight of the rule. When using levels, this defaults to 1"
+        }
+      },
+      "description": "List of rules that are evaluated each time the Scorecard is evaluated"
+    },
+    "RuleOutcome": {
+      "required": [
+        "expression",
+        "score"
+      ],
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "expression": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "score": {
+          "type": "number"
+        }
+      }
+    },
+    "ScoreDetails": {
+      "required": [
+        "ladderLevels",
+        "rules",
+        "summary"
+      ],
+      "type": "object",
+      "properties": {
+        "ladderLevels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/LadderLevel"
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RuleOutcome"
+          }
+        },
+        "summary": {
+          "$ref": "#/components/schemas/ScoreSummary"
+        }
+      }
+    },
+    "RejectRuleExemptionRequest": {
+      "required": [
+        "reason",
+        "ruleIdentifier"
+      ],
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "ruleIdentifier": {
+          "type": "string",
+          "description": "Identifier of the Scorecard rule"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

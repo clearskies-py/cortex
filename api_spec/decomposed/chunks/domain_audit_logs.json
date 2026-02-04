@@ -1,0 +1,270 @@
+{
+  "tag": "Audit Logs",
+  "endpoint_count": 1,
+  "schema_count": 2,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/audit-logs",
+      "operation_id": "getAuditLogs",
+      "summary": "Retrieve audit logs"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/audit-logs",
+      "method": "GET",
+      "operation_id": "getAuditLogs",
+      "summary": "Retrieve audit logs",
+      "details": {
+        "description": "Note: To see the complete list of possible values, please reference the available filter options for [audit logs under Settings in the app](https://app.getcortexapp.com/admin/settings/audit-logs).  API key must have the `View audit logs` permission.",
+        "operationId": "getAuditLogs",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "startTime",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "in": "query",
+            "name": "endTime",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "in": "query",
+            "name": "actions",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CREATE",
+                  "READ",
+                  "UPDATE",
+                  "DELETE"
+                ]
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "objectIdentifiers",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "description": "Filter by Cortex object types (CATALOG, SERVICE, TEAM, SCORECARD, etc), integration configurations (AWS_CONFIGURATION, BITBUCKET_CONFIGURATION, etc), and more.",
+            "in": "query",
+            "name": "objectTypes",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CATALOG",
+                "TEAM",
+                "AWS_CONFIGURATION",
+                "BITBUCKET_CONFIGURATION"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "actorTypes",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "API_KEY",
+                  "PERSONAL_API_KEY",
+                  "OAUTH2",
+                  "BACKSTAGE",
+                  "ANONYMOUS"
+                ]
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "actorApiKeyIdentifiers",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "actorEmails",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "actorIpAddresses",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "actorRequestTypes",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "API_KEY_ENTITY",
+                "ATLASSIAN_WEBHOOK",
+                "SCORECARD_BADGES",
+                "SLACK_COMMAND"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditLogsResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved audit logs"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve audit logs",
+        "tags": [
+          "Audit Logs"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "AuditLogResponse": {
+      "required": [
+        "action",
+        "objectIdentifier",
+        "objectType",
+        "timestamp"
+      ],
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "Type of action performed",
+          "enum": [
+            "CREATE",
+            "UPDATE",
+            "DELETE"
+          ]
+        },
+        "actorIdentifier": {
+          "type": "string",
+          "description": "Readable identifier of the authenticated actor. This could an be OAuth user email, API key identifier, attributed webhook, etc."
+        },
+        "ipAddress": {
+          "type": "string",
+          "description": "IP address of the actor"
+        },
+        "objectIdentifier": {
+          "type": "string",
+          "description": "Readable identifier of the object acted upon"
+        },
+        "objectType": {
+          "type": "string",
+          "description": "Type of object acted upon"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "AuditLogsResponse": {
+      "required": [
+        "logs",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/AuditLogResponse"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    }
+  },
+  "referenced_common_schemas": []
+}

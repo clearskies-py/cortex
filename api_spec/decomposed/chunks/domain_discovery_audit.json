@@ -1,0 +1,741 @@
+{
+  "tag": "Discovery Audit",
+  "endpoint_count": 1,
+  "schema_count": 20,
+  "endpoints_summary": [
+    {
+      "method": "GET",
+      "path": "/api/v1/discovery-audit",
+      "operation_id": "getDiscoveryAudit",
+      "summary": "Retrieve discovery audit report"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/discovery-audit",
+      "method": "GET",
+      "operation_id": "getDiscoveryAudit",
+      "summary": "Retrieve discovery audit report",
+      "details": {
+        "description": "This report shows you recent changes in your environment that aren't reflected in Cortex, including newly created repositories, services, and resources that we discover from your integrations or which were deleted in the environment but corresponding Cortex entities are still present.",
+        "operationId": "getDiscoveryAudit",
+        "parameters": [
+          {
+            "description": "Filter based on type of the event",
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NEW_REPOSITORY",
+                "REPOSITORY_DELETED",
+                "REPOSITORY_ARCHIVED",
+                "NEW_K8S_RESOURCE",
+                "NEW_APM_RESOURCE",
+                "APM_RESOURCE_NOT_DETECTED",
+                "NEW_ECS_RESOURCE",
+                "ECS_RESOURCE_NOT_DETECTED",
+                "NEW_AWS_RESOURCE",
+                "AWS_RESOURCE_NOT_DETECTED",
+                "NEW_GOOGLE_CLOUD_RESOURCE",
+                "GOOGLE_CLOUD_RESOURCE_NOT_DETECTED",
+                "NEW_AZURE_RESOURCE",
+                "AZURE_RESOURCE_NOT_DETECTED"
+              ]
+            }
+          },
+          {
+            "description": "Filter based on integration source",
+            "in": "query",
+            "name": "source",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "AWS",
+                "AZURE_DEVOPS",
+                "AZURE_RESOURCES",
+                "BITBUCKET",
+                "DATADOG",
+                "DYNATRACE",
+                "ECS",
+                "GCP",
+                "GITHUB",
+                "GITLAB",
+                "INSTANA",
+                "K8S",
+                "LIGHTSTEP",
+                "LAMBDA",
+                "LAMBDA_CLOUD_CONTROL",
+                "NEWRELIC",
+                "SERVICENOW",
+                "SERVICENOW_DOMAIN"
+              ]
+            }
+          },
+          {
+            "description": "Flag to include ignored events in result",
+            "in": "query",
+            "name": "includeIgnored",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "description": "Number of results to return per page, between 1 and 1000. Default 250.",
+            "in": "query",
+            "name": "pageSize",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 250
+            }
+          },
+          {
+            "description": "Page number to return, 0-indexed. Default 0.",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiscoveryAuditReportResponse"
+                }
+              }
+            },
+            "description": "Successfully retrieved discovery audit report"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "summary": "Retrieve discovery audit report",
+        "tags": [
+          "Discovery Audit"
+        ],
+        "x-cortex-mcp-enabled": "false"
+      }
+    }
+  ],
+  "schemas": {
+    "ECS": {
+      "required": [
+        "clusterArn",
+        "serviceArn"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "clusterArn": {
+              "type": "string"
+            },
+            "serviceArn": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "INSTANA": {
+      "required": [
+        "label"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "AWS": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "DATADOG": {
+      "required": [
+        "serviceName"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "serviceName": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "DiscoveryAuditReportResponse": {
+      "required": [
+        "events",
+        "page",
+        "total",
+        "totalPages"
+      ],
+      "type": "object",
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/DiscoveryAuditEvent"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "description": "Current page number, 0-indexed",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of results",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "description": "Total number of pages",
+          "format": "int32"
+        }
+      }
+    },
+    "GCP": {
+      "required": [
+        "projectId",
+        "resourceName",
+        "resourceType"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "string"
+            },
+            "resourceName": {
+              "type": "string"
+            },
+            "resourceType": {
+              "type": "string",
+              "enum": [
+                "AI_DATASET",
+                "AI_ENDPOINT",
+                "AI_FEATURESTORE",
+                "AI_PLATFORM_INDEX_ENDPOINT",
+                "AI_INDEX",
+                "AI_BATCH_PREDICTION_JOB",
+                "AI_MODEL_DEPLOYMENT_MONITORING_JOB",
+                "AI_MODEL",
+                "AI_TRAINING_PIPELINE",
+                "AI_PIPELINE_JOB",
+                "AI_SPECIALIST_POOL",
+                "AI_TENSORBOARD",
+                "AI_STUDY",
+                "AI_NOTEBOOK_INSTANCE",
+                "AI_VISION_APPLICATION",
+                "AI_VISION_PROCESSOR",
+                "AI_VISION_OPERATOR",
+                "AI_VISION_CLUSTER",
+                "APP_ENGINE_SERVICE",
+                "ARTIFACT_REGISTRY_REPOSITORY",
+                "BIGQUERY_CONNECTION",
+                "BIGQUERY_DATASET",
+                "FUNCTION",
+                "GKE_CLUSTER",
+                "GKE_OPERATION",
+                "INSTANCE_GROUP",
+                "LOAD_BALANCER",
+                "SQL",
+                "STORAGE",
+                "TOPIC",
+                "VM_INSTANCE",
+                "MEMORYSTORE_REDIS",
+                "MEMORYSTORE_MEMCACHED",
+                "RUN_SERVICE",
+                "RUN_JOB",
+                "COMPOSER_ENVIRONMENT",
+                "IAM_SERVICE_ACCOUNT",
+                "SPANNER_INSTANCE_CONFIG",
+                "SPANNER_INSTANCE",
+                "VPC_SERVERLESS_CONNECTOR",
+                "APIGEE_INSTANCE",
+                "APIGEE_API",
+                "PROJECT"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "K8S": {
+      "required": [
+        "identifier",
+        "k8sType"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "type": "string"
+            },
+            "k8sType": {
+              "type": "string",
+              "enum": [
+                "DEPLOYMENT",
+                "STATEFUL_SET",
+                "ARGO_ROLLOUT",
+                "CRON_JOB"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "LIGHTSTEP": {
+      "required": [
+        "name"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "AZURE_DEVOPS": {
+      "required": [
+        "projectName",
+        "repoName"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basePath": {
+              "type": "string"
+            },
+            "projectName": {
+              "type": "string"
+            },
+            "repoName": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "GITHUB": {
+      "required": [
+        "repoName"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "alias": {
+              "type": "string"
+            },
+            "basePath": {
+              "type": "string"
+            },
+            "repoName": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "EntityDiscoveryKey": {
+      "required": [
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "description": "Mapping key of the event. Its schema is dependent on the source",
+      "example": {
+        "type": "AWS",
+        "arn": "arn"
+      },
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/AWS"
+        },
+        {
+          "$ref": "#/components/schemas/AZURE_DEVOPS"
+        },
+        {
+          "$ref": "#/components/schemas/AZURE_RESOURCES"
+        },
+        {
+          "$ref": "#/components/schemas/BITBUCKET"
+        },
+        {
+          "$ref": "#/components/schemas/DATADOG"
+        },
+        {
+          "$ref": "#/components/schemas/DYNATRACE"
+        },
+        {
+          "$ref": "#/components/schemas/ECS"
+        },
+        {
+          "$ref": "#/components/schemas/GCP"
+        },
+        {
+          "$ref": "#/components/schemas/GITHUB"
+        },
+        {
+          "$ref": "#/components/schemas/GITLAB"
+        },
+        {
+          "$ref": "#/components/schemas/INSTANA"
+        },
+        {
+          "$ref": "#/components/schemas/K8S"
+        },
+        {
+          "$ref": "#/components/schemas/LAMBDA"
+        },
+        {
+          "$ref": "#/components/schemas/LIGHTSTEP"
+        },
+        {
+          "$ref": "#/components/schemas/NEWRELIC"
+        },
+        {
+          "$ref": "#/components/schemas/SERVICENOW"
+        }
+      ]
+    },
+    "CortexEntity": {
+      "required": [
+        "name",
+        "tag",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of the entity visible in the catalog. This may contain markdown."
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name for the entity",
+          "example": "My Favorite Entity"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Unique identifier for the entity. Corresponds to the x-cortex-tag field in the entity descriptor.",
+          "example": "my-favorite-entity"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of the entity. Corresponds to the x-cortex-type field in the entity descriptor or 'service' for services.",
+          "example": "service"
+        }
+      },
+      "description": "Related Cortex entity"
+    },
+    "NEWRELIC": {
+      "required": [
+        "id"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "GITLAB": {
+      "required": [
+        "projectId"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "alias": {
+              "type": "string"
+            },
+            "basePath": {
+              "type": "string"
+            },
+            "projectId": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "DiscoveryAuditEvent": {
+      "required": [
+        "isIgnored",
+        "mappingKey",
+        "source",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "entity": {
+          "$ref": "#/components/schemas/CortexEntity"
+        },
+        "isIgnored": {
+          "type": "boolean",
+          "description": "Specifies whether discovered event is marked as ignored",
+          "example": true
+        },
+        "mappingKey": {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        "source": {
+          "type": "string",
+          "description": "Integration source",
+          "example": "AWS",
+          "enum": [
+            "AWS",
+            "AZURE_DEVOPS",
+            "AZURE_RESOURCES",
+            "BITBUCKET",
+            "DATADOG",
+            "DYNATRACE",
+            "ECS",
+            "GCP",
+            "GITHUB",
+            "GITLAB",
+            "INSTANA",
+            "K8S",
+            "LIGHTSTEP",
+            "LAMBDA",
+            "LAMBDA_CLOUD_CONTROL",
+            "NEWRELIC",
+            "SERVICENOW",
+            "SERVICENOW_DOMAIN"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of the event",
+          "example": "NEW_REPOSITORY",
+          "enum": [
+            "NEW_REPOSITORY",
+            "REPOSITORY_DELETED",
+            "REPOSITORY_ARCHIVED",
+            "NEW_K8S_RESOURCE",
+            "NEW_APM_RESOURCE",
+            "APM_RESOURCE_NOT_DETECTED",
+            "NEW_ECS_RESOURCE",
+            "ECS_RESOURCE_NOT_DETECTED",
+            "NEW_AWS_RESOURCE",
+            "AWS_RESOURCE_NOT_DETECTED",
+            "NEW_GOOGLE_CLOUD_RESOURCE",
+            "GOOGLE_CLOUD_RESOURCE_NOT_DETECTED",
+            "NEW_AZURE_RESOURCE",
+            "AZURE_RESOURCE_NOT_DETECTED"
+          ]
+        }
+      }
+    },
+    "LAMBDA": {
+      "required": [
+        "arn"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "arn": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "SERVICENOW": {
+      "required": [
+        "id",
+        "tableName"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "tableName": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "BITBUCKET": {
+      "required": [
+        "repoName"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "alias": {
+              "type": "string"
+            },
+            "basePath": {
+              "type": "string"
+            },
+            "repoName": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "DYNATRACE": {
+      "required": [
+        "entityId"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityId": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "AZURE_RESOURCES": {
+      "required": [
+        "identifier"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EntityDiscoveryKey"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "alias": {
+              "type": "string"
+            },
+            "identifier": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "referenced_common_schemas": []
+}
