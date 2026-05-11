@@ -11,6 +11,7 @@ from clearskies_cortex import dataclasses
 from clearskies_cortex.backends import CortexBackend
 from clearskies_cortex.columns import StringList
 from clearskies_cortex.models import (
+    cortex_catalog_entity_custom_data_reference,
     cortex_catalog_entity_group,
     cortex_catalog_entity_scorecard,
 )
@@ -171,6 +172,15 @@ class CortexCatalogEntity(Model):
         foreign_column_name="entity_tag",
     )
 
+    """
+    Related custom data entries for this entity.
+    HasMany relationship to CortexCatalogEntityCustomDataReference.
+    """
+    custom_data = HasMany(
+        cortex_catalog_entity_custom_data_reference.CortexCatalogEntityCustomDataReference,
+        foreign_column_name="entity_tag",
+    )
+
     # search columns
 
     """
@@ -291,6 +301,8 @@ class CortexCatalogEntity(Model):
             "platform"
         """
         if self.groups:
+            if key in self.groups:
+                return key
             for group in self.groups:
                 if group.startswith(f"{key}:"):
                     return group.split(":", 1)[1]
