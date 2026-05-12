@@ -182,7 +182,7 @@ class EntityTeam:
     """
     The provider of the team data (e.g., "cortex", "external").
     """
-    provider: str
+    provider: str | None
 
     """
     The unique tag identifier of the team.

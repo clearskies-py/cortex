@@ -81,7 +81,7 @@ class CortexBackend(clearskies.backends.ApiBackend):
 
     By default, this uses the `cortex_auth` binding from the dependency injection container.
     """
-    authentication = inject.ByName("cortex_auth")  # type: ignore[assignment]
+    authentication = inject.ByName("cortex_auth")
 
     """
     The requests instance for making HTTP calls.

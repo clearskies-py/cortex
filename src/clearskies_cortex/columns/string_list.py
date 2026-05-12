@@ -34,7 +34,7 @@ class StringList(String):
     ```
     """
 
-    def from_backend(self, value: str | list[str] | None) -> list[str]:
+    def from_backend(self, value: str | list[str] | None) -> list[str]:  # ty: ignore[invalid-method-override]
         """
         Convert backend value to a Python list.
 
