@@ -1,10 +1,7 @@
-from collections.abc import Iterator
-from typing import Any, Self
+from typing import Self
 
 from clearskies import Model
 from clearskies.columns import Boolean, Datetime, HasMany, Json, String
-from clearskies.di import inject
-from clearskies.query import Query
 from dacite import from_dict
 
 from clearskies_cortex import dataclasses
@@ -259,9 +256,11 @@ class CortexCatalogEntity(Model):
 
         Returns an empty EntityTeamOwner if owners is None.
         """
-        if self.owners is None:
-            return dataclasses.EntityTeamOwner(teams=[], individuals=[])
-        return from_dict(dataclasses.EntityTeamOwner, data=self.owners)
+        if self.owners_v2 is not None:
+            return from_dict(dataclasses.EntityTeamOwner, data=self.owners_v2)
+        if self.owners is not None:
+            return from_dict(dataclasses.EntityTeamOwner, data=self.owners)
+        return dataclasses.EntityTeamOwner(teams=[], individuals=[])
 
     def get_group_tags(self) -> list[str]:
         """Get groups as simple tags.
