@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: v0.0.46
+_commit: v0.0.47
 _src_path: gh:clearskies-py/clearskies-module-template
 author_email: tom.nijboer@cimpress.com
 author_name: Tom Nijboer
@@ -11,4 +11,8 @@ create_models: true
 docs_modules_location: modules
 module_display_name: Cortex
 module_name: cortex
+python_versions:
+- '3.12'
+- '3.13'
+- '3.14'
 site_base_url: https://clearskies.info
